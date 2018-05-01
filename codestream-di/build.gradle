@@ -1,0 +1,8 @@
+dependencies {
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlinx-coroutines-core'
+
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test'
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test-junit'
+}

@@ -1,0 +1,13 @@
+group: reason
+stream: echo-saying
+desc: A test nested stream
+inputs:
+
+  - saying:
+      prompt: Enter saying
+      type: string
+      required: true
+
+tasks:
+  - echo:
+      value: ${'NESTED -> ' + saying}
