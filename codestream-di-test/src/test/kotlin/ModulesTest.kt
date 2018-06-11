@@ -12,16 +12,7 @@ import kotlin.test.assertNotNull
 class ModulesTest {
 
 
-    @Test
-    fun testApplication() {
-        val serviceLoader = ServiceLoader.load(DIModule::class.java).findFirst()
 
-        val ctx = module {
-            add { addType<MemoryRepository<Pet>>(MemoryRepository::class) withId id("petRepository") }
-            add { addType<AnotherObject>(AnotherObject::class) }
-        }
-        val instance: AnotherObject = ctx.get(AnotherObject::class)!!
-    }
 
 
     @Test

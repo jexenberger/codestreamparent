@@ -5,6 +5,7 @@ module codestream.util {
     exports io.codestream.util.transformation;
 
     requires java.base;
+    requires java.scripting;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;

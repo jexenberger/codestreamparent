@@ -23,7 +23,7 @@ class ComponentDefinition<T>(val factory: Factory<T>,
 
     private fun bind(ctx: Context, instance: Any) {
         instance::class.mutableProperties
-                .map { PropertyInjection(it, instance) }
+                .map { PropertyInjection(id, it, instance) }
                 .forEach { it.run(ctx) }
     }
 

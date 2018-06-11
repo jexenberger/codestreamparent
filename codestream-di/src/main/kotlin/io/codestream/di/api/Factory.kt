@@ -4,5 +4,5 @@ interface Factory<T> {
 
     fun postBinding() :Boolean = false
 
-    fun get(ctx: Context) : T
+    fun get(id: ComponentId, ctx: Context) : T
 }

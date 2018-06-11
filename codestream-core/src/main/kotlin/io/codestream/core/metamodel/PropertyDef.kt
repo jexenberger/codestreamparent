@@ -1,9 +1,9 @@
 package io.codestream.core.metamodel
 
-import io.codestream.core.runtime.CoreType
+import io.codestream.core.api.ParameterDescriptor
 
 data class PropertyDef(
-        val name:String,
-        val valueDefn:String,
-        val type:CoreType
+        val name: String,
+        val valueDefn: Any?,
+        val type: ParameterDescriptor
 )

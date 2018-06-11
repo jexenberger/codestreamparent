@@ -27,7 +27,7 @@ class TestConstructorInjection {
 
         addInstance(injected) into ctx
 
-        val instance: SampleObject = injector.run(ctx) as SampleObject
+        val instance: SampleObject = injector.run(id("test"), ctx) as SampleObject
         assertEquals(injected, instance.anotherObject)
     }
 
@@ -41,7 +41,7 @@ class TestConstructorInjection {
         addInstance("hello") withId id("sample") into ctx
         addInstance("world") withId id("test") into ctx
 
-        val result = injector.run(ctx) as ComplexConstructor
+        val result = injector.run(id("test"), ctx) as ComplexConstructor
         assertEquals("hello world", result.result)
         assertNotNull(result.sampleObject)
     }
@@ -50,7 +50,7 @@ class TestConstructorInjection {
     fun testDefaultNoArgsConstructor() {
         val injector = ConstructorInjection<NoArgsConstructorDefault>(NoArgsConstructorDefault::class)
         val ctx = DefaultApplicationContext();
-        val result = injector.run(ctx) as NoArgsConstructorDefault
+        val result = injector.run(id("test"), ctx) as NoArgsConstructorDefault
         result.name = "test"
         assertEquals("test", result.name)
     }

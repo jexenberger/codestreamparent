@@ -10,7 +10,7 @@ interface Scope {
         return instance?.let {
             return it to false
         } ?: run {
-            val newInstance:T = factory.get(ctx)
+            val newInstance:T = factory.get(id, ctx)
             val ret = newInstance to true
             add(id, newInstance as Any)
             ret

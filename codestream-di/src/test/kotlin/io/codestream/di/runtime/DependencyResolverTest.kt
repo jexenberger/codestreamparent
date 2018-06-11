@@ -1,11 +1,8 @@
 package io.codestream.di.runtime
 
+import io.codestream.di.api.*
 import io.codestream.di.sample.AnotherObject
 import io.codestream.di.sample.SampleObject
-import io.codestream.di.api.ApplicationContext
-import io.codestream.di.api.DependencyTarget
-import io.codestream.di.api.bind
-import io.codestream.di.api.theType
 import io.codestream.util.mutablePropertyByName
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KMutableProperty
@@ -24,7 +21,7 @@ class DependencyResolverTest {
         bind(theType<AnotherObject>(AnotherObject::class)) into ctx
 
         val next:KMutableProperty<*> = sampleObject::class.mutablePropertyByName("injected")
-        val callSite = DependencyTarget(next)
+        val callSite = DependencyTarget(id("test"), SampleObject::class, next)
         val result = DependencyResolver.getDependency(callSite, ctx)
         assertNotNull(result)
         assertTrue { result is InjectionDependency }

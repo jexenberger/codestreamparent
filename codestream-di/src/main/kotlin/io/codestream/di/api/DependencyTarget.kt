@@ -6,11 +6,13 @@ import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KParameter
 import kotlin.reflect.jvm.jvmErasure
 
-data class DependencyTarget(val property: KMutableProperty<*>?,
+data class DependencyTarget(val id:ComponentId,
+                            val owner: KClass<*>,
+                            val property: KMutableProperty<*>?,
                             val parameter: KParameter?) {
 
-    constructor(property: KMutableProperty<*>) : this(property, null)
-    constructor(parameter: KParameter) : this(null, parameter)
+    constructor(id: ComponentId, owner: KClass<*>, property: KMutableProperty<*>) : this(id, owner, property, null)
+    constructor(id: ComponentId, owner: KClass<*>, parameter: KParameter) : this(id, owner, null, parameter)
 
     init {
         if (property != null && parameter != null) {
@@ -33,12 +35,12 @@ data class DependencyTarget(val property: KMutableProperty<*>?,
 
     private fun <T> perform(property: (p: KMutableProperty<*>) -> T, parameter: (p: KParameter) -> T): T {
         if (this.property != null) {
-            return property(this.property!!)
+            return property(this.property)
         }
         if (this.parameter != null) {
-            return parameter(this.parameter!!)
+            return parameter(this.parameter)
         }
-        //should never ctx here
+        //should never get here
         throw IllegalStateException("an either be property or parameter but not both")
     }
 

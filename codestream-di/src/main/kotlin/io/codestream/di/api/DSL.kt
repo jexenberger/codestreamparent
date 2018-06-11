@@ -1,6 +1,7 @@
 package io.codestream.di.api
 
 import io.codestream.di.runtime.ConstructorInjection
+import io.codestream.di.runtime.DefaultApplicationContext
 import io.codestream.di.runtime.InstanceInjection
 import java.util.*
 import kotlin.reflect.KClass
@@ -8,11 +9,15 @@ import kotlin.reflect.KClass
 fun id(id: String) = StringId(id)
 fun id(type: KClass<*>) = TypeId(type)
 
-fun <T> bind(factory: Factory<T>): ComponentDefinitionBuilder<T> {
-    return ComponentDefinitionBuilder<T>().toFactory(factory)
+fun <T> bind() : ComponentDefinitionBuilder<T> {
+    return ComponentDefinitionBuilder()
 }
 
-fun <T> bind(supplier: (ctx: Context) -> T): ComponentDefinitionBuilder<T> {
+fun <T> bind(factory: Factory<T>): ComponentDefinitionBuilder<T> {
+    return bind<T>().toFactory(factory)
+}
+
+fun <T> bind(supplier: (id:ComponentId, ctx: Context) -> T): ComponentDefinitionBuilder<T> {
     return bind(instancesOf(supplier))
 }
 
@@ -40,19 +45,16 @@ fun <T> theType(type: KClass<*>, bind: Boolean = true): Factory<T> {
     return ConstructorInjection(type, bind)
 }
 
-fun <T> instancesOf(bind: Boolean, factory: (ctx: Context) -> T): Factory<T> {
+fun <T> instancesOf(bind: Boolean, factory: (id: ComponentId, ctx: Context) -> T): Factory<T> {
     return LambdaFactory(factory, bind)
 }
 
-fun <T> instancesOf(factory: (ctx: Context) -> T): Factory<T> {
+fun <T> instancesOf(factory: (id: ComponentId, ctx: Context) -> T): Factory<T> {
     return LambdaFactory(factory, true)
 }
 
 fun context(): DefinableContext {
-    val factory = ServiceLoader.load(DefinableContextFactory::class.java)
-            .findFirst()
-            .orElseThrow { IllegalStateException("no context factory defined") }
-    return factory.ctx()
+   return DefaultApplicationContext()
 }
 
 fun context(builder: DefinableContext.() -> Unit): DefinableContext {

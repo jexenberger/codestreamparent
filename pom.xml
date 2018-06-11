@@ -12,6 +12,7 @@
         <module>codestream-util</module>
         <module>codestream-di</module>
         <module>codestream-di-test</module>
+        <module>codestream-runtime</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -50,6 +51,12 @@
             <dependency>
                 <groupId>codestream</groupId>
                 <artifactId>codestream-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>codestream</groupId>
+                <artifactId>codestream-runtime</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -102,6 +109,11 @@
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
                 <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>de.skuzzle</groupId>
+                <artifactId>semantic-version</artifactId>
+                <version>1.1.0</version>
             </dependency>
 
 
