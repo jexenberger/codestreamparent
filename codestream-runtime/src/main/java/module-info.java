@@ -16,6 +16,5 @@ module codestream.runtime {
     requires static kotlin.test;
     requires static kotlin.test.junit;
 
-    uses io.codestream.di.api.DIModule;
 
 }

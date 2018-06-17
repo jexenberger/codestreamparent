@@ -1,3 +1,9 @@
 package io.codestream.core.api
 
-interface SimpleTask : Task
+import io.codestream.core.metamodel.TaskDef
+
+interface SimpleTask : Task {
+
+    fun run(def:TaskDef, ctx:TaskContext)
+
+}

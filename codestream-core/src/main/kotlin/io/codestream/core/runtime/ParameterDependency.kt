@@ -2,6 +2,7 @@ package io.codestream.core.runtime
 
 import io.codestream.core.api.ComponentPropertyFailureException
 import io.codestream.core.api.annotations.Parameter
+import io.codestream.core.api.createProperty
 import io.codestream.core.metamodel.TaskDef
 import io.codestream.di.api.AnnotationDependency
 import io.codestream.di.api.Context
@@ -14,10 +15,12 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
 
         val propertyName = if (annotation.alias.isNotEmpty()) annotation.alias else target.name
 
+        val descriptor = createProperty(target.name, target.targetType, annotation)
+
         val defnId = TaskDefId(id)
         val defn = ctx.get<TaskDef>(defnId)
                 ?: throw ComponentPropertyFailureException(id.stringId, target.name, "task missing definition")
-        val property = defn.properties[propertyName]
+        val property = defn.parameters[propertyName]
                 ?: throw ComponentPropertyFailureException(id.stringId, target.name, "not defined in definition")
 
 
@@ -25,8 +28,8 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
         val eval = valueDefn?.let { Eval.isScriptString(it.toString()) } ?: false
         return if (eval && valueDefn != null) {
             val value = Eval.eval<Any>(Eval.extractScriptString(valueDefn.toString()), ctx.bindings)
-            property.type.type.convert<T>(value) as T
+            descriptor.type.convert<T>(value) as T
         } else
-            property.type.type.convert<T>(property.valueDefn) as T
+            descriptor.type.convert<T>(property.valueDefn) as T
     }
 }

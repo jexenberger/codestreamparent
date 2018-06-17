@@ -1,9 +1,8 @@
 package io.codestream.di.api
 
 import io.codestream.di.runtime.ConstructorInjection
-import io.codestream.di.runtime.DefaultApplicationContext
+import io.codestream.di.runtime.DependencyResolver
 import io.codestream.di.runtime.InstanceInjection
-import java.util.*
 import kotlin.reflect.KClass
 
 fun id(id: String) = StringId(id)
@@ -61,4 +60,8 @@ fun context(builder: DefinableContext.() -> Unit): DefinableContext {
     val ctx = context()
     ctx.builder()
     return ctx
+}
+
+fun addDependencyHandler(handler:Dependency) {
+    DependencyResolver.add(handler)
 }

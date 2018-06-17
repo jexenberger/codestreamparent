@@ -13,6 +13,12 @@ module codestream.core {
 
     requires semantic.version;
 
+    requires jackson.annotations;
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
+    requires com.fasterxml.jackson.dataformat.yaml;
+    requires com.fasterxml.jackson.module.kotlin;
+
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;
     requires static org.junit.jupiter.api;

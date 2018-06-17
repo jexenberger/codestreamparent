@@ -1,7 +1,7 @@
 package io.codestream.di.runtime
 
 import io.codestream.di.sample.AnotherObject
-import io.codestream.di.api.ApplicationContext
+import io.codestream.di.api.DefaultApplicationContext
 import io.codestream.di.api.TypeId
 import io.codestream.di.api.addType
 import org.junit.jupiter.api.BeforeEach

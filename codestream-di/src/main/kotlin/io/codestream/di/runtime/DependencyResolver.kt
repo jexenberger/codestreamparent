@@ -3,28 +3,29 @@ package io.codestream.di.runtime
 import io.codestream.di.api.Context
 import io.codestream.di.api.Dependency
 import io.codestream.di.api.DependencyTarget
+import java.util.*
 
 
 object DependencyResolver {
 
 
-    private val RESOLVERS: MutableSet<Dependency> = linkedSetOf()
+    private val RESOLVERS: Stack<Dependency> = Stack()
 
     init {
-        RESOLVERS.add(InjectionDependency())
-        RESOLVERS.add(ValueDependency())
-        RESOLVERS.add(TypedDependency())
-        RESOLVERS.add(EvalDependency())
+        RESOLVERS.push(InjectionDependency())
+        RESOLVERS.push(ValueDependency())
+        RESOLVERS.push(TypedDependency())
+        RESOLVERS.push(EvalDependency())
     }
 
     fun getDependency(call: DependencyTarget, ctx: Context) : Dependency? {
-        return RESOLVERS.find {
+        return RESOLVERS.reversed().find {
             call.supports(it)
         }
     }
 
     fun add(dependency: Dependency) : DependencyResolver {
-        RESOLVERS.add(dependency)
+        RESOLVERS.push(dependency)
         return this
     }
 

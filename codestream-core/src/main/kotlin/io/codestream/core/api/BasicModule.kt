@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
 import kotlin.reflect.full.findAnnotation
 
-fun typeToDescriptor(module: Module, type: KClass<*>): TaskDescriptor {
+internal fun typeToDescriptor(module: Module, type: KClass<*>): TaskDescriptor {
     val taskAnnotation = type.findAnnotation<Task>()
             ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
     val properties = mutableMapOf<String, ParameterDescriptor>()
@@ -23,7 +23,7 @@ fun typeToDescriptor(module: Module, type: KClass<*>): TaskDescriptor {
                     it.findAnnotation<Parameter>()?.let { param ->
                         val name = it.name!!
                         checkOptionalRequiredDeclaration(it.isOptional, param, name)
-                        properties[name] = createProperty(name, it.type.classifier!!, param)
+                        properties[name] = createProperty(name, it.type.classifier!! as KClass<*>, param)
                     }
                 }
     }
@@ -32,21 +32,20 @@ fun typeToDescriptor(module: Module, type: KClass<*>): TaskDescriptor {
             .forEach { prop ->
                 prop.findAnnotation<Parameter>()?.let { param ->
                     val name = prop.name
-                    val property = createProperty(name, prop.returnType.classifier!!, param)
+                    val property = createProperty(name, prop.returnType.classifier!! as KClass<*>, param)
                     properties[name] = property
                 }
             }
     return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type))
 }
 
-private fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
+internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
     if (!optional && !param.required) {
         throw throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required")
     }
 }
 
-private fun createProperty(name: String, prop: KClassifier, param: Parameter): ParameterDescriptor {
-    val propertyType = prop as KClass<*>
+internal fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
     val descriptorType = Type.typeForClass(propertyType)
             ?: throw ComponentDefinitionException(name, "No @Task annotation present")
     val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex)
@@ -68,12 +67,12 @@ class BasicModule(
         create(builder)
     }
 
-    private val _tasks = LinkedHashMap<String, TaskDescriptor>()
+    private val _tasks = LinkedHashMap<TaskType, TaskDescriptor>()
 
-    override val tasks: Map<String, TaskDescriptor>
+    override val tasks: Map<TaskType, TaskDescriptor>
         get() = _tasks.toMap()
 
-    override fun get(name: String): TaskDescriptor? {
+    override fun get(name: TaskType): TaskDescriptor? {
         return tasks[name]
     }
 
@@ -83,7 +82,7 @@ class BasicModule(
     }
 
     fun add(descriptor: TaskDescriptor) {
-        this._tasks[descriptor.name] = descriptor
+        this._tasks[descriptor.type] = descriptor
     }
 
 

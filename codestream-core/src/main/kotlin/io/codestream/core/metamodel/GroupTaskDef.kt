@@ -1,23 +1,19 @@
 package io.codestream.core.metamodel
 
 import io.codestream.core.api.TaskContext
+import io.codestream.core.runtime.TaskId
 import io.codestream.core.runtime.Type
+import io.codestream.core.runtime.task.defaultCondition
 
 class GroupTaskDef(
-        stream: StreamDef,
+        id: TaskId,
+        parameters: Map<String, ParameterDef>,
         val paralell: Boolean,
-        id: String,
-        condition: (TaskContext) -> Boolean,
-        type: Type,
-        name: String,
-        properties: Map<String, PropertyDef>,
-        val onError: TaskDef,
-        val finallyBlock: TaskDef)
+        condition: (TaskContext) -> Boolean = defaultCondition,
+        val onError: TaskDef? = null,
+        val onFinally: TaskDef? = null)
     : TaskDef(
-        stream,
         id,
-        condition,
-        type,
-        name,
-        properties
+        parameters,
+        condition
 )

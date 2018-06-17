@@ -11,4 +11,6 @@ interface GroupTask : Task {
 
     fun onError(error:Exception, defn: GroupTaskDef, ctx:TaskContext)
 
+    fun onFinally(defn: GroupTaskDef, ctx: TaskContext)
+
 }

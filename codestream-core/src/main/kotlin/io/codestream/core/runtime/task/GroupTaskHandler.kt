@@ -11,14 +11,13 @@ import io.codestream.util.returnIfTrue
 
 class GroupTaskHandler(private val taskId: TaskId,
                        parallel: Boolean,
-                       val taskDef: GroupTaskDef,
-                       application: StreamContext) : Branch<StreamContext>(taskId.toString(), parallel) {
+                       val taskDef: GroupTaskDef) : Branch<StreamContext>(taskId.toString(), parallel) {
 
 
     val groupTask: GroupTask
         get() = workingCtx.get<GroupTask>(taskId) ?: throw ComponentFailedException(taskId.stringId, "not defined")
 
-    private var workingCtx: StreamContext = application
+    private var workingCtx: StreamContext = StreamContext()
 
     override fun preTraversal(ctx: StreamContext): BranchProcessingDirective {
         return taskDef.condition(workingCtx.bindings)
@@ -42,5 +41,6 @@ class GroupTaskHandler(private val taskId: TaskId,
     }
 
     override fun exitBranch(ctx: StreamContext) {
+        groupTask.onFinally(taskDef, ctx.bindings)
     }
 }

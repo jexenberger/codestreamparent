@@ -12,7 +12,10 @@ class SampleSimpleTask(@Parameter(description = "description") val value:String)
     @Parameter(description = "another description")
     var anotherValue: String = ""
 
-    override fun run(defn: TaskDef, ctx: TaskContext) {
+    var run = false
+
+    override fun run(def: TaskDef, ctx: TaskContext) {
         println(value)
+        run = true
     }
 }

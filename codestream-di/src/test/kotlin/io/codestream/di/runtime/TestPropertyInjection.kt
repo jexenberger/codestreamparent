@@ -2,7 +2,7 @@ package io.codestream.di.runtime
 
 import io.codestream.di.sample.AnotherObject
 import io.codestream.di.sample.SampleObject
-import io.codestream.di.api.ApplicationContext
+import io.codestream.di.api.DefaultApplicationContext
 import io.codestream.di.api.addInstance
 import io.codestream.di.api.id
 import io.codestream.util.mutablePropertyByName

@@ -31,14 +31,14 @@ class BasicModuleTest {
     internal fun testName() {
         val aModule = BasicModule("test", "test")
         val id = aModule.id
-        assertEquals("test::1.0.0", id)
+        assertEquals("test::1.0.0", id.toString())
     }
 
     @Test
     internal fun testAdd() {
         val aModule = BasicModule("test", "test")
         aModule.add(SampleSimpleTask::class)
-        assertNotNull(aModule["simpleTask"])
+        assertNotNull(aModule[TaskType(aModule.id, "simpleTask")])
 
     }
 }

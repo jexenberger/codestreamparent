@@ -21,37 +21,14 @@ class ScopedDependencyBindings(
     }
 
     override fun containsValue(value: Any?): Boolean {
-        if (!super.containsValue(value)) {
+        if (!m.containsValue(value)) {
             return parent?.containsValue(value) ?: false
         }
         return true
     }
 
-    @Synchronized
-    operator fun set(variable: String, value: Any?) {
-        m.put(variable, value)
-    }
-
-    @Synchronized
-    override fun clear() {
-        super.clear()
-        parent?.clear()
-    }
-
-    @Synchronized
-    override fun putAll(from: Map<out String, Any>) {
-        for ((k, v) in from) {
-            set(k, v)
-        }
-    }
-
     override fun isEmpty(): Boolean {
-        return super.isEmpty() && parent?.isEmpty() ?: true
-    }
-
-    override fun remove(key: String?): Any? {
-        val result = super.remove(key)
-        return result ?: parent?.remove(key)
+        return m.isEmpty() && parent?.isEmpty() ?: true
     }
 
     override val size: Int

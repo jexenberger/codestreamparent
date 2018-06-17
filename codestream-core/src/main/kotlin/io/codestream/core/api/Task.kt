@@ -5,5 +5,4 @@ import io.codestream.core.runtime.TaskId
 
 interface Task {
 
-    fun run(defn:TaskDef, ctx:TaskContext)
 }

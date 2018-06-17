@@ -27,25 +27,23 @@ enum class Type(
     doubleArray("double[]", Array<Int>::class, true),
     keyValue("keyValue", Map::class);
 
-    fun <T> fromString(value: String?) : T {
+    fun <T> fromString(value: String?): T {
         @Suppress("UNCHECKED_CAST")
         return TransformerService.convertWithNull<String>(value, typeMapping) as T
     }
 
-    fun <T> convert(value: Any?) : T? {
+    fun <T> convert(value: Any?): T? {
         if (value == null) {
             return null
         }
         @Suppress("UNCHECKED_CAST")
-        return TransformerService.convertWithNull<Any>(value, value::class) as T
+        return TransformerService.convertWithNull<Any>(value, typeMapping) as T
     }
 
     companion object {
         fun stringType(type: KClass<*>): String? = typeForClass(type)?.stringDescriptor
-
-        fun typeForClass(type: KClass<*>): Type? = values()
-                .filter { it.typeMapping.equals(type) || it.typeMapping.isSuperclassOf(type) }
-                .singleOrNull()
+        fun typeForString(type: String): Type? = values().singleOrNull { it.stringDescriptor.equals(type) }
+        fun typeForClass(type: KClass<*>): Type? = values().singleOrNull { it.typeMapping.equals(type) || it.typeMapping.isSuperclassOf(type) }
     }
 
 

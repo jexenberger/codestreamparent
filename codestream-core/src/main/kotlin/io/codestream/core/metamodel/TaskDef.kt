@@ -1,13 +1,10 @@
 package io.codestream.core.metamodel
 
 import io.codestream.core.api.TaskContext
-import io.codestream.core.runtime.Type
+import io.codestream.core.runtime.TaskId
 
 open class TaskDef(
-        val stream: StreamDef,
-        val id: String,
-        val condition: (TaskContext) -> Boolean,
-        val type: Type,
-        val name: String,
-        val properties: Map<String, PropertyDef>
+        val id: TaskId,
+        val parameters: Map<String, ParameterDef>,
+        val condition: (TaskContext) -> Boolean = { true }
 )

@@ -4,5 +4,5 @@ import io.codestream.di.api.ComponentId
 
 data class TaskDefId(val taskId:TaskId) : ComponentId {
     override val stringId: String
-        get() = "${taskId.stringId}::##DESCRIPTOR##"
+        get() = "${taskId.stringId}::##DEFINITION##"
 }

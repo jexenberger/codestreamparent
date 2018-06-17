@@ -2,12 +2,41 @@ package io.codestream.core.runtime
 
 import java.util.*
 
+
+typealias CodeStreamModule = io.codestream.core.api.Module
+
 object ModuleRegistry {
 
-    fun module(name:String) : Module? {
-        val serviceLoader = ServiceLoader.load<Module>(Module::class.java)
-        return serviceLoader.find { it.name == name }
+
+    internal val modules: MutableMap<ModuleId, CodeStreamModule> = mutableMapOf()
+
+    init {
+        load()
     }
 
-    operator fun get(name: String) = module(name)
+    private fun load()  {
+        val serviceLoader = ServiceLoader.load<CodeStreamModule>(io.codestream.core.api.Module::class.java)
+        for (module in serviceLoader) {
+            modules[module.id] = module
+        }
+    }
+
+    @Synchronized
+    operator fun plusAssign(module: CodeStreamModule) {
+        modules[module.id] = module
+    }
+
+    fun getLatestVersion(name:String) : CodeStreamModule? {
+        return modules.entries
+                .filter { it.key.name.equals(name) }
+                .sortedByDescending { it.value.version }
+                .firstOrNull()?.value
+    }
+
+    operator fun get(name: ModuleId): CodeStreamModule? {
+        return if (name.defaultVersion) getLatestVersion(name.name) else modules[name]
+    }
+
+
+
 }
