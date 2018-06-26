@@ -17,12 +17,12 @@ class BasicModuleTest {
         val task = SampleSimpleTask::class.findAnnotation<Task>()!!
         assertEquals(task.name, descriptor.name)
         assertEquals(task.description, descriptor.description)
-        assertTrue { descriptor.properties.containsKey("value") }
-        assertTrue { descriptor.properties.containsKey("anotherValue") }
-        val property = descriptor.properties["value"]!!
+        assertTrue { descriptor.parameters.containsKey("value") }
+        assertTrue { descriptor.parameters.containsKey("anotherValue") }
+        val property = descriptor.parameters["value"]!!
         assertEquals("value", property.name)
         assertEquals("description", property.description)
-        val anotherProperty = descriptor.properties["anotherValue"]!!
+        val anotherProperty = descriptor.parameters["anotherValue"]!!
         assertEquals("anotherValue", anotherProperty.name)
         assertEquals("another description", anotherProperty.description)
     }
@@ -31,14 +31,14 @@ class BasicModuleTest {
     internal fun testName() {
         val aModule = BasicModule("test", "test")
         val id = aModule.id
-        assertEquals("test::1.0.0", id.toString())
+        assertEquals("test@1.0.0", id.toString())
     }
 
     @Test
     internal fun testAdd() {
         val aModule = BasicModule("test", "test")
         aModule.add(SampleSimpleTask::class)
-        assertNotNull(aModule[TaskType(aModule.id, "simpleTask")])
+        assertNotNull(aModule[TaskType(aModule.name, "simpleTask")])
 
     }
 }

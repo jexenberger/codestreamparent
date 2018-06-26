@@ -6,4 +6,4 @@ class ComponentPropertyFailureException(
         componentId: String,
         val property: String,
         msg: String
-) : CodeStreamRuntimeException("${componentId}::${property}", msg)
+) : CodeStreamRuntimeException("${componentId}.${property}", msg)

@@ -1,6 +1,7 @@
 package io.codestream.di.api
 
 import io.codestream.di.event.EventDispatcher
+import io.codestream.di.runtime.DependencyResolver
 import io.codestream.di.runtime.InstanceScope
 import io.codestream.di.runtime.PrototypeScope
 import io.codestream.di.runtime.SingletonScope
@@ -60,4 +61,10 @@ abstract class ApplicationContext(
             add(definition)
         }
     }
+
+    fun addDependencyResolver(resolver:Dependency) {
+        DependencyResolver.add(resolver)
+    }
+
+    override fun hasComponent(id: ComponentId) = ctx.containsKey(id)
 }

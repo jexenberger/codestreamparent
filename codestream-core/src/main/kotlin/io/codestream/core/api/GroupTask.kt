@@ -1,16 +1,17 @@
 package io.codestream.core.api
 
-import io.codestream.core.metamodel.GroupTaskDef
 import io.codestream.core.runtime.tree.BranchProcessingDirective
 
 interface GroupTask : Task {
 
-    fun before(defn: GroupTaskDef, ctx: TaskContext): BranchProcessingDirective
+    fun before(ctx: RunContext): BranchProcessingDirective
 
-    fun after(defn: GroupTaskDef, ctx: TaskContext): BranchProcessingDirective
+    fun after(ctx: RunContext): BranchProcessingDirective
 
-    fun onError(error:Exception, defn: GroupTaskDef, ctx:TaskContext)
+    fun onError(error:TaskError, ctx:RunContext) {
+        throw error.exception
+    }
 
-    fun onFinally(defn: GroupTaskDef, ctx: TaskContext)
+    fun onFinally(ctx: RunContext)
 
 }

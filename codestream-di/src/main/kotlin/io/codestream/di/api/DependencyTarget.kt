@@ -29,6 +29,17 @@ data class DependencyTarget(val id:ComponentId,
 
     val annotatedElement: KAnnotatedElement get() = perform({ it }, { it })
 
+    val isOptional:Boolean get() {
+        if (this.property != null) {
+            return this.property.returnType.isMarkedNullable
+        }
+        if (this.parameter != null) {
+            return this.parameter.isOptional
+        }
+        //should never get here
+        throw IllegalStateException("an either be property or parameter but not both")
+    }
+
     fun supports(dependency: Dependency): Boolean {
         return perform({ dependency.supports(it) }, { dependency.supports(it) })
     }
@@ -43,6 +54,8 @@ data class DependencyTarget(val id:ComponentId,
         //should never get here
         throw IllegalStateException("an either be property or parameter but not both")
     }
+
+
 
 
 }

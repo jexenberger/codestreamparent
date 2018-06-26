@@ -8,24 +8,30 @@ import kotlin.reflect.full.isSuperclassOf
 enum class Type(
         val stringDescriptor: String,
         val typeMapping: KClass<*>,
+        val description: String,
         val isArray: Boolean = false,
         val supportsRegexCheck: Boolean = false
+
 ) {
-    string("string", String::class, false, true),
-    int("int", Int::class),
-    long("long", Long::class),
-    boolean("boolean", Boolean::class),
-    float("float", Float::class),
-    double("double", Double::class),
-    file("file", File::class),
-    enumeration("enum", Enum::class),
-    fileArray("file[]", Array<File>::class, true),
-    stringArray("string[]", Array<String>::class, true, true),
-    intArray("int[]", Array<Int>::class, true),
-    longArray("long[]", Array<Long>::class, true),
-    floatArray("float[]", Array<Int>::class, true),
-    doubleArray("double[]", Array<Int>::class, true),
-    keyValue("keyValue", Map::class);
+
+
+    string("string", String::class, "Standard string", false, true),
+    int("int", Int::class, "32 bit signed integer value"),
+    long("long", Long::class, "64 bit signed integer value"),
+    boolean("boolean", Boolean::class, "true,false, yes, no"),
+    float("float", Float::class, "32 bit signed floating point value"),
+    double("double", Double::class, "64 bit signed integer value"),
+    file("path", File::class, "Reference to a file on the file system"),
+    enumeration("enum", Enum::class, "Fixed enumerated value"),
+    fileArray("path[]", Array<File>::class, "Array of file types", true),
+    stringArray("string[]", Array<String>::class, "Array of string types", true, true),
+    intArray("int[]", Array<Int>::class, "Array of int types", true),
+    longArray("long[]", Array<Long>::class, "Array of long types", true),
+    floatArray("float[]", Array<Float>::class, "Array of float types", true),
+    doubleArray("double[]", Array<Double>::class, "Array of double types", true),
+    iterator("iterator", Iterator::class,"Enumeration type", true),
+    keyValue("keyValue", Map::class, "Set of key=value mappings");
+
 
     fun <T> fromString(value: String?): T {
         @Suppress("UNCHECKED_CAST")
@@ -41,9 +47,25 @@ enum class Type(
     }
 
     companion object {
+
+        private val synonyms = mapOf<KClass<*>, KClass<*>>(
+                IntArray::class to Array<Int>::class,
+                LongArray::class to Array<Long>::class,
+                FloatArray::class to Array<Float>::class,
+                ShortArray::class to Array<Short>::class,
+                ByteArray::class to Array<Byte>::class,
+                BooleanArray::class to Array<Boolean>::class,
+                DoubleArray::class to Array<Double>::class
+        )
+
         fun stringType(type: KClass<*>): String? = typeForClass(type)?.stringDescriptor
         fun typeForString(type: String): Type? = values().singleOrNull { it.stringDescriptor.equals(type) }
-        fun typeForClass(type: KClass<*>): Type? = values().singleOrNull { it.typeMapping.equals(type) || it.typeMapping.isSuperclassOf(type) }
+        fun typeForClass(type: KClass<*>): Type? {
+
+            val resolvedType = synonyms[type] ?: type
+
+            return values().singleOrNull { it.typeMapping.equals(resolvedType) || it.typeMapping.isSuperclassOf(resolvedType) }
+        }
     }
 
 

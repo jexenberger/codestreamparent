@@ -7,7 +7,7 @@ fun Boolean.whenTrue(handler: () -> Unit): Boolean {
     return this
 }
 
-fun <T> Boolean.returnIfTrue(handler: () -> T): T? {
+fun <T> Boolean.ifTrue(handler: () -> T): T? {
     if (this) {
         return handler()
     }

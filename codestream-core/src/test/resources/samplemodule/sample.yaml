@@ -1,0 +1,76 @@
+description: this is the uber cool task
+parameters:
+  value1:
+    type: int
+    description: this is value 1
+  value2:
+    description: this is value 2
+    regex: ^Hello
+    required: false
+  value3:
+    type: string[]
+    description: this is value 3
+    allowed: one, two, three
+  value4:
+    type: string[]
+    description: this is value 4
+    allowed:
+      - one
+      - two
+      - three
+  value5:
+    description: this is value 5
+    type: keyValue
+    values:
+      one: 1
+      two: 2
+      three: 3
+
+tasks:
+
+  - test::test:
+      condition: true == true
+      value: hello world
+
+  - test::test:
+      condition: true == true
+      value: hello world
+
+  - sys::echo:
+      value: hello world
+
+  - sys::echo:
+      value: ${value1}
+
+  - sys::echo:
+      value: >-
+             ${value2 ?: 'not present'}
+
+  - sys::echo:
+      value: ${value3[0]}
+
+  - sys::echo:
+      value: ${value4[0]}
+
+  - sys::echo:
+      value: ${value5}
+
+  - test::group:
+      id: groupid
+      parallell: true
+      value: hello
+      tasks:
+      - test::test:
+          id: qwerty
+          value: hello world 2
+          anotherValue: ${1+1}
+
+onError:
+  test::test:
+    value: ${_error_.message + "\n" + _error_.rootCause}
+    anotherValue: ${1+1}
+
+finally:
+  test::test:
+    value: Finally
+    anotherValue: ${1+1}

@@ -47,13 +47,13 @@ internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Paramete
 
 internal fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
     val descriptorType = Type.typeForClass(propertyType)
-            ?: throw ComponentDefinitionException(name, "No @Task annotation present")
+            ?: throw ComponentDefinitionException(name, "${propertyType.simpleName} is not a supported Parameter type")
     val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex)
     return property
 }
 
 
-class BasicModule(
+open class BasicModule(
         override val name: String,
         override val description: String,
         override val version: Version = Version.create(1, 0, 0)) : Module {

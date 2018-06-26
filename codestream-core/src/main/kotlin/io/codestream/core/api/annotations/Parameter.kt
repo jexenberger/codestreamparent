@@ -6,5 +6,6 @@ annotation class Parameter(
         val required:Boolean = true,
         val allowedValues:Array<String> = emptyArray(),
         val regex:String = "",
-        val default:String = ""
+        val default:String = "",
+        val overrideType:String = ""
 )

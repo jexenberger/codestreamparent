@@ -1,33 +1,35 @@
 package io.codestream.core
 
 import io.codestream.core.api.GroupTask
-import io.codestream.core.api.TaskContext
-import io.codestream.core.metamodel.GroupTaskDef
+import io.codestream.core.api.RunContext
+import io.codestream.core.api.TaskError
+import io.codestream.core.api.annotations.Parameter
+import io.codestream.core.api.annotations.Task
+import io.codestream.core.api.annotations.TaskContext
 import io.codestream.core.runtime.tree.BranchProcessingDirective
 
-class SimpleGroupTask : GroupTask {
+@Task("group", "A group task which does stuff")
+class SimpleGroupTask(
+        @Parameter(description = "description", default = "test") val value: String,
+        @TaskContext val context:SimpleGroupTaskContext
+) : GroupTask {
 
-    var error = false
-    var before = false
-    var after = false
-    var onFinally = false
-
-    override fun before(defn: GroupTaskDef, ctx: TaskContext): BranchProcessingDirective {
-        before = true
+    override fun before(ctx: RunContext): BranchProcessingDirective {
+        context.before = true
         return BranchProcessingDirective.continueExecution
     }
 
-    override fun after(defn: GroupTaskDef, ctx: TaskContext): BranchProcessingDirective {
-        after = true
+    override fun after(ctx: RunContext): BranchProcessingDirective {
+        context.after = true
         return BranchProcessingDirective.done
     }
 
-    override fun onError(error: Exception, defn: GroupTaskDef, ctx: TaskContext) {
-        this.error = true
+    override fun onError(error: TaskError, ctx: RunContext) {
+        context.error = true
     }
 
-    override fun onFinally(defn: GroupTaskDef, ctx: TaskContext) {
-        onFinally = true
+    override fun onFinally(ctx: RunContext) {
+        context.onFinally = true
     }
 
 

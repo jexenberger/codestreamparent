@@ -1,4 +1,4 @@
 package io.codestream.core.api
 
-class ModuleDoesNotExistException {
+class ModuleDoesNotExistException(val moduleName:String) : CodeStreamRuntimeException(moduleName, "does not exist") {
 }

@@ -9,7 +9,7 @@ import javax.script.SimpleScriptContext
 object Eval {
 
     private val factory = ScriptEngineManager()
-    private val defaultScriptEngine = "js"
+    private val defaultScriptEngine = "groovy"
     private val engines = mutableMapOf<String, ScriptEngine>()
 
 
@@ -27,6 +27,18 @@ object Eval {
         variables.forEach({ key: String, value: Any? -> engineScope.put(key, value) })
         @Suppress("UNCHECKED_CAST")
         return scriptEngine.eval(script, newContext) as K
+    }
+
+    fun <K> evalIfScript(candidate:Any?, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
+        if (candidate == null) {
+            return candidate as K
+        }
+        return if (isScriptString(candidate.toString())) {
+            val script = extractScriptString(candidate.toString())
+            eval(script, variables, scriptEngine) as K
+        } else {
+            candidate as K
+        }
     }
 
 

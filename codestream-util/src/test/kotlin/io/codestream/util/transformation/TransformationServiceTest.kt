@@ -54,6 +54,8 @@ class TransformerServiceTest {
 
         assertEquals(File("/tmp"), TransformerService.convert("/tmp"))
         assertEquals("/tmp", TransformerService.convert(File("/tmp")))
+
+        TransformerService.convert<Collection<*>>(listOf(1, 2, 3));
     }
 
     @Test

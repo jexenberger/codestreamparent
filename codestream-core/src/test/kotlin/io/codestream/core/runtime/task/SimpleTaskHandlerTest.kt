@@ -3,10 +3,10 @@ package io.codestream.core.runtime.task
 import io.codestream.core.SampleSimpleTask
 import io.codestream.core.api.GroupTask
 import io.codestream.core.api.TaskType
-import io.codestream.core.metamodel.ParameterDef
-import io.codestream.core.metamodel.StreamDef
-import io.codestream.core.metamodel.TaskDef
+import io.codestream.core.runtime.metamodel.ParameterDef
+import io.codestream.core.runtime.metamodel.TaskDef
 import io.codestream.core.runtime.*
+import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.di.api.ScopeType
 import io.codestream.di.api.addDependencyHandler
 import io.codestream.di.api.addInstance
@@ -17,13 +17,19 @@ import kotlin.test.assertTrue
 
 class SimpleTaskHandlerTest {
 
-    private val taskId = TaskId(TaskType(ModuleId("test"), "test"))
+    private val taskId = TaskId(TaskType("test", "test"))
+
+    private val p = mapOf(
+            "value" to ParameterDef("value", "\${value}"),
+            "simple" to ParameterDef("value", "\${value}"),
+            "arrayString" to ParameterDef("value", "hello, world"),
+            "arrayInt" to ParameterDef("value", "1,2,3"),
+            "map" to ParameterDef("value", mapOf("test" to "test"))
+    )
 
     @Test
     internal fun testExecute() {
-        val taskDef = TaskDef(taskId,
-                mapOf("value" to ParameterDef("value", "\${value}"))
-        )
+        val taskDef = TaskDef(taskId,p)
         addDependencyHandler(ParameterDependency())
         val ctx = StreamContext()
         ctx.bindings["value"] = "hello"
@@ -38,7 +44,7 @@ class SimpleTaskHandlerTest {
     internal fun testExecuteConditionally() {
         val taskDef = TaskDef(
                 taskId,
-                mapOf("value" to ParameterDef("value", "\${value}")),
+                p,
                 { false }
         )
         addDependencyHandler(ParameterDependency())

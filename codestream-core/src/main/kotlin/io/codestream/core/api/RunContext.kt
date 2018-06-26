@@ -1,6 +1,6 @@
 package io.codestream.core.api
 
-interface TaskContext {
+interface RunContext {
 
     fun put(key: String, value: Any?): Any?
     operator fun get(key: String): Any?

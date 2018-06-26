@@ -6,12 +6,13 @@ data class TaskDescriptor(
         val module: Module,
         val name: String,
         val description: String,
-        val properties: Map<String, ParameterDescriptor>,
-        val factory: Factory<Task>
+        val parameters: Map<String, ParameterDescriptor>,
+        val factory: Factory<Task>,
+        val groupTask:Boolean = false
 ) {
 
-    val type:TaskType = TaskType(module.id, name)
+    val type:TaskType = TaskType(module.name, name)
 
-    operator fun get(property:String) = properties[property]
+    operator fun get(property:String) = parameters[property]
 
 }

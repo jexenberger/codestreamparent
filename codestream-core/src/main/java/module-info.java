@@ -13,6 +13,7 @@ module codestream.core {
 
     requires semantic.version;
 
+    requires snakeyaml;
     requires jackson.annotations;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
@@ -27,7 +28,7 @@ module codestream.core {
 
 
     exports io.codestream.core.api.annotations;
-    exports io.codestream.core.metamodel;
+    exports io.codestream.core.runtime.metamodel;
     exports io.codestream.core.runtime.tree;
 
 

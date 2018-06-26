@@ -2,45 +2,58 @@ package io.codestream.core.runtime.task
 
 import io.codestream.core.api.ComponentFailedException
 import io.codestream.core.api.GroupTask
-import io.codestream.core.metamodel.GroupTaskDef
+import io.codestream.core.api.TaskError
+import io.codestream.core.runtime.metamodel.GroupTaskDef
 import io.codestream.core.runtime.StreamContext
 import io.codestream.core.runtime.TaskId
+import io.codestream.core.runtime.container.TaskScope
+import io.codestream.core.runtime.container.TaskScopeId
 import io.codestream.core.runtime.tree.Branch
 import io.codestream.core.runtime.tree.BranchProcessingDirective
-import io.codestream.util.returnIfTrue
+import io.codestream.util.ifTrue
 
 class GroupTaskHandler(private val taskId: TaskId,
                        parallel: Boolean,
                        val taskDef: GroupTaskDef) : Branch<StreamContext>(taskId.toString(), parallel) {
 
 
-    val groupTask: GroupTask
-        get() = workingCtx.get<GroupTask>(taskId) ?: throw ComponentFailedException(taskId.stringId, "not defined")
-
-    private var workingCtx: StreamContext = StreamContext()
+    private fun getTask(ctx:StreamContext) = ctx.get<GroupTask>(taskId) ?: throw ComponentFailedException(taskId.stringId, "not defined")
 
     override fun preTraversal(ctx: StreamContext): BranchProcessingDirective {
-        return taskDef.condition(workingCtx.bindings)
-                .returnIfTrue {
-                    groupTask.before(taskDef, workingCtx.bindings)
+        return taskDef.condition(ctx.bindings)
+                .ifTrue {
+                    getTask(ctx).before(ctx.bindings)
 
                 } ?: BranchProcessingDirective.abort
     }
 
     override fun postTraversal(ctx: StreamContext): BranchProcessingDirective {
-        return groupTask.after(taskDef, ctx.bindings)
+        return getTask(ctx).after(ctx.bindings)
     }
 
 
-    override fun onError(error: Exception, ctx: StreamContext) {
-        groupTask.onError(error, taskDef, ctx.bindings)
+    override fun onError(error: TaskError, ctx: StreamContext) {
+        ctx.bindings["_error_"] = error
+        getTask(ctx).onError(error,  ctx.bindings)
     }
 
     override fun enterBranch(ctx: StreamContext) {
-        workingCtx = ctx.subContext()
     }
 
     override fun exitBranch(ctx: StreamContext) {
-        groupTask.onFinally(taskDef, ctx.bindings)
+        try {
+            getTask(ctx).onFinally(ctx.bindings)
+        } finally {
+            TaskScope.release(TaskScopeId(ctx, taskId))
+        }
+    }
+
+    override fun runChildren(ctx: StreamContext) {
+        val childCtx = ctx.subContext()
+        super.runChildren(childCtx)
+    }
+
+    override fun toString(): String {
+        return "GroupTask -> $taskId)"
     }
 }

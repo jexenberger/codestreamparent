@@ -1,5 +1,6 @@
 package io.codestream.core.runtime
 
+import io.codestream.core.runtime.modules.system.SystemModule
 import java.util.*
 
 
@@ -9,9 +10,17 @@ object ModuleRegistry {
 
 
     internal val modules: MutableMap<ModuleId, CodeStreamModule> = mutableMapOf()
+    internal val systemModule = SystemModule()
+
+    val systemModuleId:ModuleId = systemModule.id
 
     init {
+        loadSystemModules()
         load()
+    }
+
+    private fun loadSystemModules() {
+        this += systemModule
     }
 
     private fun load()  {
@@ -27,7 +36,8 @@ object ModuleRegistry {
     }
 
     fun getLatestVersion(name:String) : CodeStreamModule? {
-        return modules.entries
+        return modules
+                .entries
                 .filter { it.key.name.equals(name) }
                 .sortedByDescending { it.value.version }
                 .firstOrNull()?.value

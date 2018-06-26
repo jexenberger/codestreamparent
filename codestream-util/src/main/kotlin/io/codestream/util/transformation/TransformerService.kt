@@ -4,12 +4,15 @@ import io.codestream.util.SystemException
 import java.io.File
 import java.math.BigDecimal
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 
 
 object TransformerService {
 
     internal val CONVERSION_REGISTRY: MutableMap<Pair<KClass<*>, KClass<*>>, TypeTransformer<*, *>> = mutableMapOf()
+
+
 
     init {
         addConverter(String::class, File::class, LambdaTransformer<String, File> { File(it) })
@@ -73,6 +76,13 @@ object TransformerService {
         addConverter(String::class, Array<File>::class, LambdaTransformer<String, Array<File>> {
             it.split(",").map { File(it.trim()) }.toTypedArray()
         })
+        addConverter(Collection::class, Array<String>::class, LambdaTransformer<Collection<*>, Array<String>> {
+            it.toTypedArray().map { it?.toString() ?: "" }.toTypedArray()
+        })
+        addConverter(Collection::class, Array<String>::class, LambdaTransformer<Collection<*>, Array<String>> {
+            it.toTypedArray().map { it?.toString() ?: "" }.toTypedArray()
+        })
+
         addConverter(Map::class, Map::class, LambdaTransformer<Map<String, Any?>, Map<String, Any?>> {
             it
         })
@@ -97,9 +107,9 @@ object TransformerService {
         //do a widening search
         val transformerKey = conversionRegistry
                 .keys
-                .filter { key ->
-                    val sourceAssignable = key.first.isSuperclassOf(source)
-                    val targetAssignable = key.second.isSuperclassOf(target) || key.second.equals(target)
+                .filter { (first, second) ->
+                    val sourceAssignable = first.isSuperclassOf(source)
+                    val targetAssignable = second.isSuperclassOf(target) || second.equals(target)
                     val fits = sourceAssignable && targetAssignable
                     fits
                 }
@@ -113,6 +123,23 @@ object TransformerService {
         }
     }
 
+
+    fun isCollectionType(a: KClass<*>) : Boolean {
+        val collection = isCollection(a)
+        val iterable = isIterableType(a)
+        val array = ArrayDecorator.isArrayType(a)
+        return collection || iterable || array
+    }
+
+
+
+    private fun isIterableType(a: KClass<*>) = a.equals(Iterable::class) || a.isSubclassOf(Iterable::class)
+
+    private fun isCollection(a: KClass<*>) = a.equals(Collection::class) || a.isSubclassOf(Collection::class)
+
+    fun areBothCollectionTypes(a: KClass<*>, b:KClass<*>) : Boolean {
+        return isCollectionType(a) && isCollectionType(b)
+    }
 
     @SuppressWarnings("UNCHECKED_CAST")
     inline fun <reified K> convert(instance: Any, typeHint: KClass<*>? = null): K {

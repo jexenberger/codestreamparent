@@ -1,6 +1,6 @@
 package io.codestream.util.io
 
-import io.codestream.util.returnIfTrue
+import io.codestream.util.ifTrue
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -34,7 +34,7 @@ object IOFunctions {
             return false
         }
         if (!targetFile.exists()) {
-            return (targetP.parent != null && targetP.parent.toFile().mkdirs()).returnIfTrue {
+            return (targetP.parent != null && targetP.parent.toFile().mkdirs()).ifTrue {
                 val resolved = Paths.get(targetP.parent.toFile().absolutePath, srcFile.name)
                 Files.copy(
                         srcP,

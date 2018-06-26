@@ -1,4 +1,4 @@
-package io.codestream.core.metamodel
+package io.codestream.core.runtime.metamodel
 
 data class ParameterDef(
         val name: String,

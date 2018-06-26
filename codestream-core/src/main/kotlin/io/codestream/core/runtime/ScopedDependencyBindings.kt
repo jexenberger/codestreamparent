@@ -1,13 +1,13 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.api.TaskContext
+import io.codestream.core.api.RunContext
 import io.codestream.di.api.Context
 import io.codestream.di.api.DependencyInjectionBindings
 
 class ScopedDependencyBindings(
         ctx: Context,
         m: MutableMap<String, Any?> = mutableMapOf(),
-        val parent: ScopedDependencyBindings? = null) : DependencyInjectionBindings(ctx, m), TaskContext {
+        val parent: ScopedDependencyBindings? = null) : DependencyInjectionBindings(ctx, m), RunContext {
 
     override fun put(key: String, value: Any?) = m.put(key, value)
 

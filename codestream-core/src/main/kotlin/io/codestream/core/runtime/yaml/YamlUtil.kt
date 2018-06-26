@@ -9,3 +9,4 @@ fun yaml() : ObjectMapper {
     mapper.registerModule(KotlinModule()) // Enable Kotlin support
     return mapper
 }
+

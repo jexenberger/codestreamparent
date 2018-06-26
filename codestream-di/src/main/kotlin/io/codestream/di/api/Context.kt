@@ -15,13 +15,10 @@ interface Context {
     val bindings:Bindings
 
     operator fun <T> get(id: ComponentId): T?
-
-
     fun <T> value(key: String): T?
-
     fun <T> get(name: String) = get(StringId(name)) as T?
     fun <T> get(type: KClass<*>) = get(TypeId(type)) as T?
-
+    fun hasComponent(id: ComponentId) : Boolean
 
 
 }
