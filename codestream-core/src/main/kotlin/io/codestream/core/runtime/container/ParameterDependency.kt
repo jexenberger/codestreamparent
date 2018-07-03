@@ -32,7 +32,7 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
 
         val eval = Eval.isScriptString(property.toString())
         return if (eval) {
-            val value = Eval.eval<Any>(Eval.extractScriptString(valueDefn.toString()), ctx.bindings)
+            val value = Eval.eval<Any>(Eval.extractScriptString(valueDefn.toString()), ctx.bindings, Eval.engineByName("groovy"))
             checkValid(descriptor.type.convert<T>(value) as T, descriptor, id)
         } else {
             checkValid(descriptor.type.convert<T>(valueDefn) as T, descriptor, id)

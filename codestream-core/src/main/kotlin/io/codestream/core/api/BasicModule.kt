@@ -7,10 +7,9 @@ import io.codestream.core.runtime.Type
 import io.codestream.di.api.theType
 import io.codestream.util.mutableProperties
 import kotlin.reflect.KClass
-import kotlin.reflect.KClassifier
 import kotlin.reflect.full.findAnnotation
 
-internal fun typeToDescriptor(module: Module, type: KClass<*>): TaskDescriptor {
+internal fun typeToDescriptor(module: CodestreamModule, type: KClass<*>): TaskDescriptor {
     val taskAnnotation = type.findAnnotation<Task>()
             ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
     val properties = mutableMapOf<String, ParameterDescriptor>()
@@ -56,7 +55,8 @@ internal fun createProperty(name: String, propertyType: KClass<*>, param: Parame
 open class BasicModule(
         override val name: String,
         override val description: String,
-        override val version: Version = Version.create(1, 0, 0)) : Module {
+        override val version: Version = Version.create(1, 0, 0)) : CodestreamModule {
+
 
     constructor(
             name: String,
@@ -66,6 +66,8 @@ open class BasicModule(
     ) : this(name, description, version) {
         create(builder)
     }
+
+    override val scriptObject: Any? get() = null
 
     private val _tasks = LinkedHashMap<TaskType, TaskDescriptor>()
 

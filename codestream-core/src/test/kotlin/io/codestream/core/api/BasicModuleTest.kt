@@ -1,6 +1,6 @@
 package io.codestream.core.api
 
-import io.codestream.core.SampleSimpleTask
+import io.codestream.core.runtime.SampleSimpleTask
 import io.codestream.core.api.annotations.Task
 import org.junit.jupiter.api.Test
 import kotlin.reflect.full.findAnnotation

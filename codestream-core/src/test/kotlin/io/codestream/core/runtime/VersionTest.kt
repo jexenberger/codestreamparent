@@ -1,4 +1,4 @@
-package io.codestream.core
+package io.codestream.core.runtime
 
 import de.skuzzle.semantic.Version
 import org.junit.jupiter.api.Test

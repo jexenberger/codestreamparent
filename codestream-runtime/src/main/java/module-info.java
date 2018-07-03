@@ -1,14 +1,13 @@
-module codestream.runtime {
+module io.codestream.runtime {
 
-    requires codestream.di;
+    requires io.codestream.di;
 
-    requires transitive codestream.util;
+    requires transitive io.codestream.util;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;
 
     requires java.scripting;
-    requires org.codehaus.groovy.jsr223;
 
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;

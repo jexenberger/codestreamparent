@@ -1,4 +1,4 @@
-module codestream.util {
+module io.codestream.util {
     exports io.codestream.util;
     exports io.codestream.util.io;
     exports io.codestream.util.rest;

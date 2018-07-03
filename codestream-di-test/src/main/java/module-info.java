@@ -3,8 +3,8 @@ module codestream.di.test {
     exports io.codestream.di.sample.repo;
     exports io.codestream.di.sample.model;
 
-    requires transitive codestream.util;
-    requires codestream.di;
+    requires transitive io.codestream.util;
+    requires io.codestream.di;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;

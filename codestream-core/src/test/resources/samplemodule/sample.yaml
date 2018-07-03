@@ -55,6 +55,9 @@ tasks:
   - sys::echo:
       value: ${value5}
 
+  - sys::echo:
+      value: ${__sample.helloWorld()}
+
   - test::group:
       id: groupid
       parallell: true

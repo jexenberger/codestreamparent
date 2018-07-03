@@ -16,6 +16,12 @@ object TransformerService {
 
     init {
         addConverter(String::class, File::class, LambdaTransformer<String, File> { File(it) })
+        addConverter(List::class, Array<Int>::class, LambdaTransformer<List<Any>, Array<Int>> {
+            it.map { value -> TransformerService.convert<Int>(value) }.toTypedArray()
+        })
+        addConverter(List::class, Array<String>::class, LambdaTransformer<List<Any>, Array<String>> {
+            it.map { value -> value.toString() }.toTypedArray()
+        })
         addConverter(File::class, String::class, LambdaTransformer<File, String> { it.absolutePath })
         addConverter(String::class, Long::class, LambdaTransformer<String, Long> { it.toLong() })
         addConverter(String::class, Any::class, LambdaTransformer<String, Any> { it })
@@ -156,7 +162,7 @@ object TransformerService {
         }
         @SuppressWarnings("UNCHECKED_CAST")
         val transfomer = findWideningTransformer(instance::class, type) as TypeTransformer<Any, K>?
-        return transfomer?.transform(instance) ?: throw SystemException("unable to convert from ${instance::class.qualifiedName} to ${K::class.qualifiedName}")
+        return transfomer?.transform(instance) ?: throw SystemException("unable to convert from ${instance::class.qualifiedName} to ${type.qualifiedName}")
     }
 
 

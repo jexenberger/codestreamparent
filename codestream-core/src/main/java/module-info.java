@@ -1,24 +1,22 @@
-module codestream.core {
+open module io.codestream.core {
 
-    requires codestream.di;
+    requires io.codestream.di;
 
-    requires transitive codestream.util;
+    requires transitive io.codestream.util;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;
     requires kotlinx.coroutines.core;
 
     requires java.scripting;
+    requires org.codehaus.groovy;
     requires org.codehaus.groovy.jsr223;
 
     requires semantic.version;
 
     requires snakeyaml;
-    requires jackson.annotations;
-    requires com.fasterxml.jackson.core;
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.dataformat.yaml;
-    requires com.fasterxml.jackson.module.kotlin;
+
+    requires jmustache;
 
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;
@@ -27,9 +25,14 @@ module codestream.core {
     requires static kotlin.test.junit;
 
 
+    exports io.codestream.core.api;
     exports io.codestream.core.api.annotations;
-    exports io.codestream.core.runtime.metamodel;
-    exports io.codestream.core.runtime.tree;
+    exports io.codestream.core.api.resources;
+    exports io.codestream.core.api.services;
+    exports io.codestream.core.api.events;
+
+
+    uses io.codestream.core.api.CodestreamModule;
 
 
 

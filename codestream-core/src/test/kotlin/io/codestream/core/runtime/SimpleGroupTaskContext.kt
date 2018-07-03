@@ -1,4 +1,4 @@
-package io.codestream.core
+package io.codestream.core.runtime
 
 class SimpleGroupTaskContext {
     var error: Boolean = false

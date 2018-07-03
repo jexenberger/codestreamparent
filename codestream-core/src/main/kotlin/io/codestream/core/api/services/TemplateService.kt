@@ -1,10 +1,12 @@
 package io.codestream.core.api.services
 
+import io.codestream.di.api.Context
+import java.io.Reader
+import java.io.Writer
+
 
 interface TemplateService {
 
-    fun generate(template: String, values: Map<String, Any?>): String
-
-    fun generate(template: String, vararg pair: Pair<String, Any>) = generate(template, pair.toMap())
+    fun write(source: Reader, target: Writer, ctx: Context)
 
 }

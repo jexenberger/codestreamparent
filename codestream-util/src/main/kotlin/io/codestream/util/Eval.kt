@@ -9,7 +9,7 @@ import javax.script.SimpleScriptContext
 object Eval {
 
     private val factory = ScriptEngineManager()
-    private val defaultScriptEngine = "groovy"
+    private val defaultScriptEngine = "js"
     private val engines = mutableMapOf<String, ScriptEngine>()
 
 

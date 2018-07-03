@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>codestream</groupId>
-            <artifactId>codestream-runtime</artifactId>
+            <artifactId>codestream-core</artifactId>
         </dependency>
 
         <dependency>

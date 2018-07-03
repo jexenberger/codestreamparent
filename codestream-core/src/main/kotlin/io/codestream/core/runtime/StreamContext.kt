@@ -1,5 +1,6 @@
 package io.codestream.core.runtime
 
+import io.codestream.core.api.CodestreamModule
 import io.codestream.core.api.Task
 import io.codestream.core.api.TaskDoesNotExistException
 import io.codestream.core.runtime.metamodel.TaskDef
@@ -17,7 +18,7 @@ class StreamContext(val parent:StreamContext? = null) : ApplicationContext(mutab
         _bindings = theBindings
     }
 
-    fun registerTask(def:TaskDef, callingModule: CodeStreamModule? = null) {
+    fun registerTask(def:TaskDef, callingModule: CodestreamModule? = null) {
         val descriptor = TaskRegistry.resolve(def.id.taskType, callingModule) ?: throw TaskDoesNotExistException(def.id.taskType)
         bind(descriptor.factory) withId def.id toScope ScopeType.prototype.name into this
         addInstance(def) withId TaskDefId(def.id) into this

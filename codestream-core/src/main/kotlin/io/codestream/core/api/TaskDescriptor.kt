@@ -3,7 +3,7 @@ package io.codestream.core.api
 import io.codestream.di.api.Factory
 
 data class TaskDescriptor(
-        val module: Module,
+        val module: CodestreamModule,
         val name: String,
         val description: String,
         val parameters: Map<String, ParameterDescriptor>,

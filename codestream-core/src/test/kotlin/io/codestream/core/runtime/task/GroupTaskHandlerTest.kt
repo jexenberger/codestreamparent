@@ -1,7 +1,7 @@
 package io.codestream.core.runtime.task
 
-import io.codestream.core.SimpleGroupTaskContext
-import io.codestream.core.TestModule
+import io.codestream.core.runtime.SimpleGroupTaskContext
+import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskError
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.metamodel.GroupTaskDef
@@ -12,6 +12,7 @@ import io.codestream.core.runtime.container.TaskScopeId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class GroupTaskHandlerTest {
@@ -58,8 +59,8 @@ class GroupTaskHandlerTest {
         val handler = GroupTaskHandler(id, false, taskDef)
         handler.enterBranch(ctx)
         handler.preTraversal(ctx)
-        val taskContext = ctx.get<SimpleGroupTaskContext>(TaskScopeId(ctx, id))!!
-        assertFalse { taskContext.before }
+        val taskContext = ctx.get<SimpleGroupTaskContext>(TaskScopeId(ctx, id))
+        assertNull(taskContext)
     }
 
     @Test

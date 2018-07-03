@@ -1,12 +1,13 @@
 package io.codestream.core.runtime.yaml
 
-import io.codestream.core.TestModule
+import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.ModuleRegistry
 import io.codestream.core.runtime.StreamContext
 import io.codestream.core.runtime.TaskId
 import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.test.assertTrue
 
 class YamlTaskFactoryTest {
 
@@ -22,6 +23,6 @@ class YamlTaskFactoryTest {
         val type = TaskType.fromString("samplemodule::sample")
         val ctx = StreamContext()
         val compositeTask = YamlTaskFactory(module).get(TaskId(type), ctx)
-        compositeTask.run(ctx.bindings)
+        assertTrue { compositeTask.children.isNotEmpty() }
     }
 }

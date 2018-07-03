@@ -3,7 +3,7 @@ package io.codestream.core.api
 import de.skuzzle.semantic.Version
 import io.codestream.core.runtime.ModuleId
 
-interface Module {
+interface CodestreamModule {
 
     val name: String
     val description: String
@@ -11,6 +11,8 @@ interface Module {
 
     val id: ModuleId
         get() = ModuleId(name, version)
+
+    val scriptObject:Any?
 
     val tasks: Map<TaskType, TaskDescriptor>
 

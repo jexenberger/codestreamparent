@@ -1,4 +1,4 @@
-package io.codestream.core
+package io.codestream.core.runtime
 
 import io.codestream.core.api.GroupTask
 import io.codestream.core.api.RunContext
@@ -11,7 +11,7 @@ import io.codestream.core.runtime.tree.BranchProcessingDirective
 @Task("group", "A group task which does stuff")
 class SimpleGroupTask(
         @Parameter(description = "description", default = "test") val value: String,
-        @TaskContext val context:SimpleGroupTaskContext
+        @TaskContext val context: SimpleGroupTaskContext
 ) : GroupTask {
 
     override fun before(ctx: RunContext): BranchProcessingDirective {

@@ -1,6 +1,5 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.TestModule
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.metamodel.ParameterDef
 import io.codestream.core.runtime.metamodel.TaskDef

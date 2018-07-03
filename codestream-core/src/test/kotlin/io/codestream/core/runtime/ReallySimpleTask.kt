@@ -1,4 +1,4 @@
-package io.codestream.core
+package io.codestream.core.runtime
 
 import io.codestream.core.api.SimpleTask
 import io.codestream.core.api.RunContext

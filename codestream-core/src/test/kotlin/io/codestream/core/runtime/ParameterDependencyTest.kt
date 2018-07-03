@@ -1,6 +1,5 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.SampleSimpleTask
 import io.codestream.core.api.BasicModule
 import io.codestream.core.api.SimpleTask
 import io.codestream.core.api.TaskType

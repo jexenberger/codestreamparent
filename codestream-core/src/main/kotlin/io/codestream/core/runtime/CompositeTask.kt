@@ -13,10 +13,17 @@ import io.codestream.util.transformation.TransformerService
 class CompositeTask(
         val taskId: TaskId,
         val descriptor: TaskDescriptor,
-        var errorTask:SimpleTaskHandler? = null,
-        var finallyTask:SimpleTaskHandler? = null) : Branch<StreamContext>(taskId.toString(),false), SimpleTask {
+        var errorTask: SimpleTaskHandler? = null,
+        var finallyTask: SimpleTaskHandler? = null,
+        scriptObjects: Map<String, Any> = emptyMap()) : Branch<StreamContext>(taskId.toString(), false), SimpleTask {
 
     private val nestedContext = StreamContext()
+
+    init {
+        scriptObjects.forEach { (k, v) ->
+            nestedContext.bindings[k] = v
+        }
+    }
 
     override fun preTraversal(ctx: StreamContext) = BranchProcessingDirective.continueExecution
 
@@ -35,7 +42,7 @@ class CompositeTask(
     }
 
 
-     fun registerTask(module:Module, value: Node<StreamContext> = this) {
+    fun registerTask(module: CodestreamModule, value: Node<StreamContext> = this) {
         when (value) {
         //root task
             is CompositeTask -> {
@@ -62,16 +69,16 @@ class CompositeTask(
         val context = ctx["_ctx"] as StreamContext?
                 ?: throw ComponentFailedException(taskId.id, "context not loaded in Task Context")
         val defn = TaskDefContext.defn
-        descriptor.parameters.forEach { k,v->
+        descriptor.parameters.forEach { k, v ->
             val paramDefn = defn.parameters[k]
             if (v.required && paramDefn == null) {
-                throw ComponentDefinitionException(taskId.stringId,"Required parameter is missing")
+                throw ComponentDefinitionException(taskId.stringId, "Required parameter is missing")
             }
             val evaledResult = Eval.evalIfScript<Any?>(paramDefn?.valueDefn, context.bindings)?.let {
                 TransformerService.convert<Any?>(it, v.type.typeMapping)
             }
-            v.isValid(evaledResult)?.let{
-                throw ComponentDefinitionException(taskId.toString(),it.toStringWithDescriptions())
+            v.isValid(evaledResult)?.let {
+                throw ComponentDefinitionException(taskId.toString(), it.toStringWithDescriptions())
             }
             nestedContext.bindings[k] = evaledResult
         }
