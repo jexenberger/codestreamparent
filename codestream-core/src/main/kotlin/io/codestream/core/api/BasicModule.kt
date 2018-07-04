@@ -3,6 +3,8 @@ package io.codestream.core.api
 import de.skuzzle.semantic.Version
 import io.codestream.core.api.annotations.Parameter
 import io.codestream.core.api.annotations.Task
+import io.codestream.core.api.descriptor.ParameterDescriptor
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.runtime.Type
 import io.codestream.di.api.theType
 import io.codestream.util.mutableProperties

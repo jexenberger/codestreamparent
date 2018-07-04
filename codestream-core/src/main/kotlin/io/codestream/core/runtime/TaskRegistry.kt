@@ -3,7 +3,7 @@ package io.codestream.core.runtime
 import io.codestream.core.api.CodestreamModule
 import io.codestream.core.api.CodestreamModule.Companion.defaultVersion
 import io.codestream.core.api.ModuleDoesNotExistException
-import io.codestream.core.api.TaskDescriptor
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.api.TaskType
 
 object TaskRegistry {

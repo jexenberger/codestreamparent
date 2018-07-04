@@ -1,5 +1,7 @@
-package io.codestream.core.api
+package io.codestream.core.api.descriptor
 
+import io.codestream.core.api.ComponentDefinitionException
+import io.codestream.core.api.ValidationErrors
 import io.codestream.core.runtime.Type
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException

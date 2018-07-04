@@ -1,6 +1,6 @@
 package io.codestream.core.runtime.task
 
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.metamodel.TaskDef
 
 object TaskDefContext {
 

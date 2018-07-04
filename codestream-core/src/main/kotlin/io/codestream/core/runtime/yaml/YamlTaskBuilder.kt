@@ -1,16 +1,16 @@
 package io.codestream.core.runtime.yaml
 
 import io.codestream.core.api.ComponentDefinitionException
-import io.codestream.core.api.ParameterDescriptor
-import io.codestream.core.api.TaskDescriptor
+import io.codestream.core.api.descriptor.ParameterDescriptor
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.CompositeTask
 import io.codestream.core.runtime.StreamContext
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import io.codestream.core.runtime.Type
-import io.codestream.core.runtime.metamodel.GroupTaskDef
-import io.codestream.core.runtime.metamodel.ParameterDef
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.metamodel.GroupTaskDef
+import io.codestream.core.api.metamodel.ParameterDef
+import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.task.GroupTaskHandler
 import io.codestream.core.runtime.task.SimpleTaskHandler
 import io.codestream.core.runtime.task.defaultCondition

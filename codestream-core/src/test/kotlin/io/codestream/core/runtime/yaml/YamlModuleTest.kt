@@ -2,7 +2,7 @@ package io.codestream.core.runtime.yaml
 
 import de.skuzzle.semantic.Version
 import io.codestream.core.api.TaskType
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals

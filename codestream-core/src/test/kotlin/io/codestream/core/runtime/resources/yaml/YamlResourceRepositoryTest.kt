@@ -1,6 +1,6 @@
 package io.codestream.core.runtime.resources.yaml
 
-import io.codestream.core.api.ParameterDescriptor
+import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.resources.Resource
 import io.codestream.core.api.resources.ResourceTemplate
 import io.codestream.core.api.resources.ResourceType

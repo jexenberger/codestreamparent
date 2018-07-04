@@ -1,12 +1,12 @@
 package io.codestream.core.runtime.container
 
 import io.codestream.core.api.ComponentPropertyFailureException
-import io.codestream.core.api.ParameterDescriptor
+import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.annotations.Parameter
 import io.codestream.core.api.createProperty
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.TaskDefId
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import io.codestream.di.api.AnnotationDependency
 import io.codestream.di.api.Context
 import io.codestream.di.api.DependencyTarget

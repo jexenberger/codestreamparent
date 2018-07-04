@@ -1,6 +1,7 @@
 package io.codestream.core.api
 
 import de.skuzzle.semantic.Version
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.runtime.ModuleId
 
 interface CodestreamModule {

@@ -1,6 +1,5 @@
 package io.codestream.di.event
 
-import io.codestream.di.sample.SampleObject
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 

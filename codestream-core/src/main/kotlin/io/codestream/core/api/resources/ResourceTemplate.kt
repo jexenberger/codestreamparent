@@ -1,6 +1,6 @@
 package io.codestream.core.api.resources
 
-import io.codestream.core.api.ParameterDescriptor
+import io.codestream.core.api.descriptor.ParameterDescriptor
 
 data class ResourceTemplate(
         val type:ResourceType,

@@ -3,15 +3,15 @@ package io.codestream.core.runtime.task
 import io.codestream.core.runtime.SimpleGroupTaskContext
 import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskError
+import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
-import io.codestream.core.runtime.metamodel.GroupTaskDef
-import io.codestream.core.runtime.metamodel.ParameterDef
+import io.codestream.core.api.metamodel.GroupTaskDef
+import io.codestream.core.api.metamodel.ParameterDef
 import io.codestream.core.runtime.*
 import io.codestream.core.runtime.container.TaskScope
 import io.codestream.core.runtime.container.TaskScopeId
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 

@@ -1,7 +1,7 @@
-package io.codestream.core.runtime.metamodel
+package io.codestream.core.api.metamodel
 
 import io.codestream.core.api.RunContext
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 
 open class TaskDef(
         val id: TaskId,

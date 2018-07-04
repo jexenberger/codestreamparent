@@ -1,6 +1,7 @@
 package io.codestream.core.runtime
 
 import io.codestream.core.api.*
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.runtime.task.GroupTaskHandler
 import io.codestream.core.runtime.task.SimpleTaskHandler
 import io.codestream.core.runtime.task.TaskDefContext

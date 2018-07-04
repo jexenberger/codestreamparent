@@ -30,6 +30,8 @@ open module io.codestream.core {
     exports io.codestream.core.api.resources;
     exports io.codestream.core.api.services;
     exports io.codestream.core.api.events;
+    exports io.codestream.core.api.metamodel;
+    exports io.codestream.core.api.descriptor;
 
 
     uses io.codestream.core.api.CodestreamModule;

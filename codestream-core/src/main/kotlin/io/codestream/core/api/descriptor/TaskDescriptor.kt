@@ -1,5 +1,8 @@
-package io.codestream.core.api
+package io.codestream.core.api.descriptor
 
+import io.codestream.core.api.CodestreamModule
+import io.codestream.core.api.Task
+import io.codestream.core.api.TaskType
 import io.codestream.di.api.Factory
 
 data class TaskDescriptor(
@@ -11,7 +14,7 @@ data class TaskDescriptor(
         val groupTask:Boolean = false
 ) {
 
-    val type:TaskType = TaskType(module.name, name)
+    val type: TaskType = TaskType(module.name, name)
 
     operator fun get(property:String) = parameters[property]
 

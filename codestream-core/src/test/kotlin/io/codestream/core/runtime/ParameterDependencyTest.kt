@@ -1,12 +1,9 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.api.BasicModule
-import io.codestream.core.api.SimpleTask
-import io.codestream.core.api.TaskType
+import io.codestream.core.api.*
 import io.codestream.core.api.annotations.Parameter
-import io.codestream.core.api.typeToDescriptor
-import io.codestream.core.runtime.metamodel.ParameterDef
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.metamodel.ParameterDef
+import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.di.api.DependencyTarget
 import io.codestream.di.api.addInstance

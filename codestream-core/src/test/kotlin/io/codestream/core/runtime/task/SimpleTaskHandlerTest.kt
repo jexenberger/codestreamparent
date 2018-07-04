@@ -2,9 +2,10 @@ package io.codestream.core.runtime.task
 
 import io.codestream.core.runtime.SampleSimpleTask
 import io.codestream.core.api.GroupTask
+import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
-import io.codestream.core.runtime.metamodel.ParameterDef
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.metamodel.ParameterDef
+import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.*
 import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.di.api.ScopeType

@@ -2,7 +2,7 @@ package io.codestream.core.runtime.container
 
 import io.codestream.core.api.annotations.TaskContext
 import io.codestream.core.runtime.StreamContext
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import io.codestream.di.api.*
 
 class TaskContextDependency : AnnotationDependency<TaskContext>(TaskContext::class)  {

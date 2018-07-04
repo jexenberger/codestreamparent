@@ -1,7 +1,5 @@
-package io.codestream.core.runtime
+package io.codestream.core.api
 
-import io.codestream.core.api.TaskDescriptor
-import io.codestream.core.api.TaskDoesNotExistException
 import io.codestream.core.api.TaskType
 import io.codestream.di.api.ComponentId
 import java.util.*

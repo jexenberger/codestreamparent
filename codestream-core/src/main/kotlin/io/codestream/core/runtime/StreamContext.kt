@@ -3,7 +3,8 @@ package io.codestream.core.runtime
 import io.codestream.core.api.CodestreamModule
 import io.codestream.core.api.Task
 import io.codestream.core.api.TaskDoesNotExistException
-import io.codestream.core.runtime.metamodel.TaskDef
+import io.codestream.core.api.TaskId
+import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.core.runtime.container.TaskContextDependency
 import io.codestream.di.api.*
@@ -24,7 +25,7 @@ class StreamContext(val parent:StreamContext? = null) : ApplicationContext(mutab
         addInstance(def) withId TaskDefId(def.id) into this
     }
 
-    fun registerTask(id:TaskId, task:Task) {
+    fun registerTask(id: TaskId, task:Task) {
         addInstance(task) withId id  into this
     }
 

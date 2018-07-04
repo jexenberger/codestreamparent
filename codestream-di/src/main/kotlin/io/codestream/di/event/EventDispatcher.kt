@@ -1,7 +1,9 @@
 package io.codestream.di.event
 
+import io.codestream.util.ifTrue
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 class EventDispatcher {
 
@@ -20,7 +22,12 @@ class EventDispatcher {
     }
 
     fun <T : Any> publish(event: T) {
-        handlers[event::class]?.let { handler -> handler.forEach { (it as EventHandler<T>).onEvent(event) } }
+        handlers.forEach { (k, handler) ->
+            val run = k.isInstance(event) || k.isSubclassOf(event::class)
+            run.ifTrue {
+                handler.forEach { (it as EventHandler<T>).onEvent(event) }
+            }
+        }
     }
 
 }

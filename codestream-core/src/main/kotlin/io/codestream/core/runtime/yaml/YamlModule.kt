@@ -3,8 +3,9 @@ package io.codestream.core.runtime.yaml
 import de.skuzzle.semantic.Version
 import groovy.lang.GroovyClassLoader
 import io.codestream.core.api.*
+import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.runtime.CompositeTask
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.FileReader
@@ -12,7 +13,6 @@ import kotlin.reflect.full.createInstance
 
 class YamlModule(val path: File) : CodestreamModule {
 
-    private val taskTreeCacheMap: MutableMap<TaskType, CompositeTask> = mutableMapOf()
     private val _tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
 
     val descriptor: YamlModuleDescriptor

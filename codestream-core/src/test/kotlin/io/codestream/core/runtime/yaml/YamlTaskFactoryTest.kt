@@ -4,7 +4,7 @@ import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.ModuleRegistry
 import io.codestream.core.runtime.StreamContext
-import io.codestream.core.runtime.TaskId
+import io.codestream.core.api.TaskId
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertTrue

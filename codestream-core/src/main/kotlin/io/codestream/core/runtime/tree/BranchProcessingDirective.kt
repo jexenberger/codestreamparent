@@ -1,10 +1,12 @@
 package io.codestream.core.runtime.tree
 
-enum class BranchProcessingDirective {
+import io.codestream.core.api.events.TaskState
 
-    done,
-    continueExecution,
-    again,
-    abort
+enum class BranchProcessingDirective(val state:TaskState) {
+
+    done(TaskState.completed),
+    continueExecution(TaskState.running),
+    again(TaskState.running),
+    abort(TaskState.aborted)
 
 }
