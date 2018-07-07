@@ -26,7 +26,7 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
         val property = defn.parameters[propertyName]?.valueDefn
 
         if (property == null && annotation.default.isEmpty()  && !target.isOptional) {
-            throw ComponentPropertyFailureException(id.stringId, target.name, "not defined in definition, has no default and is not optional")
+            throw ComponentPropertyFailureException(id.taskType.taskName, target.name, "not defined in definition, has no default and is not optional")
         }
         val valueDefn = property ?: annotation.default
 

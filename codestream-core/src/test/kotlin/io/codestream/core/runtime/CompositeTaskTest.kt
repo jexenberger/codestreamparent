@@ -5,7 +5,7 @@ import io.codestream.core.api.TaskType
 import io.codestream.core.api.metamodel.ParameterDef
 import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.task.TaskDefContext
-import io.codestream.core.runtime.yaml.YamlModule
+import io.codestream.core.runtime.yaml.DefinedYamlModule
 import io.codestream.core.runtime.yaml.YamlTaskFactory
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -15,7 +15,7 @@ class CompositeTaskTest {
     @Test
     internal fun testCompositeTask() {
         ModuleRegistry += TestModule()
-        val module = YamlModule(File("src/test/resources/samplemodule"))
+        val module = DefinedYamlModule(File("src/test/resources/samplemodule"))
         ModuleRegistry += module
         val type = TaskType("samplemodule", "sample")
         val context = StreamContext()

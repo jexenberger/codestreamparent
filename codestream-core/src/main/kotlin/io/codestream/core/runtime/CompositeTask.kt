@@ -14,17 +14,11 @@ import io.codestream.util.transformation.TransformerService
 class CompositeTask(
         val taskId: TaskId,
         val descriptor: TaskDescriptor,
+        val nestedContext:StreamContext,
         var errorTask: SimpleTaskHandler? = null,
-        var finallyTask: SimpleTaskHandler? = null,
-        scriptObjects: Map<String, Any> = emptyMap()) : Branch<StreamContext>(taskId.toString(), false), SimpleTask {
+        var finallyTask: SimpleTaskHandler? = null) : Branch<StreamContext>(taskId.toString(), false), SimpleTask {
 
-    private val nestedContext = StreamContext()
 
-    init {
-        scriptObjects.forEach { (k, v) ->
-            nestedContext.bindings[k] = v
-        }
-    }
 
     override fun preTraversal(ctx: StreamContext) = BranchProcessingDirective.continueExecution
 

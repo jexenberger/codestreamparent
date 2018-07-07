@@ -1,0 +1,8 @@
+description: This is a simple standalone task
+parameters:
+  param1:
+    description: The First parameter
+
+tasks:
+  - sys::echo:
+      value: ${param1}

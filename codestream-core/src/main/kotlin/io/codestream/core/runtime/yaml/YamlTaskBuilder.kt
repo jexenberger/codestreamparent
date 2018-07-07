@@ -1,5 +1,6 @@
 package io.codestream.core.runtime.yaml
 
+import io.codestream.core.api.CodestreamModule
 import io.codestream.core.api.ComponentDefinitionException
 import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.descriptor.TaskDescriptor
@@ -25,7 +26,7 @@ import org.yaml.snakeyaml.nodes.SequenceNode
 import java.io.File
 import java.io.StringReader
 
-class YamlTaskBuilder(val source: String, val module: YamlModule, yaml: String) {
+class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: String) {
 
 
     val taskDescriptor by lazy { load() }
@@ -124,7 +125,7 @@ class YamlTaskBuilder(val source: String, val module: YamlModule, yaml: String) 
                 .map { it.name to it }
                 .toMap()
         val condition = taskMap["condition"]?.let { scriptCondition(it.toString().trim()) } ?: defaultCondition
-        val id = "${this.module.name}::${this.module.path.absolutePath}/$source@${taskMap.lineNo}"
+        val id = "${this.module.name}::${this.module.modulePath}/$source@${taskMap.lineNo}"
         val taskId = TaskId(taskTaskType, id)
         if (simple) {
             return TaskDef(taskId, params, condition)
@@ -151,7 +152,7 @@ class YamlTaskBuilder(val source: String, val module: YamlModule, yaml: String) 
         val paramDefs = parameters?.map { (key, value) ->
             key to createParameterDescriptor(value, key, name)
         }?.toMap() ?: emptyMap()
-        return TaskDescriptor(module, name, descriptionVal.value.toString(), paramDefs, YamlTaskFactory(module))
+        return TaskDescriptor(module, name, descriptionVal.value.toString(), paramDefs, YamlTaskFactory(module), false)
     }
 
     fun createParameterDescriptor(value: Any?, key: String, name: String): ParameterDescriptor {

@@ -15,7 +15,7 @@ import kotlin.reflect.full.primaryConstructor
 class ParameterDependencyTest {
 
 
-    val aModule: BasicModule = BasicModule("test", "test")
+    val aModule: KotlinModule = KotlinModule("test", "test")
     val descriptor = typeToDescriptor(aModule, SampleSimpleTask::class)
     val parameter = SampleSimpleTask::class.primaryConstructor!!.parameters.map { it.name to it }.toMap()
     val annotation = parameter["value"]?.findAnnotation<Parameter>() ?: fail("looks like SampleSimpleTaskChanged....")

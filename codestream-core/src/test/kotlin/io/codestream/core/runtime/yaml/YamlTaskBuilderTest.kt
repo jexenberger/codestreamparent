@@ -14,7 +14,7 @@ class YamlTaskBuilderTest {
 
     private val file = File("src/test/resources/samplemodule/sample.yaml")
     val path = File("src/test/resources/samplemodule")
-    val module = YamlModule(path)
+    val module = DefinedYamlModule(path)
 
     @Test
     internal fun testLoad() {
@@ -42,7 +42,7 @@ class YamlTaskBuilderTest {
     @Test
     internal fun testDefineTaskTree() {
         val descriptor = YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).load()
-        val task = CompositeTask(TaskId(TaskType("sample.yaml", "my-cool-task")), descriptor)
+        val task = CompositeTask(TaskId(TaskType("sample.yaml", "my-cool-task")), descriptor, StreamContext())
         YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).defineTaskTree(task)
         assertTrue { task.children.isNotEmpty() }
         val calledList = mutableListOf<String>()

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Vendor: io.codestream
+Implementation-Title: codestream-di
+Implementation-Version: 1.0.0
+Implementation-Vendor-Id: codestream

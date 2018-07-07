@@ -8,11 +8,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class BasicModuleTest {
+class KotlinModuleTest {
 
     @Test
     internal fun testToTypeDescriptor() {
-        val aModule = BasicModule("test", "test")
+        val aModule = KotlinModule("test", "test")
         val descriptor = typeToDescriptor(aModule, SampleSimpleTask::class)
         val task = SampleSimpleTask::class.findAnnotation<Task>()!!
         assertEquals(task.name, descriptor.name)
@@ -29,16 +29,21 @@ class BasicModuleTest {
 
     @Test
     internal fun testName() {
-        val aModule = BasicModule("test", "test")
+        val aModule = KotlinModule("test", "test")
         val id = aModule.id
         assertEquals("test@1.0.0", id.toString())
     }
 
     @Test
     internal fun testAdd() {
-        val aModule = BasicModule("test", "test")
+        val aModule = KotlinModule("test", "test")
         aModule.add(SampleSimpleTask::class)
         assertNotNull(aModule[TaskType(aModule.name, "simpleTask")])
 
+    }
+
+    @Test
+    internal fun testResolveVersion() {
+        val version = KotlinModule.resolveVersion(KotlinModule::class)
     }
 }

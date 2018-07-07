@@ -1,8 +1,8 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.api.BasicModule
+import io.codestream.core.api.KotlinModule
 
-class TestModule : BasicModule("test","A test module") {
+class TestModule : KotlinModule("test","A test module") {
 
     init {
         create {

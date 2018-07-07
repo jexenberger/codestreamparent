@@ -1,13 +1,16 @@
-module io.codestream.runtime {
+import io.codestream.core.api.CodestreamModule;
 
-    requires io.codestream.di;
+open module io.codestream.samplemodule {
+
+
+
+    requires io.codestream.core;
 
     requires transitive io.codestream.util;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;
-
-    requires java.scripting;
+    requires kotlinx.coroutines.core;
 
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;
@@ -15,5 +18,7 @@ module io.codestream.runtime {
     requires static kotlin.test;
     requires static kotlin.test.junit;
 
+    uses io.codestream.core.api.CodestreamModule;
+    provides CodestreamModule with io.codestream.sample.SampleModule;
 
 }

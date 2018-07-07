@@ -6,22 +6,32 @@ import io.codestream.core.api.*
 import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.runtime.CompositeTask
 import io.codestream.core.api.TaskId
+import io.codestream.core.doc.FunctionDoc
+import io.codestream.core.doc.ParameterDoc
+import io.codestream.core.doc.TaskDoc
+import io.codestream.core.runtime.StreamContext
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 import java.io.FileReader
+import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class YamlModule(val path: File) : CodestreamModule {
-
+class DefinedYamlModule(val path: File) : BaseYamlModule {
     private val _tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
 
     val descriptor: YamlModuleDescriptor
 
     override val tasks: Map<TaskType, TaskDescriptor> = _tasks
+
     override val description: String get() = descriptor.description
     override val name: String get() = descriptor.name ?: path.name
     override val version: Version get() = Version.parseVersion(descriptor.version)
     override val scriptObject by lazy { loadScriptObject() }
+    override val modulePath: String get() = path.absolutePath
+
+    override val scriptObjectDocumentation: Collection<FunctionDoc> get() = scriptClass?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
+
+    private val scriptClass: KClass<*>?
 
     override fun get(name: TaskType) = _tasks[name]
 
@@ -29,16 +39,22 @@ class YamlModule(val path: File) : CodestreamModule {
         if (!path.isDirectory) {
             throw ModuleDoesNotExistException(path.name)
         }
+        scriptClass = parseScriptClass()
         descriptor = load()
         loadTasks()
     }
 
-    private fun loadScriptObject() : Any? {
+
+    private fun loadScriptObject(): Any? {
+        return scriptClass?.createInstance()
+    }
+
+    private fun parseScriptClass(): KClass<*>? {
         val path = File(path, "scripts/scriptObject.groovy")
         if (path.exists() && path.isFile) {
-            return GroovyClassLoader().parseClass(path).kotlin.createInstance()
+            return GroovyClassLoader(this::class.java.classLoader).parseClass(path).kotlin
         }
-        return null
+        return null;
     }
 
 
@@ -60,18 +76,25 @@ class YamlModule(val path: File) : CodestreamModule {
         }
     }
 
-    fun getCompositeTask(id: TaskId): CompositeTask {
+    override fun getCompositeTask(id: TaskId, ctx: StreamContext): CompositeTask {
         val withThis = createScriptObjects()
         val taskDescriptor = getByName(id.taskType.name)
         taskDescriptor ?: throw TaskDoesNotExistException(id.taskType)
         val name = id.taskType.name
-        val file = File("${this.path.absolutePath}/$name.yaml")
-        val task = CompositeTask(id, taskDescriptor, scriptObjects = withThis)
+        val file = File(resolveTaskPath(name))
+        val newContext = StreamContext(originatingContextId = ctx.originatingContextId)
+        newContext.bindings["__modulePath"] = path.absolutePath
+        withThis.forEach { (k, v) ->
+            newContext.bindings[k] = v
+        }
+        val task = CompositeTask(id, taskDescriptor, newContext)
         YamlTaskBuilder(name, this, file.readText()).defineTaskTree(task)
         return task
     }
 
-    private fun createScriptObjects(): MutableMap<String, Any> {
+    override fun resolveTaskPath(name: String) = "${this.path.absolutePath}/$name.yaml"
+
+    override fun createScriptObjects(): MutableMap<String, Any> {
         val scriptObjects = dependencies.map { mod ->
             mod.module.scriptObject?.let { "__${mod.name}" to it }
         }.filterNotNull().toMap()

@@ -1,7 +1,7 @@
-package io.codestream.core.runtime
+package io.codestream.core.api
 
 import de.skuzzle.semantic.Version
-import io.codestream.core.api.CodestreamModule
+import io.codestream.core.runtime.ModuleRegistry
 
 
 data class ModuleId(val name: String, val version: Version = CodestreamModule.defaultVersion) {

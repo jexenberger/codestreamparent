@@ -12,7 +12,8 @@
         <module>codestream-util</module>
         <module>codestream-di</module>
         <module>codestream-di-test</module>
-        <module>codestream-runtime</module>
+        <module>codestream-cli</module>
+        <module>codestream-sample-versioned-module</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -56,7 +57,13 @@
 
             <dependency>
                 <groupId>codestream</groupId>
-                <artifactId>codestream-runtime</artifactId>
+                <artifactId>codestream-cli</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>codestream</groupId>
+                <artifactId>codestream-sample-versioned-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -198,6 +205,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
@@ -234,6 +253,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-compile</id>
@@ -295,6 +318,7 @@
                 </configuration>
             </plugin>
         </plugins>
+
     </build>
 
 </project>

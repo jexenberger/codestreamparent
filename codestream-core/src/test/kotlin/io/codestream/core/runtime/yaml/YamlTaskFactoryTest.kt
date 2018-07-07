@@ -13,7 +13,7 @@ class YamlTaskFactoryTest {
 
     private val file = File("src/test/resources/samplemodule/sample.yaml")
     val path = File("src/test/resources/samplemodule")
-    val module = YamlModule(path)
+    val module = DefinedYamlModule(path)
 
 
     @Test

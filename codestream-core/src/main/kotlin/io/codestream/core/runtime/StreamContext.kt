@@ -1,19 +1,26 @@
 package io.codestream.core.runtime
 
-import io.codestream.core.api.CodestreamModule
-import io.codestream.core.api.Task
-import io.codestream.core.api.TaskDoesNotExistException
-import io.codestream.core.api.TaskId
+import io.codestream.core.api.*
 import io.codestream.core.api.metamodel.TaskDef
 import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.core.runtime.container.TaskContextDependency
+import io.codestream.core.runtime.yaml.BaseYamlModule
 import io.codestream.di.api.*
+import java.util.*
 
-class StreamContext(val parent:StreamContext? = null) : ApplicationContext(mutableMapOf(), mutableMapOf()) {
+class StreamContext(
+        val parent:StreamContext? = null,
+        val id:String = UUID.randomUUID().toString(),
+        val originatingContextId:String? = parent?.originatingContextId) : ApplicationContext(mutableMapOf(), mutableMapOf()){
 
     private var _bindings: ScopedDependencyBindings = ScopedDependencyBindings(this)
 
     override val bindings: ScopedDependencyBindings get() = _bindings
+
+
+    init {
+        StreamContext += this
+    }
 
     constructor(theBindings: ScopedDependencyBindings, parent:StreamContext? = null) : this(parent) {
         _bindings = theBindings
@@ -49,6 +56,23 @@ class StreamContext(val parent:StreamContext? = null) : ApplicationContext(mutab
             addDependencyHandler(ParameterDependency())
             addDependencyHandler(TaskContextDependency())
         }
+
+
+        private val runningContexts: MutableMap<String, StreamContext> = mutableMapOf()
+        val contexts = runningContexts.values.toList()
+
+        @Synchronized
+        private operator fun plusAssign(ctx:StreamContext) {
+            runningContexts[ctx.id] = ctx
+        }
+
+        operator fun get(id: String) = runningContexts[id]
+
+        @Synchronized
+        fun release(id:String) {
+            runningContexts.remove(id)
+        }
+
     }
 
 }

@@ -1,6 +1,8 @@
 package io.codestream.core.runtime
 
+import de.skuzzle.semantic.Version
 import io.codestream.core.api.CodestreamModule
+import io.codestream.core.api.ModuleId
 import io.codestream.core.runtime.modules.system.SystemModule
 import java.util.*
 
@@ -8,10 +10,13 @@ import java.util.*
 object ModuleRegistry {
 
 
-    internal val modules: MutableMap<ModuleId, CodestreamModule> = mutableMapOf()
+    internal val _modules: MutableMap<ModuleId, CodestreamModule> = mutableMapOf()
     internal val systemModule = SystemModule()
 
-    val systemModuleId:ModuleId = systemModule.id
+    val systemModuleId: ModuleId = systemModule.id
+
+    val modules:Set<Pair<String, Version>> get() =  _modules.map { it.key.name to it.key.version }.toSet()
+
 
     init {
         loadSystemModules()
@@ -25,17 +30,17 @@ object ModuleRegistry {
     private fun load()  {
         val serviceLoader = ServiceLoader.load<CodestreamModule>(io.codestream.core.api.CodestreamModule::class.java)
         for (module in serviceLoader) {
-            modules[module.id] = module
+            _modules[module.id] = module
         }
     }
 
     @Synchronized
     operator fun plusAssign(module: CodestreamModule) {
-        modules[module.id] = module
+        _modules[module.id] = module
     }
 
     fun getLatestVersion(name:String) : CodestreamModule? {
-        return modules
+        return _modules
                 .entries
                 .filter { it.key.name.equals(name) }
                 .sortedByDescending { it.value.version }
@@ -43,7 +48,7 @@ object ModuleRegistry {
     }
 
     operator fun get(name: ModuleId): CodestreamModule? {
-        return if (name.defaultVersion) getLatestVersion(name.name) else modules[name]
+        return if (name.defaultVersion) getLatestVersion(name.name) else _modules[name]
     }
 
 

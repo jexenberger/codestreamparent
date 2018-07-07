@@ -1,19 +1,24 @@
 package io.codestream.core.api
 
 import de.skuzzle.semantic.Version
+import io.codestream.core.api.CodestreamModule.Companion.defaultVersion
 import io.codestream.core.api.annotations.Parameter
 import io.codestream.core.api.annotations.Task
 import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.descriptor.TaskDescriptor
+import io.codestream.core.doc.FunctionDoc
 import io.codestream.core.runtime.Type
 import io.codestream.di.api.theType
 import io.codestream.util.mutableProperties
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.isSuperclassOf
 
-internal fun typeToDescriptor(module: CodestreamModule, type: KClass<*>): TaskDescriptor {
+internal fun < T : io.codestream.core.api.Task> typeToDescriptor(module: CodestreamModule, type: KClass<T>): TaskDescriptor {
     val taskAnnotation = type.findAnnotation<Task>()
             ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
+    val group = GroupTask::class.isSuperclassOf(type)
     val properties = mutableMapOf<String, ParameterDescriptor>()
     val constructor = io.codestream.di.api.resolveConstructor(type)
     constructor?.let { structor ->
@@ -37,7 +42,7 @@ internal fun typeToDescriptor(module: CodestreamModule, type: KClass<*>): TaskDe
                     properties[name] = property
                 }
             }
-    return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type))
+    return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type), group)
 }
 
 internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
@@ -54,24 +59,32 @@ internal fun createProperty(name: String, propertyType: KClass<*>, param: Parame
 }
 
 
-open class BasicModule(
+open class KotlinModule(
         override val name: String,
         override val description: String,
-        override val version: Version = Version.create(1, 0, 0)) : CodestreamModule {
+        override val version: Version = Version.create(1, 0, 0),
+        val scriptObjectType:KClass<*>? = null) : CodestreamModule {
 
 
     constructor(
             name: String,
             description: String,
             version: Version = Version.create(1, 0, 0),
-            builder: BasicModule.() -> Unit
+            builder: KotlinModule.() -> Unit
     ) : this(name, description, version) {
         create(builder)
     }
 
-    override val scriptObject: Any? get() = null
+
+
 
     private val _tasks = LinkedHashMap<TaskType, TaskDescriptor>()
+
+    override val scriptObjectDocumentation:Collection<FunctionDoc> get() {
+        return scriptObjectType?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
+    }
+
+    override val scriptObject by lazy { scriptObjectType?.createInstance() }
 
     override val tasks: Map<TaskType, TaskDescriptor>
         get() = _tasks.toMap()
@@ -90,7 +103,14 @@ open class BasicModule(
     }
 
 
-    fun create(handler: BasicModule.() -> Unit) {
+    fun create(handler: KotlinModule.() -> Unit) {
         handler()
+    }
+
+    companion object {
+        fun resolveVersion(type: KClass<*>) : Version {
+            type.java.module.name
+            return defaultVersion
+        }
     }
 }
