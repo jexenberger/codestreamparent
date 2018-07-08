@@ -11,11 +11,11 @@ class ConsoleHandler(val enableDebug: Boolean) : EventHandler<TaskEvent> {
     override fun onEvent(event: TaskEvent) {
         when (event) {
             is BeforeTaskEvent -> {
-                Console.display(decorate(event.taskId.toString(), Console.BOLD, Console.REVERSED))
+                Console.display(decorate(event.taskId.taskType.taskName, Console.BOLD, Console.UNDERLINE))
                         .newLine()
             }
             is TaskErrorEvent -> {
-                Console.display(decorate(event.taskId.toString(), Console.REVERSED, Console.ANSI_RED))
+                Console.display(decorate(event.taskId.taskType.taskName, Console.REVERSED, Console.ANSI_RED))
                         .space()
                         .display(decorate(event.error.message, Console.BOLD))
                         .space()
