@@ -1,4 +1,3 @@
-Manifest-Version: 1.0
 Implementation-Vendor: io.codestream
 Implementation-Title: codestream-sample-version-module
 Implementation-Version: 1.0.0

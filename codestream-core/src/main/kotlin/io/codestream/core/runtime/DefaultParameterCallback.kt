@@ -5,7 +5,7 @@ import io.codestream.core.api.descriptor.ParameterDescriptor
 import java.util.*
 
 class DefaultParameterCallback(val value:Any? = null) : ParameterCallback{
-    override fun capture(descriptor: ParameterDescriptor): Optional<Any> {
-        return Optional.ofNullable(value)
+    override fun capture(descriptor: ParameterDescriptor): Any? {
+        return value
     }
 }

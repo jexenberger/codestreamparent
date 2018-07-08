@@ -1,12 +1,10 @@
 package io.codestream.core.runtime.tree
 
-import io.codestream.core.api.TaskError
-
 class DefaultBranch<T>(id: String, parallel: Boolean,
 
                     val preTraversal: ((ctx: T) -> BranchProcessingDirective)? = null,
                     val postTraversal: ((ctx: T) -> BranchProcessingDirective)? = null,
-                    val onError: ((error: TaskError, ctx: T) -> Unit)? = null) : Branch<T>(id, parallel) {
+                    val onError: ((error: Exception, ctx: T) -> Unit)? = null) : Branch<T>(id, parallel) {
 
     override fun enterBranch(ctx: T) {
     }
@@ -23,7 +21,7 @@ class DefaultBranch<T>(id: String, parallel: Boolean,
         return this.postTraversal?.let { it(ctx) } ?: BranchProcessingDirective.done
     }
 
-    override fun onError(error: TaskError, ctx: T) {
+    override fun onError(error: Exception, ctx: T) {
         this.onError?.let { it(error, ctx) }
     }
 }

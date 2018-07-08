@@ -53,10 +53,11 @@ class GroupTaskHandler(private val taskId: TaskId,
     }
 
 
-    override fun onError(error: TaskError, ctx: StreamContext) {
-        ctx.bindings["_error_"] = error
-        getTask(ctx).onError(error,  ctx.bindings)
-        fireEvent(ctx, TaskErrorEvent(taskId, error), BranchProcessingDirective.done)
+    override fun onError(error: Exception, ctx: StreamContext) {
+        val taskError = TaskError(error, ctx.bindings)
+        ctx.bindings["_error_"] = taskError
+        getTask(ctx).onError(taskError,  ctx.bindings)
+        fireEvent(ctx, TaskErrorEvent(taskId, taskError), BranchProcessingDirective.done)
     }
 
     override fun enterBranch(ctx: StreamContext) {

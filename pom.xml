@@ -122,6 +122,12 @@
                 <version>1.14</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.xenomachina</groupId>
+                <artifactId>kotlin-argparser</artifactId>
+                <version>2.0.7</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>javax.validation</groupId>
@@ -256,6 +262,10 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
+                    <compilerArgs>
+                        <arg>--module-version</arg>
+                        <arg>${project.version}</arg>
+                    </compilerArgs>
                 </configuration>
                 <executions>
                     <execution>

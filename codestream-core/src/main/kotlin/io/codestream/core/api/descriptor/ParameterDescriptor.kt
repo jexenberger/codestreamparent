@@ -13,7 +13,8 @@ data class ParameterDescriptor(
         val required: Boolean = true,
         val alias: String = "",
         val allowedValues: Array<String> = emptyArray(),
-        val regex: String = "") {
+        val regex: String = "",
+        val default: String? = null) {
 
     val id: String get() = if (this.alias.isNotEmpty()) alias.trim() else name
     private val regexPattern: Pattern? by lazy { if (regex.isNotEmpty()) Pattern.compile(regex) else null }

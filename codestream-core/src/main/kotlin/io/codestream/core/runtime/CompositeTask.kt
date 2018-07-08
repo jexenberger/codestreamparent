@@ -24,8 +24,9 @@ class CompositeTask(
 
     override fun postTraversal(ctx: StreamContext) = BranchProcessingDirective.done
 
-    override fun onError(error: TaskError, ctx: StreamContext) {
-        ctx.bindings["_error_"] = error
+    override fun onError(error: Exception, ctx: StreamContext) {
+        val taskError = TaskError(error, ctx.bindings)
+        ctx.bindings["_error_"] = taskError
         runTask(ctx, errorTask)
     }
 

@@ -1,6 +1,7 @@
 package io.codestream.core.runtime
 
 import io.codestream.core.api.*
+import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.metamodel.GroupTaskDef
 import io.codestream.core.api.metamodel.ParameterDef
 import io.codestream.core.api.metamodel.TaskDef
@@ -10,13 +11,16 @@ import io.codestream.core.runtime.tree.Node
 import io.codestream.core.runtime.yaml.DefinedYamlModule
 import io.codestream.core.runtime.yaml.SingleFileModule
 import io.codestream.di.api.addInstance
+import io.codestream.util.Ids
+import io.codestream.util.ifTrue
+import io.codestream.util.whenTrue
 import java.io.File
 import java.nio.file.Files
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
-    override val modules get() =  ModuleRegistry.modules
+    override val modules get() = ModuleRegistry.modules
 
 
     private val executorService: ExecutorService;
@@ -33,29 +37,36 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
                 ModuleRegistry += DefinedYamlModule(it.toFile())
             }
         }
-        executorService = Executors.newFixedThreadPool(settings.systemThreads)
+        executorService = settings.executor
     }
 
+    fun resolveParameter(type: ParameterDescriptor, existingParameters: Map<String, Any?>, callback: ParameterCallback): Any? {
+        val existing = existingParameters[type.name]
+        return existing?.let { it } ?: callback.capture(type)
+    }
 
-    override fun runTask(moduleId: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback) : Map<String, Any?> {
+    override fun runTask(moduleId: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
         val module = ModuleRegistry[moduleId]
                 ?: throw IllegalArgumentException("${moduleId} is not defined")
         val taskDescriptor = module[TaskType(module.name, task)]
                 ?: throw IllegalArgumentException("Task '$task' does not exist on Module '${moduleId}'")
 
         val taskParams = taskDescriptor.parameters.map { (k, v) ->
-            val paramValue = parameters[k] ?: callback.capture(v).orElse(null)
+            val paramValue = resolveParameter(v, existingParameters = parameters, callback = callback)
             k to ParameterDef(k, paramValue)
         }.toMap()
-        val id = TaskId(taskDescriptor.type)
+        val id = TaskId(taskDescriptor.type, Ids.next().toString())
         val streamContext = StreamContext()
         streamContext.add(addInstance(executorService))
+        eventHandlers.forEach {
+            streamContext.events.register(it)
+        }
         val node: Node<StreamContext> = if (taskDescriptor.groupTask) {
-            val defn = GroupTaskDef(id,taskParams, false)
+            val defn = GroupTaskDef(id, taskParams, false)
             streamContext.registerTask(defn)
             GroupTaskHandler(id, false, defn)
         } else {
-            val defn = TaskDef(id,taskParams)
+            val defn = TaskDef(id, taskParams)
             streamContext.registerTask(defn)
             SimpleTaskHandler(id, defn)
         }
@@ -68,7 +79,7 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
     }
 
 
-    override fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback) : Map<String, Any?> {
+    override fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
         val module = SingleFileModule(file)
         ModuleRegistry += module
         val descriptor = module.taskDescriptor

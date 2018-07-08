@@ -7,10 +7,6 @@ class SampleModule : KotlinModule("sample", "sample test module"), CodestreamMod
 
 
     init {
-
-        val jClass = this::class.java
-        jClass.getResourceAsStream("/")
-        println(jClass.module.descriptor.version())
         this.create {
             add(Greeter::class)
         }

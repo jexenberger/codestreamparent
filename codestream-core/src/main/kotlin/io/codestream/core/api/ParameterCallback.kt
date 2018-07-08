@@ -6,6 +6,6 @@ import java.util.*
 interface ParameterCallback {
 
 
-    fun capture(descriptor: ParameterDescriptor) : Optional<Any>
+    fun capture(descriptor: ParameterDescriptor) : Any?
 
 }

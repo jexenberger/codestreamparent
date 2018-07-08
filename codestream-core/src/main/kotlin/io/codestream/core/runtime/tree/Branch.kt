@@ -1,6 +1,5 @@
 package io.codestream.core.runtime.tree
 
-import io.codestream.core.api.TaskError
 import java.util.concurrent.*
 
 abstract class Branch<T>(override val id: String,
@@ -60,7 +59,7 @@ abstract class Branch<T>(override val id: String,
         } catch (e: Exception) {
             internalState = NodeState.failed
             val ex = if (e is ExecutionException) e.cause as Exception else e
-            onError(TaskError(ex), ctx)
+            onError(ex, ctx)
         } finally {
             exitBranch(ctx)
         }
@@ -100,7 +99,7 @@ abstract class Branch<T>(override val id: String,
 
     abstract fun preTraversal(ctx: T): BranchProcessingDirective
     abstract fun postTraversal(ctx: T): BranchProcessingDirective
-    abstract fun onError(error: TaskError, ctx: T)
+    abstract fun onError(error: Exception, ctx: T)
     abstract fun enterBranch(ctx: T)
     abstract fun exitBranch(ctx:T)
 

@@ -47,7 +47,7 @@ class DefaultBranchTest {
                 parallel = false,
                 postTraversal = { throw IllegalStateException("borked") },
                 onError = { e, ctx ->
-                    assertTrue { e.exception is IllegalStateException }
+                    assertTrue { e is IllegalStateException }
                     errorCalled = true
                 }
 
@@ -70,7 +70,7 @@ class DefaultBranchTest {
                 parallel = false,
                 preTraversal = { throw IllegalStateException("borked") },
                 onError = { e, ctx ->
-                    assertTrue { e.exception is IllegalStateException }
+                    assertTrue { e is IllegalStateException }
                     errorCalled = true
                 }
 
@@ -90,7 +90,7 @@ class DefaultBranchTest {
                 id = "1",
                 parallel = false,
                 onError = { e, ctx ->
-                    assertTrue { e.exception is IllegalStateException  }
+                    assertTrue { e is IllegalStateException  }
                     errorCalled = true
                 }
 

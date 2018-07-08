@@ -3,6 +3,7 @@ package io.codestream.core.runtime
 import io.codestream.util.transformation.TransformerService
 import java.io.File
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 
 enum class Type(
@@ -15,6 +16,7 @@ enum class Type(
 ) {
 
 
+    any("any", Any::class, "Any type", false, true),
     string("string", String::class, "Standard string", false, true),
     int("int", Int::class, "32 bit signed integer value"),
     long("long", Long::class, "64 bit signed integer value"),
@@ -23,6 +25,7 @@ enum class Type(
     double("double", Double::class, "64 bit signed integer value"),
     file("path", File::class, "Reference to a file on the file system"),
     enumeration("enum", Enum::class, "Fixed enumerated value"),
+    anyArray("any[]", Array<Any>::class, "Array of any types", true),
     fileArray("path[]", Array<File>::class, "Array of file types", true),
     stringArray("string[]", Array<String>::class, "Array of string types", true, true),
     intArray("int[]", Array<Int>::class, "Array of int types", true),
@@ -62,9 +65,13 @@ enum class Type(
         fun typeForString(type: String): Type? = values().singleOrNull { it.stringDescriptor.equals(type) }
         fun typeForClass(type: KClass<*>): Type? {
 
+            if (type.isSubclassOf(Enum::class)) {
+                return Type.enumeration
+            }
+
             val resolvedType = synonyms[type] ?: type
 
-            return values().singleOrNull { it.typeMapping.equals(resolvedType) || it.typeMapping.isSuperclassOf(resolvedType) }
+            return values().singleOrNull { it.typeMapping.equals(resolvedType) }
         }
     }
 

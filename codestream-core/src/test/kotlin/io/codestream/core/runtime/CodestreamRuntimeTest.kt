@@ -20,7 +20,7 @@ class CodestreamRuntimeTest {
 
     @Test
     internal fun testRunGroupTaskWithCallback() {
-        Codestream.get().runTask(ModuleId("sys", defaultVersion), "echo", emptyMap(), DefaultParameterCallback("with callback"))
+        Codestream.get().runTask(ModuleId("sys", defaultVersion), "echo", emptyMap(), DefaultParameterCallback("red"))
     }
 
     @Test

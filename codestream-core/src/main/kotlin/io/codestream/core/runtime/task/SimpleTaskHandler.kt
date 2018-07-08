@@ -30,7 +30,7 @@ class SimpleTaskHandler(val taskId: TaskId, val taskDef: TaskDef)
             it.events.publish(TaskSkippedEvent(taskId, "Task condition evaluated to false"))
         }
     } catch (e:Exception) {
-        it.events.publish(TaskErrorEvent(taskId, TaskError(e)))
+        it.events.publish(TaskErrorEvent(taskId, TaskError(e, it.bindings)))
         throw e
     } finally {
         TaskDefContext.clear()

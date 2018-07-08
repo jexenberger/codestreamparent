@@ -11,8 +11,11 @@ interface Scope {
             return it to false
         } ?: run {
             val newInstance:T = factory.get(id, ctx)
-            val ret = newInstance to true
-            add(id, newInstance as Any)
+            val instanceToUse = if (newInstance is Factory<*>) {
+                newInstance.get(id, ctx) as T
+            } else newInstance
+            val ret = instanceToUse to true
+            add(id, instanceToUse as Any)
             ret
         }
 

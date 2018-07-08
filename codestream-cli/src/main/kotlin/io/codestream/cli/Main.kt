@@ -1,15 +1,13 @@
 @file:JvmName("Main")
+
 package io.codestream.cli
 
+import com.xenomachina.argparser.ArgParser
 import io.codestream.core.api.Codestream
-import io.codestream.core.api.ModuleId
 
-fun main(args : Array<String>) {
-    val codestream = Codestream.get()
-    println(codestream.modules)
-    codestream.runTask(
-            module = ModuleId("sample"),
-            task = "greeter",
-            parameters = mapOf("name" to "John"))
+fun main(args: Array<String>) {
+    val app = CliApp(ArgParser(arrayOf("run", "sys::echo", "-Ivalue=john")))
+    app.run()
+
 
 }

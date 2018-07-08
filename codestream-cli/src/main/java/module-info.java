@@ -1,4 +1,4 @@
-module io.codestream.runtime {
+open module io.codestream.runtime {
 
     requires io.codestream.di;
 
@@ -9,6 +9,9 @@ module io.codestream.runtime {
     requires kotlin.reflect;
 
     requires java.scripting;
+
+    requires kotlin.argparser;
+    requires semantic.version;
 
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;

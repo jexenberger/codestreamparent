@@ -9,9 +9,9 @@ class ComponentDefinition<T>(val factory: Factory<T>,
                           val scopeType: String = ScopeType.singleton.name) {
 
 
+    @Suppress("UNCHECKED_CAST")
     @Synchronized
     fun instance(ctx: Context): T {
-        @Suppress("UNCHECKED_CAST")
         val scope = Scopes[scopeType]
                 ?: throw ComponentDefinitionException(id, "defined in non-existent scope $scopeType")
         val (instance, isNew) = scope.getOrCreate(id, factory, ctx)

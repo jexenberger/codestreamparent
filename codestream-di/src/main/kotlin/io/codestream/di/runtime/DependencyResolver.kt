@@ -13,8 +13,8 @@ object DependencyResolver {
 
     init {
         RESOLVERS.push(InjectionDependency())
-        RESOLVERS.push(ValueDependency())
         RESOLVERS.push(TypedDependency())
+        RESOLVERS.push(ValueDependency())
         RESOLVERS.push(EvalDependency())
     }
 

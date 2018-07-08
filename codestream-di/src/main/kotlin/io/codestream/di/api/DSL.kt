@@ -12,7 +12,7 @@ fun <T> bind() : ComponentDefinitionBuilder<T> {
     return ComponentDefinitionBuilder()
 }
 
-fun <T> bind(factory: Factory<T>): ComponentDefinitionBuilder<T> {
+ fun <T> bind(factory: Factory<T>): ComponentDefinitionBuilder<T> {
     return bind<T>().toFactory(factory)
 }
 

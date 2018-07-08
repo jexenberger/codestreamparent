@@ -20,6 +20,9 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
     val version: String
         get() = System.getProperty("os.version")
 
+    val newLine: String
+        get() = System.getProperty("line.separator")
+
     val user: String
         get() = System.getProperty("user.name")
 
@@ -54,7 +57,7 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
     val props: Properties
         get() = System.getProperties()
 
-    fun exec(dir: File = File(System.getProperty("user.dir")),
+    fun exec(dir: File = File(pwd),
              timeout: Long = 60,
              timeUnit: TimeUnit = TimeUnit.MINUTES,
              cmd: Array<String>): Pair<Int, String> {

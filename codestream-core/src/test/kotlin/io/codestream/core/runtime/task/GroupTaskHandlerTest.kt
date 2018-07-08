@@ -80,7 +80,7 @@ class GroupTaskHandlerTest {
         ctx.registerTask(defaultTaskDef)
         val handler = GroupTaskHandler(taskId, false, defaultTaskDef)
         handler.enterBranch(ctx)
-        handler.onError(TaskError(RuntimeException("test")), ctx)
+        handler.onError(RuntimeException("test"), ctx)
         val taskContext = ctx.get<SimpleGroupTaskContext>(TaskScopeId(ctx, taskId))!!
         assertTrue { taskContext.error }
     }

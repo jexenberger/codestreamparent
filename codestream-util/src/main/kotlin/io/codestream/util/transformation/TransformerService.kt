@@ -133,8 +133,7 @@ object TransformerService {
     fun isCollectionType(a: KClass<*>) : Boolean {
         val collection = isCollection(a)
         val iterable = isIterableType(a)
-        val array = ArrayDecorator.isArrayType(a)
-        return collection || iterable || array
+        return collection || iterable
     }
 
 
@@ -151,6 +150,9 @@ object TransformerService {
     inline fun <reified K> convert(instance: Any, typeHint: KClass<*>? = null): K {
         val type = typeHint?.let { it } ?: K::class
         //special case with enum as we always need the absolute concrete type
+        if (type.equals(Any::class)) {
+            return instance as K
+        }
         if (instance is String && type.java.isEnum) {
             @Suppress("UPPER_BOUND_VIOLATED", "UNCHECKED_CAST")
             return (java.lang.Enum.valueOf<Any>(type.java as Class<Any>, instance) as K)

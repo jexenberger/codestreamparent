@@ -9,13 +9,15 @@ import io.codestream.core.api.descriptor.TaskDescriptor
 import io.codestream.core.doc.FunctionDoc
 import io.codestream.core.runtime.Type
 import io.codestream.di.api.theType
+import io.codestream.util.ifTrue
 import io.codestream.util.mutableProperties
+import io.codestream.util.transformation.TransformerService
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSuperclassOf
 
-internal fun < T : io.codestream.core.api.Task> typeToDescriptor(module: CodestreamModule, type: KClass<T>): TaskDescriptor {
+internal fun <T : io.codestream.core.api.Task> typeToDescriptor(module: CodestreamModule, type: KClass<T>): TaskDescriptor {
     val taskAnnotation = type.findAnnotation<Task>()
             ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
     val group = GroupTask::class.isSuperclassOf(type)
@@ -46,7 +48,7 @@ internal fun < T : io.codestream.core.api.Task> typeToDescriptor(module: Codestr
 }
 
 internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
-    if (!optional && !param.required) {
+    if (!optional && !param.required && param.default.isEmpty()) {
         throw throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required")
     }
 }
@@ -54,7 +56,7 @@ internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Paramete
 internal fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
     val descriptorType = Type.typeForClass(propertyType)
             ?: throw ComponentDefinitionException(name, "${propertyType.simpleName} is not a supported Parameter type")
-    val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex)
+    val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex, param.default)
     return property
 }
 
@@ -62,8 +64,8 @@ internal fun createProperty(name: String, propertyType: KClass<*>, param: Parame
 open class KotlinModule(
         override val name: String,
         override val description: String,
-        override val version: Version = Version.create(1, 0, 0),
-        val scriptObjectType:KClass<*>? = null) : CodestreamModule {
+        override val version: Version = resolveVersion(this::class),
+        val scriptObjectType: KClass<*>? = null) : CodestreamModule {
 
 
     constructor(
@@ -76,13 +78,12 @@ open class KotlinModule(
     }
 
 
-
-
     private val _tasks = LinkedHashMap<TaskType, TaskDescriptor>()
 
-    override val scriptObjectDocumentation:Collection<FunctionDoc> get() {
-        return scriptObjectType?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
-    }
+    override val scriptObjectDocumentation: Collection<FunctionDoc>
+        get() {
+            return scriptObjectType?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
+        }
 
     override val scriptObject by lazy { scriptObjectType?.createInstance() }
 
@@ -108,9 +109,20 @@ open class KotlinModule(
     }
 
     companion object {
-        fun resolveVersion(type: KClass<*>) : Version {
-            type.java.module.name
-            return defaultVersion
+        fun resolveVersion(type: KClass<*>): Version {
+            return type.java.module?.descriptor?.version()?.map {
+                val v = if (it.toString().endsWith("-SNAPSHOT")) {
+                    val baseVersion = it.toString().split("-")[0]
+                    if (baseVersion.split("\\.").size < 2) {
+                        "$baseVersion.0"
+                    } else {
+                        baseVersion
+                    }
+                } else {
+                    it.toString()
+                }
+                Version.parseVersion(v)
+            }?.orElse(defaultVersion) ?: defaultVersion
         }
     }
 }
