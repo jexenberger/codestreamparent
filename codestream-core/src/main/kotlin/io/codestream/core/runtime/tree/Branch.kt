@@ -48,6 +48,7 @@ abstract class Branch<T>(override val id: String,
                 val pre = preTraversal(ctx)
                 if (pre != BranchProcessingDirective.continueExecution) {
                     internalState = NodeState.completed
+                    return internalState
                 }
                 runChildren(ctx)
                 val post = postTraversal(ctx)

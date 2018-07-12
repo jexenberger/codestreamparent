@@ -1,5 +1,6 @@
 package io.codestream.core.runtime
 
+import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
 import io.codestream.core.api.metamodel.ParameterDef
@@ -17,7 +18,7 @@ class CompositeTaskTest {
         ModuleRegistry += TestModule()
         val module = DefinedYamlModule(File("src/test/resources/samplemodule"))
         ModuleRegistry += module
-        val type = TaskType("samplemodule", "sample")
+        val type = TaskType(ModuleId.fromString("samplemodule::1.2.3"), "sample")
         val context = StreamContext()
         val task = YamlTaskFactory(module).get(TaskId(type), context)
         val def = TaskDef(TaskId(type), mapOf(

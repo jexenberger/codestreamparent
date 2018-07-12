@@ -1,0 +1,21 @@
+description: test task
+tasks:
+  - foreach:
+      items: 1, 2, 3, 4
+      tasks:
+        - echo:
+            value: "${__var}"
+
+  - set:
+      outputVariable: test
+      value: ${null}
+
+  - set:
+      outputVariable: test2
+      value: qwerty
+
+  - echo:
+      value: ${'hello -> ' + test + ' - ' + test2}
+
+  - echo:
+      value: DONE!!!!!

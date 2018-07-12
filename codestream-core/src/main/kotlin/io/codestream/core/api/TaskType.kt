@@ -3,16 +3,17 @@ package io.codestream.core.api
 import io.codestream.core.runtime.ModuleRegistry
 
 data class TaskType(
-        val module: String,
+        val module: ModuleId,
         val name: String
 ) {
     val taskName: String get() = "${module}::${name}"
+    val moduleName: String get() = module.name
 
     companion object {
         fun fromString(str: String): TaskType {
             val delimiterIdx = str.indexOf("::")
             if (delimiterIdx == -1) {
-                val type = TaskType(ModuleRegistry.systemModuleId.name, str)
+                val type = TaskType(ModuleRegistry.systemModuleId, str)
                 return type
             }
 
@@ -21,7 +22,7 @@ data class TaskType(
                 throw IllegalArgumentException("$str is not a valid format, must [module]::[task]")
             }
             val module = parts[0]
-            return TaskType(module, parts[1])
+            return TaskType(ModuleId.fromString(module), parts[1])
         }
     }
 

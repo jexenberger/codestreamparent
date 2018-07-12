@@ -30,7 +30,7 @@ internal fun <T : io.codestream.core.api.Task> typeToDescriptor(module: Codestre
 
                     it.findAnnotation<Parameter>()?.let { param ->
                         val name = it.name!!
-                        checkOptionalRequiredDeclaration(it.isOptional, param, name)
+                        checkOptionalRequiredDeclaration(it.type.isMarkedNullable, param, name)
                         properties[name] = createProperty(name, it.type.classifier!! as KClass<*>, param)
                     }
                 }

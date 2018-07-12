@@ -20,7 +20,7 @@ class ParameterDependencyTest {
     val parameter = SampleSimpleTask::class.primaryConstructor!!.parameters.map { it.name to it }.toMap()
     val annotation = parameter["value"]?.findAnnotation<Parameter>() ?: fail("looks like SampleSimpleTaskChanged....")
     val ctx = StreamContext()
-    val taskId = TaskId(TaskType(aModule.name, "test"))
+    val taskId = TaskId(TaskType(aModule.id, "test"))
 
     @Test
     internal fun testResolve() {
@@ -43,9 +43,9 @@ class ParameterDependencyTest {
         )
         val taskDefNoScript = TaskDef(taskId, mapOf("value" to ParameterDef("name", "hello")), { true })
 
-        val idOne = TaskId(TaskType(aModule.name, "test"))
+        val idOne = TaskId(TaskType(aModule.id, "test"))
         addInstance(taskDef) withId TaskDefId(idOne) into ctx
-        val idTwo = TaskId(TaskType(aModule.name, "testTwo"))
+        val idTwo = TaskId(TaskType(aModule.id, "testTwo"))
         addInstance(taskDefNoScript) withId TaskDefId(idTwo) into ctx
 
         parameter.forEach { (k, v) ->

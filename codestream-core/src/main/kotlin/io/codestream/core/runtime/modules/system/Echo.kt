@@ -10,7 +10,7 @@ import io.codestream.util.io.console.warn
 
 @Task(name = "echo", description = "Displays a value to the system console")
 class Echo(
-        @Parameter(description = "Value to echo to the Console") val value: Any?,
+        @Parameter(description = "Value to echo to the Console", required = false) val value: Any?,
         @Parameter(description = "Colour the output, valid options are 'red', 'green' or 'default'", default = "default") val type: Echo.Display
 
 ) : SimpleTask {

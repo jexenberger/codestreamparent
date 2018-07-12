@@ -1,5 +1,6 @@
 package io.codestream.core.runtime.yaml
 
+import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskType
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -14,7 +15,7 @@ class SingleFileModuleTest {
 
     @Test
     internal fun testTaskDescription() {
-        val result = module.get(TaskType(standaloneFile.parentFile.absolutePath, "standalone"))
+        val result = module.get(TaskType(ModuleId.fromString(standaloneFile.parentFile.absolutePath), "standalone"))
         assertNotNull(result)
         println(result.type)
     }

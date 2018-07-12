@@ -27,7 +27,7 @@ class CompositeTask(
     override fun onError(error: Exception, ctx: StreamContext) {
         val taskError = TaskError(error, ctx.bindings)
         ctx.bindings["_error_"] = taskError
-        runTask(ctx, errorTask)
+        errorTask?.let {  runTask(ctx, it) } ?: throw taskError
     }
 
     override fun enterBranch(ctx: StreamContext) {

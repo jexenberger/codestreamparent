@@ -13,7 +13,6 @@ object TransformerService {
     internal val CONVERSION_REGISTRY: MutableMap<Pair<KClass<*>, KClass<*>>, TypeTransformer<*, *>> = mutableMapOf()
 
 
-
     init {
         addConverter(String::class, File::class, LambdaTransformer<String, File> { File(it) })
         addConverter(List::class, Array<Int>::class, LambdaTransformer<List<Any>, Array<Int>> {
@@ -22,6 +21,19 @@ object TransformerService {
         addConverter(List::class, Array<String>::class, LambdaTransformer<List<Any>, Array<String>> {
             it.map { value -> value.toString() }.toTypedArray()
         })
+        addConverter(Iterable::class, Iterator::class, LambdaTransformer<Iterable<Any>, Iterator<Any>> { it.iterator() })
+        addConverter(String::class, Iterator::class, LambdaTransformer<String, Iterator<Any>> {
+            it.split(",").map { it.trim() }.iterator()
+        })
+        addConverter(Array<Any>::class, Iterator::class, LambdaTransformer<Array<Any>, Iterator<Any>> { it.iterator() })
+        addConverter(Array<String>::class, Iterator::class, LambdaTransformer<Array<String>, Iterator<String>> { it.iterator() })
+        addConverter(Array<Int>::class, Iterator::class, LambdaTransformer<Array<Int>, Iterator<Int>> { it.iterator() })
+        addConverter(Array<Double>::class, Iterator::class, LambdaTransformer<Array<Double>, Iterator<Double>> { it.iterator() })
+        addConverter(Array<Short>::class, Iterator::class, LambdaTransformer<Array<Short>, Iterator<Short>> { it.iterator() })
+        addConverter(Array<Byte>::class, Iterator::class, LambdaTransformer<Array<Byte>, Iterator<Byte>> { it.iterator() })
+        addConverter(Array<Boolean>::class, Iterator::class, LambdaTransformer<Array<Boolean>, Iterator<Boolean>> { it.iterator() })
+        addConverter(Array<Float>::class, Iterator::class, LambdaTransformer<Array<Float>, Iterator<Float>> { it.iterator() })
+        addConverter(Array<Long>::class, Iterator::class, LambdaTransformer<Array<Long>, Iterator<Long>> { it.iterator() })
         addConverter(File::class, String::class, LambdaTransformer<File, String> { it.absolutePath })
         addConverter(String::class, Long::class, LambdaTransformer<String, Long> { it.toLong() })
         addConverter(String::class, Any::class, LambdaTransformer<String, Any> { it })
@@ -130,19 +142,18 @@ object TransformerService {
     }
 
 
-    fun isCollectionType(a: KClass<*>) : Boolean {
+    fun isCollectionType(a: KClass<*>): Boolean {
         val collection = isCollection(a)
         val iterable = isIterableType(a)
         return collection || iterable
     }
 
 
-
     private fun isIterableType(a: KClass<*>) = a.equals(Iterable::class) || a.isSubclassOf(Iterable::class)
 
     private fun isCollection(a: KClass<*>) = a.equals(Collection::class) || a.isSubclassOf(Collection::class)
 
-    fun areBothCollectionTypes(a: KClass<*>, b:KClass<*>) : Boolean {
+    fun areBothCollectionTypes(a: KClass<*>, b: KClass<*>): Boolean {
         return isCollectionType(a) && isCollectionType(b)
     }
 
@@ -164,7 +175,8 @@ object TransformerService {
         }
         @SuppressWarnings("UNCHECKED_CAST")
         val transfomer = findWideningTransformer(instance::class, type) as TypeTransformer<Any, K>?
-        return transfomer?.transform(instance) ?: throw SystemException("unable to convert from ${instance::class.qualifiedName} to ${type.qualifiedName}")
+        return transfomer?.transform(instance)
+                ?: throw SystemException("unable to convert from ${instance::class.qualifiedName} to ${type.qualifiedName}")
     }
 
 

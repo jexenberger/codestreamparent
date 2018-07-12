@@ -8,6 +8,9 @@ class SystemModule : KotlinModule(SystemModule.name,"Core system module") {
         create {
             add(Echo::class)
             add(Group::class)
+            add(ForEach::class)
+            add(Set::class)
+            add(Script::class)
         }
     }
 

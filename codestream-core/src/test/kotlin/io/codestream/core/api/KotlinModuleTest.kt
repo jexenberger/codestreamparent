@@ -38,7 +38,7 @@ class KotlinModuleTest {
     internal fun testAdd() {
         val aModule = KotlinModule("test", "test")
         aModule.add(SampleSimpleTask::class)
-        assertNotNull(aModule[TaskType(aModule.name, "simpleTask")])
+        assertNotNull(aModule[TaskType(aModule.id, "simpleTask")])
 
     }
 

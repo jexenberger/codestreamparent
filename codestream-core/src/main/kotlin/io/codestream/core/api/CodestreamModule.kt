@@ -45,7 +45,7 @@ interface CodestreamModule {
     operator fun get(name: TaskType): TaskDescriptor?
 
 
-    fun getByName(name:String) = tasks[TaskType(id.name, name)]
+    fun getByName(name:String) = tasks[TaskType(id, name)]
 
     val dependencies: Set<ModuleId> get() = emptySet()
 

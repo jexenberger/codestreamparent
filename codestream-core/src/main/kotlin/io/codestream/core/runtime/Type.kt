@@ -17,6 +17,7 @@ enum class Type(
 
 
     any("any", Any::class, "Any type", false, true),
+    iterable("iterable", Iterable::class, "Any type which can be iterated  over", true, false),
     string("string", String::class, "Standard string", false, true),
     int("int", Int::class, "32 bit signed integer value"),
     long("long", Long::class, "64 bit signed integer value"),

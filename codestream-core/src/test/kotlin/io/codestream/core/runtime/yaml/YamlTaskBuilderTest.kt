@@ -1,5 +1,6 @@
 package io.codestream.core.runtime.yaml
 
+import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
 import io.codestream.core.runtime.*
@@ -42,7 +43,7 @@ class YamlTaskBuilderTest {
     @Test
     internal fun testDefineTaskTree() {
         val descriptor = YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).load()
-        val task = CompositeTask(TaskId(TaskType("sample.yaml", "my-cool-task")), descriptor, StreamContext())
+        val task = CompositeTask(TaskId(TaskType(ModuleId.fromString("sample.yaml"), "my-cool-task")), descriptor, StreamContext())
         YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).defineTaskTree(task)
         assertTrue { task.children.isNotEmpty() }
         val calledList = mutableListOf<String>()

@@ -2,6 +2,7 @@ package io.codestream.core.runtime.task
 
 import io.codestream.core.runtime.SampleSimpleTask
 import io.codestream.core.api.GroupTask
+import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
 import io.codestream.core.api.metamodel.ParameterDef
@@ -18,7 +19,7 @@ import kotlin.test.assertTrue
 
 class SimpleTaskHandlerTest {
 
-    private val taskId = TaskId(TaskType("test", "test"))
+    private val taskId = TaskId(TaskType(ModuleId.fromString("test"), "test"))
 
     private val p = mapOf(
             "value" to ParameterDef("value", "\${value}"),

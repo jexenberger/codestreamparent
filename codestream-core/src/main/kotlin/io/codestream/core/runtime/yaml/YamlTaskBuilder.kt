@@ -17,6 +17,7 @@ import io.codestream.core.runtime.task.SimpleTaskHandler
 import io.codestream.core.runtime.task.defaultCondition
 import io.codestream.core.runtime.task.scriptCondition
 import io.codestream.core.runtime.tree.Branch
+import io.codestream.util.system
 import io.codestream.util.transformation.TransformerService
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes.MappingNode
@@ -125,7 +126,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
                 .map { it.name to it }
                 .toMap()
         val condition = taskMap["condition"]?.let { scriptCondition(it.toString().trim()) } ?: defaultCondition
-        val id = "${this.module.name}::${this.module.modulePath}/$source@${taskMap.lineNo}"
+        val id = "${this.module.name}::${source.substringAfterLast("/")}.yaml@${taskMap.lineNo}"
         val taskId = TaskId(taskTaskType, id)
         if (simple) {
             return TaskDef(taskId, params, condition)

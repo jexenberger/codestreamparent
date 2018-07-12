@@ -27,6 +27,14 @@ class ScopedDependencyBindings(
         return true
     }
 
+    override fun containsKey(key: String): Boolean {
+        if (!m.containsKey(key)) {
+            return parent?.containsKey(key) ?: false
+        }
+        return true
+    }
+
+
     override fun isEmpty(): Boolean {
         return m.isEmpty() && parent?.isEmpty() ?: true
     }

@@ -14,7 +14,7 @@ data class TaskDescriptor(
         val groupTask:Boolean = false
 ) {
 
-    val type: TaskType = TaskType(module.name, name)
+    val type: TaskType = TaskType(module.id, name)
 
     operator fun get(property:String) = parameters[property]
 

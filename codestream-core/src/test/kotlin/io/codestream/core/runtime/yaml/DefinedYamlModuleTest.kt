@@ -1,6 +1,7 @@
 package io.codestream.core.runtime.yaml
 
 import de.skuzzle.semantic.Version
+import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskType
 import io.codestream.core.api.TaskId
 import io.codestream.core.runtime.StreamContext
@@ -15,7 +16,7 @@ class DefinedYamlModuleTest {
     @Test
     internal fun testCreate() {
         val module = DefinedYamlModule(File("src/test/resources/samplemodule"))
-        val descriptor = module[TaskType("samplemodule", "sample")]
+        val descriptor = module[TaskType(ModuleId("samplemodule", module.version), "sample")]
         assertNotNull(descriptor)
         assertEquals(Version.create(1, 2, 3), module.version)
     }
@@ -23,7 +24,7 @@ class DefinedYamlModuleTest {
     @Test
     internal fun testGetCompositeTask() {
         val module = DefinedYamlModule(File("src/test/resources/samplemodule"))
-        val type = TaskType("samplemodule", "sample")
+        val type = TaskType(ModuleId("samplemodule", module.version), "sample")
         val task = module.getCompositeTask(TaskId(type), StreamContext())
         assertEquals(type, task.descriptor.type)
     }

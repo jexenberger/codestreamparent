@@ -1,5 +1,7 @@
 package io.codestream.core.runtime.task
 
+import de.skuzzle.semantic.Version
+import io.codestream.core.api.ModuleId
 import io.codestream.core.runtime.SimpleGroupTaskContext
 import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskError
@@ -17,16 +19,20 @@ import kotlin.test.assertTrue
 
 class GroupTaskHandlerTest {
 
-    private val taskId = TaskId(TaskType("test", "group"))
+    private val taskId: TaskId
 
-    private val defaultTaskDef = GroupTaskDef(
-            taskId,
-            mapOf("value" to ParameterDef("value", "test")),
-            false
-    )
+    private val defaultTaskDef: GroupTaskDef
+
+    private val module = TestModule()
 
     init {
-        ModuleRegistry += TestModule()
+        ModuleRegistry += module
+        taskId = TaskId(TaskType(module.id, "group"))
+        defaultTaskDef = GroupTaskDef(
+                taskId,
+                mapOf("value" to ParameterDef("value", "test")),
+                false
+        )
     }
 
     @AfterEach
@@ -47,7 +53,7 @@ class GroupTaskHandlerTest {
 
     @Test
     internal fun testPreTraversalConditional() {
-        val id = TaskId(TaskType("test", "group"))
+        val id = TaskId(TaskType(module.id, "group"))
         val taskDef = GroupTaskDef(
                 id,
                 mapOf("value" to ParameterDef("value", "test")),

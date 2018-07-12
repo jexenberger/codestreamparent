@@ -31,12 +31,7 @@ class RunTaskCommandlet(
         try {
 
             if (task.endsWith(".yaml")) {
-                val file = File(task)
-                if (!file.exists() || file.isDirectory) {
-                    Console.display(warn("$task is not a file"))
-                    return
-                }
-                codestream.runTask(file, inputParameters, this)
+                if (runFile()) return
             } else {
                 val parts = task.split("::")
                 if (parts.size != 2) {
@@ -66,15 +61,27 @@ class RunTaskCommandlet(
                 )
             }
 
-        } catch (e: IllegalArgumentException) {
-            Console.display(decorate("ERROR:", Console.ANSI_RED, Console.REVERSED))
-                    .space()
-                    .display(bold(e.message!!))
-                    .newLine()
-            if (this.debug) {
-                e.printStackTrace()
-            }
         } catch (e: Exception) {
+            displayError(e)
+        }
+    }
+
+    private fun runFile(): Boolean {
+        val file = File(task)
+        if (!file.exists() || file.isDirectory) {
+            Console.display(warn("$task is not a file"))
+            return true
+        }
+        codestream.runTask(file, inputParameters, this)
+        return false
+    }
+
+    private fun displayError(e: Exception) {
+        Console.display(decorate("ERROR:", Console.ANSI_RED, Console.REVERSED))
+                .space()
+                .display(bold(e.message!!))
+                .newLine()
+        if (this.debug) {
             e.printStackTrace()
         }
     }
@@ -97,10 +104,10 @@ class RunTaskCommandlet(
                 .space()
 
         val ret = Console.get()
-        return if (descriptor.required && descriptor.default == null && ret.isBlank()) {
+        return if (descriptor.required && descriptor.default.isNullOrBlank() && ret.isBlank()) {
             capture(descriptor)
         } else {
-           null
+            null
         }
     }
 }

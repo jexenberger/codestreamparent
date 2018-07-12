@@ -10,9 +10,9 @@ import io.codestream.core.api.TaskType
 object TaskRegistry {
 
     fun resolve(type: TaskType, callingModule: CodestreamModule? = null) : TaskDescriptor? {
-        val version =  callingModule?.getDependencyVersion(type.module)
-        val module = version?.let { ModuleRegistry[ModuleId(type.module, version)] }
-                ?: ModuleRegistry.getLatestVersion(type.module)
+        val version =  callingModule?.getDependencyVersion(type.moduleName)
+        val module = version?.let { ModuleRegistry[ModuleId(type.moduleName, version)] }
+                ?: ModuleRegistry.getLatestVersion(type.moduleName)
         val resolvedModule = module ?: throw ModuleDoesNotExistException("${type.module}@${CodestreamModule.versionString(version ?: defaultVersion)}")
         return resolvedModule[type]
     }

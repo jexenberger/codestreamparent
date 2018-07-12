@@ -42,13 +42,13 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
 
     fun resolveParameter(type: ParameterDescriptor, existingParameters: Map<String, Any?>, callback: ParameterCallback): Any? {
         val existing = existingParameters[type.name]
-        return existing?.let { it } ?: callback.capture(type)
+        return existing?.let { it } ?: if (type.default?.isNotBlank() ?: false) type.default else callback.capture(type)
     }
 
     override fun runTask(moduleId: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
         val module = ModuleRegistry[moduleId]
                 ?: throw IllegalArgumentException("${moduleId} is not defined")
-        val taskDescriptor = module[TaskType(module.name, task)]
+        val taskDescriptor = module[TaskType(module.id, task)]
                 ?: throw IllegalArgumentException("Task '$task' does not exist on Module '${moduleId}'")
 
         val taskParams = taskDescriptor.parameters.map { (k, v) ->

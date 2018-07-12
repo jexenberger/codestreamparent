@@ -37,10 +37,13 @@ fi
 #module paths
 MOD_PATHS="$CS_HOME_DIR"
 
+# startup time tuning parameters
+STARTUP_TUNING="-client -Xshare:auto -XX:TieredStopAtLevel=1 -XX:CICompilerCount=1 -XX:+UseSerialGC"
 
+MEM_OPTS="-Xms64M -Xmx512m"
 
 # Set codestream working home
-JAVA_PROPS="--module-path $MOD_PATHS -Dcs.installation.folder=$CS_HOME_DIR"
+JAVA_PROPS="$MEM_OPTS $STARTUP_TUNING --module-path $MOD_PATHS -Dcs.installation.folder=$CS_HOME_DIR"
 
 # Set executable JAR path
 EXECUTABLE_PATH="$CS_HOME_DIR/modules/$EXECUTABLE"
