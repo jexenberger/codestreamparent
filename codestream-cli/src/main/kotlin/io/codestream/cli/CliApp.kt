@@ -2,8 +2,8 @@ package io.codestream.cli
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.default
-import io.codestream.core.api.Codestream
-import io.codestream.core.api.CodestreamSettings
+import io.codestream.api.Codestream
+import io.codestream.api.CodestreamSettings
 import io.codestream.di.api.*
 import io.codestream.util.Eval
 import io.codestream.util.OS

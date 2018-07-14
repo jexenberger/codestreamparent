@@ -1,6 +1,5 @@
 package io.codestream.api
 
-import io.codestream.runtime.ModuleRegistry
 
 data class TaskType(
         val module: ModuleId,
@@ -13,7 +12,7 @@ data class TaskType(
         fun fromString(str: String): TaskType {
             val delimiterIdx = str.indexOf("::")
             if (delimiterIdx == -1) {
-                val type = TaskType(ModuleRegistry.systemModuleId, str)
+                val type = TaskType(systemModuleId, str)
                 return type
             }
 

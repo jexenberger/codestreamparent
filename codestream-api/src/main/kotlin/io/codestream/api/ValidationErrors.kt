@@ -1,6 +1,6 @@
 package io.codestream.api
 
-import io.codestream.runtime.Type
+import io.codestream.api.Type
 
 enum class ErrorType() {
     required,

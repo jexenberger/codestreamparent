@@ -1,62 +1,16 @@
 package io.codestream.api
 
 import de.skuzzle.semantic.Version
-import io.codestream.api.CodestreamModule.Companion.defaultVersion
 import io.codestream.api.annotations.Parameter
-import io.codestream.api.annotations.Task
 import io.codestream.api.descriptor.ParameterDescriptor
 import io.codestream.api.descriptor.TaskDescriptor
-import io.codestream.doc.FunctionDoc
-import io.codestream.api.Type
 import io.codestream.di.api.theType
+import io.codestream.doc.FunctionDoc
 import io.codestream.util.mutableProperties
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSuperclassOf
-
-internal fun <T : Task> typeToDescriptor(module: CodestreamModule, type: KClass<T>): TaskDescriptor {
-    val taskAnnotation = type.findAnnotation<Task>()
-            ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
-    val group = GroupTask::class.isSuperclassOf(type)
-    val properties = mutableMapOf<String, ParameterDescriptor>()
-    val constructor = io.codestream.di.api.resolveConstructor(type)
-    constructor?.let { structor ->
-        structor.parameters
-                .filter { it.findAnnotation<Parameter>() != null }
-                .forEach {
-
-                    it.findAnnotation<Parameter>()?.let { param ->
-                        val name = it.name!!
-                        checkOptionalRequiredDeclaration(it.type.isMarkedNullable, param, name)
-                        properties[name] = createProperty(name, it.type.classifier!! as KClass<*>, param)
-                    }
-                }
-    }
-    type.mutableProperties
-            .filter { it.findAnnotation<Parameter>() != null }
-            .forEach { prop ->
-                prop.findAnnotation<Parameter>()?.let { param ->
-                    val name = prop.name
-                    val property = createProperty(name, prop.returnType.classifier!! as KClass<*>, param)
-                    properties[name] = property
-                }
-            }
-    return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type), group)
-}
-
-internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
-    if (!optional && !param.required && param.default.isEmpty()) {
-        throw throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required")
-    }
-}
-
- fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
-    val descriptorType = Type.typeForClass(propertyType)
-            ?: throw ComponentDefinitionException(name, "${propertyType.simpleName} is not a supported Parameter type")
-    val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex, param.default)
-    return property
-}
 
 
 open class KotlinModule(
@@ -122,5 +76,49 @@ open class KotlinModule(
                 Version.parseVersion(v)
             }?.orElse(defaultVersion) ?: defaultVersion
         }
+
+        fun <T : Task> typeToDescriptor(module: CodestreamModule, type: KClass<T>): TaskDescriptor {
+            val taskAnnotation = type.findAnnotation<io.codestream.api.annotations.Task>()
+                    ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
+            val group = GroupTask::class.isSuperclassOf(type)
+            val properties = mutableMapOf<String, ParameterDescriptor>()
+            val constructor = io.codestream.di.api.resolveConstructor(type)
+            constructor?.let { structor ->
+                structor.parameters
+                        .filter { it.findAnnotation<Parameter>() != null }
+                        .forEach {
+
+                            it.findAnnotation<Parameter>()?.let { param ->
+                                val name = it.name!!
+                                checkOptionalRequiredDeclaration(it.type.isMarkedNullable, param, name)
+                                properties[name] = createProperty(name, it.type.classifier!! as KClass<*>, param)
+                            }
+                        }
+            }
+            type.mutableProperties
+                    .filter { it.findAnnotation<Parameter>() != null }
+                    .forEach { prop ->
+                        prop.findAnnotation<Parameter>()?.let { param ->
+                            val name = prop.name
+                            val property = createProperty(name, prop.returnType.classifier!! as KClass<*>, param)
+                            properties[name] = property
+                        }
+                    }
+            return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type), group)
+        }
+
+        internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
+            if (!optional && !param.required && param.default.isEmpty()) {
+                throw throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required")
+            }
+        }
+
+        fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
+            val descriptorType = Type.typeForClass(propertyType)
+                    ?: throw ComponentDefinitionException(name, "${propertyType.simpleName} is not a supported Parameter type")
+            val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex, param.default)
+            return property
+        }
+
     }
 }

@@ -1,9 +1,10 @@
-open module io.codestream.runtime {
+open module io.codestream.cli {
 
     requires io.codestream.di;
 
     requires transitive io.codestream.util;
-    requires io.codestream.core;
+    requires io.codestream.api;
+    requires io.codestream.runtime;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;

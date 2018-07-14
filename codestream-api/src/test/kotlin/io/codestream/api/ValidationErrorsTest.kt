@@ -1,6 +1,6 @@
 package io.codestream.api
 
-import io.codestream.core.runtime.Type
+import io.codestream.api.Type
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

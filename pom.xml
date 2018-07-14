@@ -15,7 +15,6 @@
         <module>codestream-di-test</module>
         <module>codestream-cli</module>
         <module>codestream-sample-versioned-module</module>
-        <module>codestream-api</module>
     </modules>
     <packaging>pom</packaging>
 

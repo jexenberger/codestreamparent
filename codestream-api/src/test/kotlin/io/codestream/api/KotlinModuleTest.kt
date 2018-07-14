@@ -1,7 +1,6 @@
 package io.codestream.api
 
-import io.codestream.core.runtime.SampleSimpleTask
-import io.codestream.core.api.annotations.Task
+import io.codestream.api.annotations.Task
 import org.junit.jupiter.api.Test
 import kotlin.reflect.full.findAnnotation
 import kotlin.test.assertEquals
@@ -13,7 +12,7 @@ class KotlinModuleTest {
     @Test
     internal fun testToTypeDescriptor() {
         val aModule = KotlinModule("test", "test")
-        val descriptor = typeToDescriptor(aModule, SampleSimpleTask::class)
+        val descriptor = KotlinModule.typeToDescriptor(aModule, SampleSimpleTask::class)
         val task = SampleSimpleTask::class.findAnnotation<Task>()!!
         assertEquals(task.name, descriptor.name)
         assertEquals(task.description, descriptor.description)

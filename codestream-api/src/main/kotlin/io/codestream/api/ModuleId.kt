@@ -3,9 +3,9 @@ package io.codestream.api
 import de.skuzzle.semantic.Version
 
 
-data class ModuleId(val name: String, val version: Version = CodestreamModule.defaultVersion) {
+data class ModuleId(val name: String, val version: Version = defaultVersion) {
 
-    val defaultVersion get() =  version.equals(CodestreamModule.defaultVersion)
+    val isDefaultVersion get() =  version.equals(defaultVersion)
 
 
     override fun toString(): String {
@@ -23,7 +23,7 @@ data class ModuleId(val name: String, val version: Version = CodestreamModule.de
                     throw IllegalArgumentException("$module must be in format <module(@version)")
                 }
             } else {
-                return ModuleId(module, CodestreamModule.defaultVersion)
+                return ModuleId(module, defaultVersion)
             }
         }
     }

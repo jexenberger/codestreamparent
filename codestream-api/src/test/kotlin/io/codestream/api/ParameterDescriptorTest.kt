@@ -1,7 +1,7 @@
 package io.codestream.api
 
-import io.codestream.core.api.descriptor.ParameterDescriptor
-import io.codestream.core.runtime.Type
+import io.codestream.api.Type
+import io.codestream.api.descriptor.ParameterDescriptor
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail

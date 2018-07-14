@@ -1,12 +1,11 @@
 package io.codestream.api
 
-import io.codestream.runtime.tree.BranchProcessingDirective
 
 interface GroupTask : Task {
 
-    fun before(ctx: RunContext): BranchProcessingDirective
+    fun before(ctx: RunContext): Directive
 
-    fun after(ctx: RunContext): BranchProcessingDirective
+    fun after(ctx: RunContext): Directive
 
     fun onError(error: TaskError, ctx: RunContext) {
         throw error.exception

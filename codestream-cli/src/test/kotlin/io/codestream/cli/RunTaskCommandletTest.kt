@@ -1,6 +1,6 @@
 package io.codestream.cli
 
-import io.codestream.core.api.Codestream
+import io.codestream.api.CodestreamFactory
 import org.junit.jupiter.api.Test
 
 class RunTaskCommandletTest {
@@ -14,7 +14,7 @@ class RunTaskCommandletTest {
 
     @Test
     internal fun testRunFileBasedTask() {
-        val tsk = RunTaskCommandlet(Codestream.get(), "src/test/resources/sample.yaml", emptyMap(), true)
+        val tsk = RunTaskCommandlet(CodestreamFactory.get().get(), "src/test/resources/sample.yaml", emptyMap(), true)
         tsk.run()
     }
 }

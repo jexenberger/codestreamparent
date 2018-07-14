@@ -1,7 +1,6 @@
 package io.codestream.api
 
 import de.skuzzle.semantic.Version
-import io.codestream.core.api.CodestreamModule.Companion.defaultVersion
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

@@ -31,7 +31,7 @@ open module io.codestream.api {
 
 
     uses io.codestream.api.CodestreamModule;
-    uses io.codestream.api.Codestream;
+    uses io.codestream.api.CodestreamFactory;
 
 
 

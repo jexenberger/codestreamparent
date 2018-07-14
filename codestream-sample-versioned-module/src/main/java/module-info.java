@@ -15,6 +15,7 @@ open module io.codestream.samplemodule {
     requires static org.junit.jupiter.engine;
     requires static org.junit.jupiter.api;
     requires static kotlin.test.junit;
+    requires static io.codestream.runtime;
 
     uses io.codestream.api.CodestreamModule;
     provides CodestreamModule with io.codestream.sample.SampleModule;

@@ -13,6 +13,10 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
 
+
+val defaultVersion = Version.create(999999999, 999999999, 999999999)
+val systemModuleId = ModuleId("sys", defaultVersion)
+
 interface CodestreamModule {
 
     val name: String
@@ -57,7 +61,10 @@ interface CodestreamModule {
 
 
     companion object {
-        val defaultVersion = Version.create(999999999, 999999999, 999999999)
+
+
+
+
 
         fun versionString(version: Version) = if (version.equals(defaultVersion)) "LATEST" else version.toString()
 

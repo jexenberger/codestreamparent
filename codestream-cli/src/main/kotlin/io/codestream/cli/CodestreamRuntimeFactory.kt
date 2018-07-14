@@ -1,7 +1,8 @@
 package io.codestream.cli
 
-import io.codestream.core.api.Codestream
-import io.codestream.core.api.CodestreamSettings
+import io.codestream.api.Codestream
+import io.codestream.api.CodestreamFactory
+import io.codestream.api.CodestreamSettings
 import io.codestream.di.annotation.Inject
 import io.codestream.di.annotation.Qualified
 import io.codestream.di.api.ComponentId
@@ -16,7 +17,7 @@ class CodestreamRuntimeFactory(
 ) : Factory<Codestream> {
 
     override fun get(id: ComponentId, ctx: Context) : Codestream {
-        val get = Codestream.get(codestreamSettings)
+        val get = CodestreamFactory.get().get(codestreamSettings)
         get.eventHandlers.addAll(eventHandlers)
         return get
     }

@@ -1,9 +1,9 @@
 package io.codestream.cli
 
-import io.codestream.core.api.events.AfterTaskEvent
-import io.codestream.core.api.events.BeforeTaskEvent
-import io.codestream.core.api.events.TaskErrorEvent
-import io.codestream.core.api.events.TaskEvent
+import io.codestream.api.events.AfterTaskEvent
+import io.codestream.api.events.BeforeTaskEvent
+import io.codestream.api.events.TaskErrorEvent
+import io.codestream.api.events.TaskEvent
 import io.codestream.di.event.EventHandler
 import io.codestream.util.io.console.Console
 import io.codestream.util.io.console.decorate
