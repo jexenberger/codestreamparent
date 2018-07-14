@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.task
+package io.codestream.runtime.task
 
 import io.codestream.core.runtime.SampleSimpleTask
 import io.codestream.core.api.GroupTask
@@ -7,7 +7,6 @@ import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
 import io.codestream.core.api.metamodel.ParameterDef
 import io.codestream.core.api.metamodel.TaskDef
-import io.codestream.core.runtime.*
 import io.codestream.core.runtime.container.ParameterDependency
 import io.codestream.di.api.ScopeType
 import io.codestream.di.api.addDependencyHandler
@@ -38,7 +37,7 @@ class SimpleTaskHandlerTest {
         val defn = addType<GroupTask>(SampleSimpleTask::class).toScope(ScopeType.singleton.name) withId taskId
         ctx.add(defn)
         ctx.add(addInstance(taskDef) withId TaskDefId(taskId))
-        SimpleTaskHandler(taskId, taskDef).execute(ctx)
+        io.codestream.runtime.task.SimpleTaskHandler(taskId, taskDef).execute(ctx)
         assertTrue { ctx.get<SampleSimpleTask>(taskId)?.run ?: false }
     }
 
@@ -55,7 +54,7 @@ class SimpleTaskHandlerTest {
         val defn = addType<GroupTask>(SampleSimpleTask::class).toScope(ScopeType.singleton.name) withId taskId
         ctx.add(defn)
         ctx.add(addInstance(taskDef) withId TaskDefId(taskId))
-        SimpleTaskHandler(taskId, taskDef).execute(ctx)
+        io.codestream.runtime.task.SimpleTaskHandler(taskId, taskDef).execute(ctx)
         assertFalse { ctx.get<SampleSimpleTask>(taskId)?.run ?: false }
     }
 }

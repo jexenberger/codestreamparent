@@ -18,6 +18,10 @@
         </dependency>
         <dependency>
             <groupId>codestream</groupId>
+            <artifactId>codestream-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>codestream</groupId>
             <artifactId>codestream-core</artifactId>
         </dependency>
 

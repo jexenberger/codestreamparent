@@ -1,9 +1,9 @@
 package io.codestream.sample
 
-import io.codestream.core.api.RunContext
-import io.codestream.core.api.SimpleTask
-import io.codestream.core.api.annotations.Parameter
-import io.codestream.core.api.annotations.Task
+import io.codestream.api.RunContext
+import io.codestream.api.SimpleTask
+import io.codestream.api.annotations.Parameter
+import io.codestream.api.annotations.Task
 
 @Task(name="greeter",description = "Greet a person")
 class Greeter(

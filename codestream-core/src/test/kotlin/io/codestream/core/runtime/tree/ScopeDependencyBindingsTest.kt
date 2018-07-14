@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.tree
+package io.codestream.runtime.tree
 
 import io.codestream.core.runtime.ScopedDependencyBindings
 import io.codestream.di.api.DefaultApplicationContext

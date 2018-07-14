@@ -16,6 +16,5 @@ class HelpCommandlet(
 
 
 
-        codestream.modules
     }
 }

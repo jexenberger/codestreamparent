@@ -40,6 +40,7 @@ MOD_PATHS="$CS_HOME_DIR"
 # startup time tuning parameters
 STARTUP_TUNING="-client -Xshare:auto -XX:TieredStopAtLevel=1 -XX:CICompilerCount=1 -XX:+UseSerialGC"
 
+# Memory settings
 MEM_OPTS="-Xms64M -Xmx512m"
 
 # Set codestream working home

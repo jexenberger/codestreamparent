@@ -1,10 +1,8 @@
 package io.codestream.cli
 
-import de.skuzzle.semantic.Version
 import io.codestream.core.api.Codestream
-import io.codestream.core.api.CodestreamModule.Companion.defaultVersion
-import io.codestream.core.api.ModuleId
 import io.codestream.core.api.ParameterCallback
+import io.codestream.core.api.TaskType
 import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.di.annotation.Inject
 import io.codestream.di.annotation.Value
@@ -13,8 +11,8 @@ import io.codestream.util.io.console.Console
 import io.codestream.util.io.console.bold
 import io.codestream.util.io.console.decorate
 import io.codestream.util.io.console.warn
+import io.codestream.util.stackDump
 import java.io.File
-import java.util.*
 
 class RunTaskCommandlet(
         @Inject
@@ -31,39 +29,24 @@ class RunTaskCommandlet(
         try {
 
             if (task.endsWith(".yaml")) {
-                if (runFile()) return
+                runFile()
             } else {
-                val parts = task.split("::")
-                if (parts.size != 2) {
-                    Console.display(warn("$task must be in format <module(@version)::task"))
-                    return
-                }
-                val module = parts[0].let {
-                    val modParts = it.split("@")
-                    if (modParts.size == 2) {
-                        try {
-                            ModuleId(modParts[0], Version.parseVersion(modParts[1]))
-                        } catch (e: Version.VersionFormatException) {
-                            Console.display(warn("$task must be in format <module(@version)::task"))
-                            return
-                        }
-                    } else {
-                        ModuleId(it, defaultVersion)
-                    }
-                }
-                val task = parts[1]
-
-                codestream.runTask(
-                        module = module,
-                        task = task,
-                        parameters = inputParameters,
-                        callback = this
-                )
+                runTask()
             }
 
         } catch (e: Exception) {
             displayError(e)
         }
+    }
+
+    private fun runTask() {
+        val taskType = TaskType.fromString(task)
+        codestream.runTask(
+                module = taskType.module,
+                task = taskType.name,
+                parameters = inputParameters,
+                callback = this
+        )
     }
 
     private fun runFile(): Boolean {
@@ -82,13 +65,13 @@ class RunTaskCommandlet(
                 .display(bold(e.message!!))
                 .newLine()
         if (this.debug) {
-            e.printStackTrace()
+            Console.display(decorate(e.stackDump, Console.ANSI_RED, Console.REVERSED)).newLine()
         }
     }
 
 
     override fun capture(descriptor: ParameterDescriptor): Any? {
-        val prompt = if (descriptor.required) bold("Required: #") else "#"
+        val prompt = if (descriptor.required) "Required: #" else "#"
         val default = if (descriptor.default != null) "default value: '${descriptor.default}'" else ""
         Console.display("Enter")
                 .space()
@@ -100,14 +83,15 @@ class RunTaskCommandlet(
                 .space()
                 .display(default)
                 .newLine()
-                .display(prompt)
+                .display(bold(prompt))
                 .space()
 
-        val ret = Console.get()
-        return if (descriptor.required && descriptor.default.isNullOrBlank() && ret.isBlank()) {
+        val readVal = Console.get()
+        val ret = readVal.isBlank().ifTrue { descriptor.default } ?: readVal
+        return if (descriptor.required && ret.isBlank()) {
             capture(descriptor)
         } else {
-            null
+            ret
         }
     }
 }

@@ -30,6 +30,12 @@ if DEFINED CS_HOME (
     exit 2
 )
 
+REM jvm parameters
+set STARTUP_TUNING="-client -Xshare:auto -XX:TieredStopAtLevel=1 -XX:CICompilerCount=1 -XX:+UseSerialGC"
+
+REM Memory settings
+set MEM_OPTS="-Xms64M -Xmx512m"
+
 REM  Set codestream working home
 set JAVA_PROPS=-Dcs.installation.folder=%CS_HOME_DIR%
 
@@ -44,4 +50,4 @@ IF [%1] EQU [] (
     set ARGS=%*
 )
 
-CMD /k ""%JAVA%"" %JAVA_PROPS% -jar %EXECUTABLE_PATH% %ARGS%
+CMD /k ""%JAVA%"" %STARTUP_TUNING% %MEM_OPTS% %JAVA_PROPS% -jar %EXECUTABLE_PATH% %ARGS%

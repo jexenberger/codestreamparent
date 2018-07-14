@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.yaml
+package io.codestream.runtime.yaml
 
 import io.codestream.core.runtime.TestModule
 import io.codestream.core.api.TaskType

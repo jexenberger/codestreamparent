@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.modules.system
+package io.codestream.runtime.modules.system
 
 import io.codestream.core.runtime.ScopedDependencyBindings
 import io.codestream.core.runtime.StreamContext

@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.services
+package io.codestream.runtime.services
 
 import io.codestream.core.runtime.StreamContext
 import org.junit.jupiter.api.Test
@@ -10,7 +10,7 @@ class JMustacheTemplatingServiceTest {
 
     @Test
     internal fun testWrite() {
-        val templatingService = JMustacheTemplatingService()
+        val templatingService = io.codestream.runtime.services.JMustacheTemplatingService()
         val ctx = StreamContext()
         val writer = StringWriter()
         ctx.bindings["test1"] = "hello"

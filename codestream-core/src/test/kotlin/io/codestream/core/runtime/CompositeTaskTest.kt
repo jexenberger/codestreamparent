@@ -1,4 +1,4 @@
-package io.codestream.core.runtime
+package io.codestream.runtime
 
 import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskId

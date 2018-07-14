@@ -1,6 +1,5 @@
-package io.codestream.core.runtime.tree
+package io.codestream.runtime.tree
 
-import kotlinx.coroutines.experimental.delay
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test

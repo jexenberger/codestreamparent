@@ -1,5 +1,6 @@
-package io.codestream.core.runtime
+package io.codestream.runtime
 
+import io.codestream.api.Type
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull

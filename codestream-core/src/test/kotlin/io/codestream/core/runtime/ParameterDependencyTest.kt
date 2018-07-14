@@ -1,6 +1,5 @@
-package io.codestream.core.runtime
+package io.codestream.runtime
 
-import io.codestream.core.api.*
 import io.codestream.core.api.annotations.Parameter
 import io.codestream.core.api.metamodel.ParameterDef
 import io.codestream.core.api.metamodel.TaskDef

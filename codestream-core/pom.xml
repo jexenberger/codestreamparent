@@ -9,12 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>codestream-core</artifactId>
+    <artifactId>codestream-runtime</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>codestream</groupId>
             <artifactId>codestream-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>codestream</groupId>
+            <artifactId>codestream-api</artifactId>
         </dependency>
 
         <dependency>

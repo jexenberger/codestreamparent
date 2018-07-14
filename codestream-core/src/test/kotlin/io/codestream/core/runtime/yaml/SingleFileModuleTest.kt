@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.yaml
+package io.codestream.runtime.yaml
 
 import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskType
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 class SingleFileModuleTest {
 

@@ -1,6 +1,7 @@
 package io.codestream.util.transformation
 
 import io.codestream.util.SystemException
+import io.codestream.util.crypto.Secret
 import java.io.File
 import java.math.BigDecimal
 import kotlin.reflect.KClass
@@ -14,6 +15,8 @@ object TransformerService {
 
 
     init {
+        addConverter(String::class, Secret::class, LambdaTransformer<String, Secret> { Secret(it.toByteArray()) })
+        addConverter(Secret::class, String::class, LambdaTransformer<Secret, String> { it.value })
         addConverter(String::class, File::class, LambdaTransformer<String, File> { File(it) })
         addConverter(List::class, Array<Int>::class, LambdaTransformer<List<Any>, Array<Int>> {
             it.map { value -> TransformerService.convert<Int>(value) }.toTypedArray()

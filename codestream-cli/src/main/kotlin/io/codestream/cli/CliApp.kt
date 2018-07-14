@@ -5,6 +5,7 @@ import com.xenomachina.argparser.default
 import io.codestream.core.api.Codestream
 import io.codestream.core.api.CodestreamSettings
 import io.codestream.di.api.*
+import io.codestream.util.Eval
 import io.codestream.util.OS
 import io.codestream.util.ifTrue
 import io.codestream.util.io.console.Console
@@ -14,6 +15,7 @@ import java.io.File
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 class CliApp(val args: ArgParser) : ApplicationContext() {
 
@@ -31,14 +33,28 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
         }
     }
 
-    private fun startContainer(): Boolean {
+    val commandlet: Future<Commandlet>
+
+    init {
+        //force parameters to be loaded
+        task
+        inputParms
+        if (threads > 1) {
+            executorService.submit(Callable<Commandlet> { run { Eval.eval("1==1") } })
+        }
+        commandlet = executorService.submit(Callable<Commandlet> { run { startContainer(task, inputParms) } })
+    }
 
 
-        val parms = inputParms.toTypedArray().toMap()
+    private fun startContainer(task: String, parmeters: MutableList<Pair<String, String?>>): Commandlet {
+
+        println("qwerty " + this.task)
+
+        val parms = parmeters.toTypedArray().toMap()
 
         setValue("yaml.module.path", File("${OS.os().homeDir}/.cs/_modules"))
         setValue("enable.debug", true)
-        setValue("task.ref", task)
+        setValue("task.ref", this.task)
         setValue("input.parameters", parms)
 
         addType<CodestreamSettings>(CodestreamSettings::class) into this
@@ -50,34 +66,34 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
             addType<Commandlet>(cmd) withId StringId(type) into this
         }
         addType<CodestreamRuntimeFactory>(CodestreamRuntimeFactory::class) withId TypeId(Codestream::class) into this
-        return true
+        return get<Commandlet>(command!!)!!
     }
 
     fun run() {
-        val startup = executorService.submit(Callable<Boolean> { run { startContainer() }})
-        if (!CliApp.commands.containsKey(command)) {
-            Console.display(
-                    decorate(
-                            "'$command' is not a recognised command, must be one of:",
-                            Console.BOLD,
-                            Console.ANSI_RED)).newLine()
-            CliApp.commands.keys.forEach {
-                Console.tab()
-                        .display(decorate("- $it", Console.BOLD, Console.ANSI_RED))
-                        .newLine()
+        try {
+            if (!CliApp.commands.containsKey(command)) {
+                Console.display(
+                        decorate(
+                                "'$command' is not a recognised command, must be one of:",
+                                Console.BOLD,
+                                Console.ANSI_RED)).newLine()
+                CliApp.commands.keys.forEach {
+                    Console.tab()
+                            .display(decorate("- $it", Console.BOLD, Console.ANSI_RED))
+                            .newLine()
+                }
+                commandlet.cancel(true)
+                return
             }
-            startup.cancel(true)
-            return
+            Console.display(bold("Running '${command}' ${task.isNotBlank().ifTrue { " -> $task" } ?: ""}..."))
+                    .newLine()
+                    .newLine()
+            println("ready!!")
+            commandlet.get().run()
+        } finally {
+            executorService.shutdownNow()
         }
-        Console.display(bold("Running '${command} ${task.isNotBlank().ifTrue { " -> $task" } ?: ""}..."))
-                .newLine()
-                .newLine()
-        if (!startup.get()) {
-            return
-        }
-        val command = get<Commandlet>(command!!)!!
-        println("ready!!")
-        command.run()
+
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.resources.yaml
+package io.codestream.runtime.resources.yaml
 
 import io.codestream.core.api.descriptor.ParameterDescriptor
 import io.codestream.core.api.resources.Resource

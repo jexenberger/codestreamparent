@@ -1,4 +1,4 @@
-package io.codestream.core.runtime
+package io.codestream.runtime
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

@@ -1,9 +1,8 @@
 package io.codestream.sample
 
-import io.codestream.core.api.KotlinModule
-import io.codestream.core.api.CodestreamModule
+import io.codestream.api.KotlinModule
 
-class SampleModule : KotlinModule("sample", "sample test module"), CodestreamModule {
+class SampleModule : KotlinModule("sample", "sample test module") {
 
 
     init {

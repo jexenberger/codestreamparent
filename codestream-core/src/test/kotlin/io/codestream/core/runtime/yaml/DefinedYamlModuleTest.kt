@@ -1,4 +1,4 @@
-package io.codestream.core.runtime.yaml
+package io.codestream.runtime.yaml
 
 import de.skuzzle.semantic.Version
 import io.codestream.core.api.ModuleId

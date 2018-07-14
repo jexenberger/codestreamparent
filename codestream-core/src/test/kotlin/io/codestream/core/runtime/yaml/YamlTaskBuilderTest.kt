@@ -1,9 +1,8 @@
-package io.codestream.core.runtime.yaml
+package io.codestream.runtime.yaml
 
 import io.codestream.core.api.ModuleId
 import io.codestream.core.api.TaskId
 import io.codestream.core.api.TaskType
-import io.codestream.core.runtime.*
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals

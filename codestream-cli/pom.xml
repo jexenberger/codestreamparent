@@ -40,6 +40,10 @@
             <groupId>com.xenomachina</groupId>
             <artifactId>kotlin-argparser</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>

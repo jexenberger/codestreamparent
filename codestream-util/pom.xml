@@ -25,6 +25,14 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+        </dependency>
 
         <!-- Test dependencies (provided until IntelliJ fixes this) -->
         <dependency>
@@ -40,36 +48,4 @@
         </dependency>
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <exec executable="${jdk.home}/bin/jar" failonerror="true">
-                                    <arg value="-m"/>
-                                    <arg value="src/main/resources/META-INF/MANIFEST.MF"/>
-                                    <arg value="--module-version"/>
-                                    <arg value="${project.version}"/>
-                                    <arg value="--update"/>
-                                    <arg value="--file"/>
-                                    <arg value="${project.build.directory}/${project.artifactId}-${project.version}.jar"/>
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-
 </project>
