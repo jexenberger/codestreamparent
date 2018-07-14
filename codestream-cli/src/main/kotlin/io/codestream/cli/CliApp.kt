@@ -47,9 +47,6 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
 
 
     private fun startContainer(task: String, parmeters: MutableList<Pair<String, String?>>): Commandlet {
-
-        println("qwerty " + this.task)
-
         val parms = parmeters.toTypedArray().toMap()
 
         setValue("yaml.module.path", File("${OS.os().homeDir}/.cs/_modules"))
@@ -85,10 +82,6 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
                 commandlet.cancel(true)
                 return
             }
-            Console.display(bold("Running '${command}' ${task.isNotBlank().ifTrue { " -> $task" } ?: ""}..."))
-                    .newLine()
-                    .newLine()
-            println("ready!!")
             commandlet.get().run()
         } finally {
             executorService.shutdownNow()

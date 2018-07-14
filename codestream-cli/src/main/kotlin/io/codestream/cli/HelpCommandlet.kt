@@ -21,6 +21,12 @@ class HelpCommandlet(
     override fun run() {
 
         when (task) {
+            "" -> {
+                headerAndDescription("Help Options", "List of available functions to get help on (cs help [option])")
+                displayListLine("modules","Displays the list of available modules")
+                displayListLine("[module name]","Displays details about a specific module")
+                displayListLine("[task]","Displays details about a specific task")
+            }
             "modules" -> {
                 codestream.modules.forEach { id ->
 
