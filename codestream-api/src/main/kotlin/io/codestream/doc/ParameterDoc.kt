@@ -5,5 +5,6 @@ data class ParameterDoc(
         val description:String,
         val type:String,
         val required:Boolean,
+        val default:String? = null,
         val pattern:String? = null) {
 }

@@ -8,6 +8,7 @@ import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
 import io.codestream.runtime.tree.Node
 import io.codestream.di.api.addInstance
+import io.codestream.doc.ModuleDoc
 import io.codestream.runtime.task.GroupTaskHandler
 import io.codestream.runtime.task.SimpleTaskHandler
 import io.codestream.runtime.yaml.DefinedYamlModule
@@ -18,10 +19,14 @@ import java.nio.file.Files
 import java.util.concurrent.ExecutorService
 
 class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
+    override fun taskDoc(name: TaskType): TaskType? {
+        return null
+    }
+
     override val modules get() = io.codestream.runtime.ModuleRegistry.modules
 
-
     private val executorService: ExecutorService;
+
 
     init {
         if (!settings.yamlModulePath.exists()) {
@@ -76,11 +81,14 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         return runTask(module, task, parameters, io.codestream.runtime.DefaultParameterCallback())
     }
 
-
     override fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
         val module = SingleFileModule(file)
         io.codestream.runtime.ModuleRegistry += module
         val descriptor = module.taskDescriptor
         return runTask(module.id, descriptor.name, parameters, callback)
+    }
+
+    override fun moduleDoc(name: ModuleId): ModuleDoc? {
+        return ModuleRegistry[name]?.documentation
     }
 }

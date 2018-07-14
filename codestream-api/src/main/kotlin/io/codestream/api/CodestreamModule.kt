@@ -32,7 +32,7 @@ interface CodestreamModule {
         return this.tasks.map {
             return tasks.map { (k, v) ->
                 val paramDocs = v.parameters
-                        .map { (name, parm) -> ParameterDoc(name, parm.description, parm.type.name, parm.required, parm.regex) }
+                        .map { (name, parm) -> ParameterDoc(name, parm.description, parm.type.name, parm.required, parm.default, parm.regex) }
                         .toSet()
                         .sortedBy { it.name }
                 TaskDoc(k.name, v.description, paramDocs)
@@ -61,10 +61,6 @@ interface CodestreamModule {
 
 
     companion object {
-
-
-
-
 
         fun versionString(version: Version) = if (version.equals(defaultVersion)) "LATEST" else version.toString()
 

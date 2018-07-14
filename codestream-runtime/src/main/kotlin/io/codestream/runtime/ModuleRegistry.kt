@@ -15,7 +15,7 @@ object ModuleRegistry {
 
     val systemModuleId: ModuleId = systemModule.id
 
-    val modules:Set<Pair<String, Version>> get() =  _modules.map { it.key.name to it.key.version }.toSet()
+    val modules:Set<ModuleId> get() =  _modules.keys.toSet()
 
 
     init {

@@ -3,6 +3,9 @@ import io.codestream.runtime.CodestreamRuntimeFactory;
 
 open module io.codestream.runtime {
 
+    //until ServiceLoader resolution works better
+    exports io.codestream.runtime;
+
     requires io.codestream.di;
     requires io.codestream.api;
 

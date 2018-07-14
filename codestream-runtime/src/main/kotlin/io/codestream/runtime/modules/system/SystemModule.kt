@@ -2,7 +2,9 @@ package io.codestream.runtime.modules.system
 
 import io.codestream.api.KotlinModule
 
-class SystemModule : KotlinModule(SystemModule.name,"Core system module") {
+class SystemModule : KotlinModule(SystemModule.name,"Core system module", scriptObjectType = SystemModuleFunctions::class) {
+
+
 
     init {
         create {
@@ -13,6 +15,7 @@ class SystemModule : KotlinModule(SystemModule.name,"Core system module") {
             add(Script::class)
         }
     }
+
 
     companion object {
         val name = "sys"
