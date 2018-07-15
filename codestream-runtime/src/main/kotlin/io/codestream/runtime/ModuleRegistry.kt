@@ -3,6 +3,7 @@ package io.codestream.runtime
 import io.codestream.api.CodestreamModule
 import io.codestream.api.ModuleId
 import io.codestream.api.services.ScriptService
+import io.codestream.runtime.modules.http.HttpModule
 import io.codestream.runtime.modules.resources.ResourcesModule
 import io.codestream.runtime.modules.system.SystemModule
 import io.codestream.runtime.yaml.DefinedYamlModule
@@ -31,6 +32,7 @@ object ModuleRegistry {
     private fun loadSystemModules() {
         this += systemModule
         this += ResourcesModule()
+        this += HttpModule()
     }
 
     private fun load() {

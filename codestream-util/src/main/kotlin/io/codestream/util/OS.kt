@@ -21,10 +21,9 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
 
     val optimizedExecutor: ExecutorService by lazy {
         val cpus = Runtime.getRuntime().availableProcessors()
-        val threads = if (cpus > 2) cpus - 1 else cpus
+        val threads = cpus * 3
         val service = Executors.newFixedThreadPool(threads)
-        Runtime.getRuntime().addShutdownHook(Thread { service.shutdownNow() })
-        service
+        ExecutorServiceWrapper(service)
     }
 
     val version: String
@@ -140,7 +139,7 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
             handler: (String) -> Unit
     ): Int {
         val command = if (unixVariant) {
-            arrayOf("/bin/sh", "-c", "\"$cmd\"")
+            arrayOf("/bin/sh", "-c", cmd)
         } else {
             arrayOf("cmd", "-c", "\"${cmd}")
         }

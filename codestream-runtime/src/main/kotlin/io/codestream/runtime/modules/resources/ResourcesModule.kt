@@ -6,6 +6,8 @@ class ResourcesModule : KotlinModule("resources", "Module for interacting with r
 
     init {
         add(DefineResource::class)
+        add(GetResource::class)
+        add(QueryResources::class)
     }
 
 }

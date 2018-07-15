@@ -2,7 +2,7 @@ package io.codestream.api
 
 interface FunctionalTask : SimpleTask {
 
-    val outputVariable: String
+    val outputVariable: String get() =  "__output"
 
     override fun run(ctx: RunContext) {
         val result = getResult(ctx)

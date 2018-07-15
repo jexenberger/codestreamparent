@@ -13,6 +13,7 @@ class SystemModule : KotlinModule(SystemModule.name,"Core system module", script
             add(ForEach::class)
             add(Set::class)
             add(Script::class)
+            add(Shell::class)
         }
     }
 

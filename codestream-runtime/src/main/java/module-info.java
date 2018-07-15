@@ -25,6 +25,9 @@ open module io.codestream.runtime {
 
     requires jmustache;
 
+    requires com.fasterxml.jackson.core;
+    requires com.fasterxml.jackson.databind;
+
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;
     requires static org.junit.jupiter.api;

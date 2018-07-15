@@ -41,12 +41,22 @@ class RunTaskCommandlet(
 
     private fun runTask() {
         val taskType = TaskType.fromString(task)
-        codestream.runTask(
+        val result = codestream.runTask(
                 module = taskType.module,
                 task = taskType.name,
                 parameters = inputParameters,
                 callback = this
         )
+        displayOutput(result)
+    }
+
+    private fun displayOutput(result: Map<String, Any?>) {
+        if (debug) {
+            result.entries.forEach { (k, v)  ->
+                Console.display(bold(k
+                ).padEnd(15)).display(":").display(v.toString()).newLine()
+            }
+        }
     }
 
     private fun runFile() {

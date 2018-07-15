@@ -35,6 +35,9 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
         if (property == null && annotation.default.isEmpty() && !target.isNullable) {
             throw ComponentPropertyFailureException(id.taskType.taskName, target.name, "not defined in definition, has no default and is not optional")
         }
+        if (property == null && annotation.default.isEmpty()) {
+            return property
+        }
         val valueDefn = property ?: annotation.default
 
         val result = scriptService.eval(property.toString(), ctx.bindings, true, Language.groovy) {
