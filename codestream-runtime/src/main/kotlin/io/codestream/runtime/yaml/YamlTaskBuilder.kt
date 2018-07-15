@@ -13,6 +13,7 @@ import io.codestream.runtime.task.SimpleTaskHandler
 import io.codestream.runtime.task.defaultCondition
 import io.codestream.runtime.task.scriptCondition
 import io.codestream.runtime.tree.Branch
+import io.codestream.util.system
 import io.codestream.util.transformation.TransformerService
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.nodes.MappingNode
@@ -21,9 +22,11 @@ import org.yaml.snakeyaml.nodes.ScalarNode
 import org.yaml.snakeyaml.nodes.SequenceNode
 import java.io.File
 import java.io.StringReader
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
-class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: String) {
+class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: String, val executorService: ExecutorService = system.optimizedExecutor) {
 
 
     val taskDescriptor by lazy { load() }

@@ -1,11 +1,11 @@
 package io.codestream.runtime.tree
 
 import io.codestream.api.Directive
+import io.codestream.util.system
 import java.util.concurrent.*
 
 abstract class Branch<T>(override val id: String,
-                      val parallel: Boolean = true,
-                      val executorService: ExecutorService = Executors.newFixedThreadPool(2)) : Node<T> {
+                      val parallel: Boolean = true) : Node<T> {
 
     val children: List<Node<T>> get() = _childList
 
@@ -71,7 +71,7 @@ abstract class Branch<T>(override val id: String,
     open protected fun runChildren(ctx: T) {
         val futures = mutableListOf<Future<*>>()
         for (node in _childList) {
-            val future: Future<Node<T>> = executorService.submit(Callable<Node<T>> { runLeafNode(node, ctx) })
+            val future: Future<Node<T>> = system.optimizedExecutor.submit(Callable<Node<T>> { runLeafNode(node, ctx) })
             if (parallel) {
                 futures += future
             } else {

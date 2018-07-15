@@ -9,6 +9,7 @@ import io.codestream.runtime.StreamContext
 import io.codestream.runtime.services.CodestreamScriptingService
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.util.concurrent.Executors
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -45,7 +46,7 @@ class YamlTaskBuilderTest {
 
     @Test
     internal fun testDefineTaskTree() {
-        val descriptor = YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).load()
+        val descriptor = YamlTaskBuilder(file.nameWithoutExtension, module, file.readText(), Executors.newSingleThreadExecutor()).load()
         val task = CompositeTask(TaskId(TaskType(ModuleId.fromString("sample.yaml"), "my-cool-task")), descriptor, StreamContext())
         YamlTaskBuilder(file.nameWithoutExtension, module, file.readText()).defineTaskTree(task)
         assertTrue { task.children.isNotEmpty() }

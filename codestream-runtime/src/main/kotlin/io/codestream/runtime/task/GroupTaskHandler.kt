@@ -14,9 +14,8 @@ import java.util.concurrent.Executors
 
 class GroupTaskHandler(private val taskId: TaskId,
                        parallel: Boolean,
-                       val taskDef: GroupTaskDef,
-                       executorService: ExecutorService = Executors.newFixedThreadPool(2))
-    : Branch<StreamContext>(taskId.toString(), parallel, executorService) {
+                       val taskDef: GroupTaskDef)
+    : Branch<StreamContext>(taskId.toString(), parallel) {
 
 
     private val timer: Timer by lazy { Timer() }

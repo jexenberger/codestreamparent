@@ -49,14 +49,13 @@ class RunTaskCommandlet(
         )
     }
 
-    private fun runFile(): Boolean {
+    private fun runFile() {
         val file = File(task)
         if (!file.exists() || file.isDirectory) {
-            Console.display(warn("$task is not a file"))
-            return true
+            Console.display(warn("$task is not a file")).newLine()
+            return
         }
         codestream.runTask(file, inputParameters, this)
-        return false
     }
 
     private fun displayError(e: Exception) {

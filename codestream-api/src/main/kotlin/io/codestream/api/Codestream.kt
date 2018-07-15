@@ -16,6 +16,8 @@ abstract class Codestream {
     abstract fun moduleDoc(name:ModuleId) : ModuleDoc?
     abstract fun taskDoc(name:TaskType) : TaskType?
 
+    abstract fun shutdown()
+
     val eventHandlers = mutableSetOf<EventHandler<*>>()
 
 

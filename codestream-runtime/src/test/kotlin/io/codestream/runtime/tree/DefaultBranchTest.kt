@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 import java.util.*
+import java.util.concurrent.Executors
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -22,8 +23,8 @@ class DefaultBranchTest {
                 id = "1",
                 parallel = false)
         root += DefaultLeaf<String>("2",
-                beforeLeafVisitor = { n,c -> visited2 = true},
-                afterLeafVisitor = { n, c , s -> visited2After = true} ,
+                beforeLeafVisitor = { n, c -> visited2 = true },
+                afterLeafVisitor = { n, c, s -> visited2After = true },
                 handler = { called2 = true }
         )
         root += DefaultLeaf("3") { called3 = true }
@@ -73,7 +74,6 @@ class DefaultBranchTest {
                     assertTrue { e is IllegalStateException }
                     errorCalled = true
                 }
-
         )
         root += DefaultLeaf("2") { called2 = true }
         val result = root.execute("hello")
@@ -90,10 +90,9 @@ class DefaultBranchTest {
                 id = "1",
                 parallel = false,
                 onError = { e, ctx ->
-                    assertTrue { e is IllegalStateException  }
+                    assertTrue { e is IllegalStateException }
                     errorCalled = true
                 }
-
         )
         root += DefaultLeaf("2", handler = { throw IllegalStateException("borked") })
         val result = root.execute("hello")
@@ -132,7 +131,6 @@ class DefaultBranchTest {
                         Directive.done
                     }
                 }
-
         )
 
         val result = root.execute("hello")
@@ -157,7 +155,6 @@ class DefaultBranchTest {
                         Directive.done
                     }
                 }
-
         )
 
         root.execute("hello")

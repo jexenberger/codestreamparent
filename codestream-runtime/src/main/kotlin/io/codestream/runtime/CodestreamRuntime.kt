@@ -25,6 +25,7 @@ import io.codestream.util.Ids
 import io.codestream.util.crypto.ResolvingSecretStore
 import io.codestream.util.crypto.SimpleSecretStore
 import io.codestream.util.crypto.SystemKey
+import io.codestream.util.system
 import java.io.File
 import java.util.concurrent.ExecutorService
 
@@ -35,20 +36,21 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
 
     override val modules get() = io.codestream.runtime.ModuleRegistry.modules
 
-    private val executorService: ExecutorService
     private val resources: WritableResourceRepository
     private val secretStore: SimpleSecretStore
     private val scriptService: ScriptService
     private val templateService: TemplateService
-
     init {
         scriptService = CodestreamScriptingService()
         ModuleRegistry.loadDefinedYamlModules(settings.yamlModulePath, scriptService)
-        executorService = settings.executor
         resources = ResolvingResourceRegistry(YamlResourceRepository("resources", settings.resourceRepositoryPath))
         secretStore = ResolvingSecretStore(YamlSecretStore(settings.secretStorePath))
         SystemKey.systemKeyPath = settings.globalKeyPath
         templateService = JMustacheTemplatingService()
+    }
+
+    override fun shutdown() {
+        system.optimizedExecutor.shutdownNow()
     }
 
     fun resolveParameter(type: ParameterDescriptor, existingParameters: Map<String, Any?>, callback: ParameterCallback): Any? {
@@ -85,7 +87,6 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
 
     private fun createContext(): StreamContext {
         val streamContext = StreamContext()
-        addInstance(executorService) withId TypeId(ExecutorService::class) into streamContext
         addInstance(secretStore) withId TypeId(SimpleSecretStore::class) into streamContext
         addInstance(scriptService) withId TypeId(ScriptService::class) into streamContext
         addInstance(resources) withId TypeId(ResourceRepository::class) into streamContext

@@ -20,9 +20,6 @@ import java.util.concurrent.Executors
 
 class CliApp(val args: ArgParser) : ApplicationContext() {
 
-    val threads = Runtime.getRuntime().availableProcessors()
-    val executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-
     val command: String? by args.positional(name = "COMMAND", help = "command to execute, can be one of :${CliApp.commands.keys.map { "'$it'" }.joinToString(", ")}")
     val task: String by args.positional(name = "COMMAND_OPTION", help = "Parameter for command option, type 'cs help' for individual commands").default("")
     val inputParms by args.adding("-I", "--input", help = "input parameter (format: [name]=[items]") {
@@ -50,7 +47,6 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
         addInstance(CodestreamSettings()) withId TypeId(CodestreamSettings::class) into this
         addInstance(args) withId StringId("args") into this
         addInstance(setOf(ConsoleHandler(true))) withId StringId("eventHandlers") into this
-        addInstance(executorService) withId TypeId(ExecutorService::class) into this
 
         commands.forEach { type, cmd ->
             addType<Commandlet>(cmd) withId StringId(type) into this
@@ -62,10 +58,8 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
     fun run() = mainBody("cs") {
         task
         inputParms
-        if (threads > 1) {
-            executorService.submit(Callable<Commandlet> { run { Eval.eval("1==1") } })
-        }
-        val commandlet = executorService.submit(Callable<Commandlet> { run { startContainer(inputParms) } })
+        OS.os().optimizedExecutor.submit(Callable<Commandlet> { run { Eval.eval("1==1") } })
+        val commandlet = OS.os().optimizedExecutor.submit(Callable<Commandlet> { run { startContainer(inputParms) } })
 
         try {
             if (!CliApp.commands.containsKey(command)) {
@@ -85,7 +79,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
                 commandlet.get().run()
             }
         } finally {
-            executorService.shutdownNow()
+            OS.os().optimizedExecutor.shutdownNow()
         }
 
     }

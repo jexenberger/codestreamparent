@@ -3,9 +3,12 @@ package io.codestream.runtime.yaml
 import io.codestream.api.CodestreamModule
 import io.codestream.api.TaskDoesNotExistException
 import io.codestream.api.TaskId
+import io.codestream.di.api.addInstance
 import io.codestream.runtime.CompositeTask
 import io.codestream.runtime.StreamContext
 import java.io.File
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 interface BaseYamlModule : CodestreamModule {
 

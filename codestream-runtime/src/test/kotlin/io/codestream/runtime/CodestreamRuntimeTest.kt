@@ -14,6 +14,13 @@ class CodestreamRuntimeTest {
     }
 
     @Test
+    internal fun testShutdown() {
+        val runtime = CodestreamRuntime(CodestreamSettings())
+        runtime.runTask(ModuleId("sys", defaultVersion), "echo", mapOf("value" to "hello world"), DefaultParameterCallback())
+        runtime.shutdown()
+    }
+
+    @Test
     internal fun testRunGroupTask() {
         CodestreamRuntime(CodestreamSettings()).runTask(ModuleId("sys", defaultVersion), "group", mapOf("value" to "hello world"), DefaultParameterCallback())
     }

@@ -2,6 +2,8 @@ package io.codestream.util
 
 import java.io.File
 import java.util.*
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -16,6 +18,14 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
     Unix(true, "/", "nix"),
     AIX(true, "/", "aix"),
     Solaris(true, "/", "sunos", "solaris");
+
+    val optimizedExecutor: ExecutorService by lazy {
+        val cpus = Runtime.getRuntime().availableProcessors()
+        val threads = if (cpus > 2) cpus - 1 else cpus
+        val service = Executors.newFixedThreadPool(threads)
+        Runtime.getRuntime().addShutdownHook(Thread { service.shutdownNow() })
+        service
+    }
 
     val version: String
         get() = System.getProperty("os.version")

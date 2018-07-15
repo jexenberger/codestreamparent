@@ -2,13 +2,18 @@ package io.codestream.runtime
 
 import io.codestream.api.*
 import io.codestream.api.descriptor.TaskDescriptor
+import io.codestream.api.resources.ResourceRepository
+import io.codestream.api.services.ScriptService
+import io.codestream.api.services.TemplateService
+import io.codestream.di.api.TypeId
+import io.codestream.di.api.addInstance
 import io.codestream.runtime.task.GroupTaskHandler
 import io.codestream.runtime.task.SimpleTaskHandler
 import io.codestream.runtime.task.TaskDefContext
 import io.codestream.runtime.tree.Branch
-import io.codestream.api.Directive
 import io.codestream.runtime.tree.Node
 import io.codestream.util.Eval
+import io.codestream.util.crypto.SimpleSecretStore
 import io.codestream.util.transformation.TransformerService
 
 class CompositeTask(
@@ -19,7 +24,6 @@ class CompositeTask(
         var finallyTask: SimpleTaskHandler? = null) : Branch<io.codestream.runtime.StreamContext>(taskId.toString(), false), SimpleTask {
 
 
-
     override fun preTraversal(ctx: io.codestream.runtime.StreamContext) = Directive.continueExecution
 
     override fun postTraversal(ctx: io.codestream.runtime.StreamContext) = Directive.done
@@ -27,7 +31,7 @@ class CompositeTask(
     override fun onError(error: Exception, ctx: io.codestream.runtime.StreamContext) {
         val taskError = TaskError(error, ctx.bindings)
         ctx.bindings["_error_"] = taskError
-        errorTask?.let {  runTask(ctx, it) } ?: throw taskError
+        errorTask?.let { runTask(ctx, it) } ?: throw taskError
     }
 
     override fun enterBranch(ctx: io.codestream.runtime.StreamContext) {
@@ -65,6 +69,7 @@ class CompositeTask(
         val context = ctx["_ctx"] as io.codestream.runtime.StreamContext?
                 ?: throw ComponentFailedException(taskId.id, "context not loaded in Task Context")
         val defn = TaskDefContext.defn
+        populateNewContext(context, nestedContext)
         descriptor.parameters.forEach { k, v ->
             val paramDefn = defn.parameters[k]
             if (v.required && paramDefn == null) {
@@ -79,6 +84,13 @@ class CompositeTask(
             nestedContext.bindings[k] = evaledResult
         }
         this.execute(nestedContext)
+    }
+
+    private fun populateNewContext(oldCtx: StreamContext, newCtx: StreamContext) {
+        oldCtx.get<SimpleSecretStore>(SimpleSecretStore::class)?.let { addInstance(it) withId TypeId(SimpleSecretStore::class) into newCtx }
+        oldCtx.get<ScriptService>(ScriptService::class)?.let { addInstance(it) withId TypeId(ScriptService::class) into newCtx }
+        oldCtx.get<ResourceRepository>(ResourceRepository::class)?.let { addInstance(it) withId TypeId(ResourceRepository::class) into newCtx }
+        oldCtx.get<TemplateService>(TemplateService::class)?.let { addInstance(it) withId TypeId(TemplateService::class) into newCtx }
     }
 
     private fun runTask(ctx: io.codestream.runtime.StreamContext, targetTask: SimpleTaskHandler?) {
