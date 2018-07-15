@@ -3,12 +3,14 @@ package io.codestream.runtime.modules.templating
 import io.codestream.api.FunctionalTask
 import io.codestream.api.RunContext
 import io.codestream.api.annotations.Parameter
+import io.codestream.api.annotations.Task
 import io.codestream.api.services.TemplateService
 import io.codestream.di.annotation.Inject
 import java.io.File
 import java.io.StringReader
 import java.io.StringWriter
 
+@Task(name = "generate", description = "Generates output from a Mustache template from a file or string template")
 class Generate(
         @Parameter(description = "File or template content")
         val template: String,
