@@ -6,6 +6,8 @@ import io.codestream.api.*
 import io.codestream.api.descriptor.TaskDescriptor
 import io.codestream.runtime.CompositeTask
 import io.codestream.api.TaskId
+import io.codestream.api.services.Language
+import io.codestream.api.services.ScriptService
 import io.codestream.doc.FunctionDoc
 import io.codestream.doc.ParameterDoc
 import io.codestream.doc.TaskDoc
@@ -17,7 +19,7 @@ import java.io.FileReader
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class DefinedYamlModule(val path: File) : BaseYamlModule {
+class DefinedYamlModule(val path: File, val scriptingService:ScriptService) : BaseYamlModule {
     private val _tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
 
     val descriptor: YamlModuleDescriptor
@@ -53,7 +55,7 @@ class DefinedYamlModule(val path: File) : BaseYamlModule {
     private fun parseScriptClass(): KClass<*>? {
         val path = File(path, "scripts/scriptObject.groovy")
         if (path.exists() && path.isFile) {
-            return GroovyClassLoader(this::class.java.classLoader).parseClass(path).kotlin
+            return scriptingService.loadClass(path, this::class.java.classLoader, Language.groovy)
         }
         return null;
     }

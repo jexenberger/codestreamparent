@@ -6,6 +6,7 @@ import io.codestream.api.TaskType
 import io.codestream.api.Type
 import io.codestream.runtime.CompositeTask
 import io.codestream.runtime.StreamContext
+import io.codestream.runtime.services.CodestreamScriptingService
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
@@ -17,7 +18,7 @@ class YamlTaskBuilderTest {
 
     private val file = File("src/test/resources/samplemodule/sample.yaml")
     val path = File("src/test/resources/samplemodule")
-    val module = DefinedYamlModule(path)
+    val module = DefinedYamlModule(path, CodestreamScriptingService())
 
     @Test
     internal fun testLoad() {

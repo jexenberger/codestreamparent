@@ -15,7 +15,7 @@ class TypedDependency(val allowProperties: Boolean = false) : Dependency {
         return allowProperties
     }
 
-    override fun <T> resolve(target: DependencyTarget, ctx: Context): T {
+    override fun <T> resolve(target: DependencyTarget, ctx: Context): T? {
         val qualified = target.annotatedElement.findAnnotation<Qualified>()
         val id: ComponentId = qualified?.let {
             val id = if (it.value.isNotBlank()) it.value.trim() else target.name
@@ -23,6 +23,6 @@ class TypedDependency(val allowProperties: Boolean = false) : Dependency {
         } ?: TypeId(target.targetType)
         @Suppress("UNCHECKED_CAST")
         val instance: T? = ctx[id]
-        return instance ?: throw UnsatisfiedDependencyInjection(target.name, "unable to resolve $id")
+        return instance
     }
 }

@@ -5,6 +5,10 @@ import io.codestream.api.TaskId
 import io.codestream.api.TaskType
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
+import io.codestream.api.services.ScriptService
+import io.codestream.di.api.TypeId
+import io.codestream.di.api.addInstance
+import io.codestream.runtime.services.CodestreamScriptingService
 import io.codestream.runtime.task.TaskDefContext
 import io.codestream.runtime.yaml.DefinedYamlModule
 import io.codestream.runtime.yaml.YamlTaskFactory
@@ -16,10 +20,11 @@ class CompositeTaskTest {
     @Test
     internal fun testCompositeTask() {
         ModuleRegistry += TestModule()
-        val module = DefinedYamlModule(File("src/test/resources/samplemodule"))
+        val scriptingService = CodestreamScriptingService()
+        val module = DefinedYamlModule(File("src/test/resources/samplemodule"), scriptingService)
         ModuleRegistry += module
         val type = TaskType(ModuleId.fromString("samplemodule::1.2.3"), "sample")
-        val context = StreamContext()
+        val context = StreamContext(scriptingService = scriptingService)
         val task = YamlTaskFactory(module).get(TaskId(type), context)
         val def = TaskDef(TaskId(type), mapOf(
                 "value1" to ParameterDef("value1", 1),

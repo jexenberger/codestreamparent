@@ -9,10 +9,14 @@ class PropertyInjection(val id: ComponentId, val property: KMutableProperty<*>, 
 
     fun run(ctx: Context) {
 
-        val callSite = DependencyTarget(id, instance::class, property)
+        val type = instance::class
+        val callSite = DependencyTarget(id, type, property)
         val dependency = DependencyResolver.getDependency(callSite, ctx)
         dependency?.let {
             val value = it.resolve<Any>(callSite, ctx)
+            if (value == null && !callSite.isNullable) {
+                throw PropertyInjectionException(type,callSite.name,"property is not nullable, but nullable value resolved")
+            }
             property.setter.call(instance, value)
         }
     }

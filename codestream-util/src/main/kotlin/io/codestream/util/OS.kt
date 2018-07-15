@@ -41,7 +41,12 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
     val tempDir: String
         get() = System.getProperty("java.io.tmpdir")
 
-    fun pathString(vararg parts: String) = parts.joinToString(System.getProperty("path.separator"))
+    val pathSeperator: String
+        get() = System.getProperty("path.separator")
+
+    fun pathString(vararg parts: String) = parts.joinToString(pathSeperator)
+
+    fun parsePathPath(path: String) = path.split(pathSeperator)
 
     fun fsString(vararg parts: String, absolute: Boolean = false): String {
         val path = parts.joinToString(this.fileSeperator)

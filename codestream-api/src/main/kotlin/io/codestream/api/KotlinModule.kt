@@ -10,6 +10,7 @@ import io.codestream.util.mutableProperties
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 
 
@@ -85,9 +86,7 @@ open class KotlinModule(
             val constructor = io.codestream.di.api.resolveConstructor(type)
             constructor?.let { structor ->
                 structor.parameters
-                        .filter { it.findAnnotation<Parameter>() != null }
                         .forEach {
-
                             it.findAnnotation<Parameter>()?.let { param ->
                                 val name = it.name!!
                                 checkOptionalRequiredDeclaration(it.type.isMarkedNullable, param, name)
@@ -116,7 +115,12 @@ open class KotlinModule(
         fun createProperty(name: String, propertyType: KClass<*>, param: Parameter): ParameterDescriptor {
             val descriptorType = Type.typeForClass(propertyType)
                     ?: throw ComponentDefinitionException(name, "${propertyType.simpleName} is not a supported Parameter type")
-            val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, param.allowedValues, param.regex, param.default)
+            val allowedValues = if (propertyType.isSubclassOf(Enum::class)) {
+                propertyType.java.enumConstants.map { it.toString() }.toTypedArray()
+            } else {
+                param.allowedValues
+            }
+            val property = ParameterDescriptor(name, param.description, descriptorType, param.required, param.alias, allowedValues, param.regex, param.default)
             return property
         }
 

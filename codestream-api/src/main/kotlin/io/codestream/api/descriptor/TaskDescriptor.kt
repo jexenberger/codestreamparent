@@ -1,8 +1,7 @@
 package io.codestream.api.descriptor
 
-import io.codestream.api.CodestreamModule
-import io.codestream.api.Task
-import io.codestream.api.TaskType
+import io.codestream.api.*
+import io.codestream.api.metamodel.TaskDef
 import io.codestream.di.api.Factory
 
 data class TaskDescriptor(
@@ -16,6 +15,17 @@ data class TaskDescriptor(
 
     val type: TaskType = TaskType(module.id, name)
 
+    val requiredParameters:Map<String, ParameterDescriptor> get() = parameters.filter { (_, v) -> v.required }
+    val patternParameters:Map<String, ParameterDescriptor> get() = parameters.filter { (_, v) -> v.regex.isNotEmpty() }
+
     operator fun get(property:String) = parameters[property]
+
+    fun validate(defn: TaskDef) : ValidationErrors? {
+        val errors = ValidationErrors()
+        parameters.forEach { t, u ->
+            u.isValid(defn.parameters[t])?.let { errors.merge(it) }
+        }
+        return errors.valid()
+    }
 
 }

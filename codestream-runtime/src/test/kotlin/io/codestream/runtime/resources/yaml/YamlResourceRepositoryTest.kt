@@ -1,16 +1,12 @@
 package io.codestream.runtime.resources.yaml
 
-import io.codestream.api.Type
-import io.codestream.api.descriptor.ParameterDescriptor
 import io.codestream.api.resources.Resource
-import io.codestream.api.resources.ResourceTemplate
 import io.codestream.api.resources.ResourceType
-import io.codestream.api.resources.ResourceTypeRegistry
 import io.codestream.util.system
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File;
+import java.io.File
 import kotlin.test.assertEquals
 
 class YamlResourceRepositoryTest {
@@ -24,15 +20,6 @@ class YamlResourceRepositoryTest {
 
     init {
         dbPath = File("${system.homeDir}/.cstest")
-        val properties = mapOf(
-                "a" to ParameterDescriptor("a", "test a", Type.string),
-                "b" to ParameterDescriptor("b", "test b", Type.intArray),
-                "c" to ParameterDescriptor("c", "test c", Type.keyValue),
-                "d" to ParameterDescriptor("d", "test d", Type.string, required = false)
-        )
-        val type = resourceType
-        val template = ResourceTemplate(type, "a test template", properties)
-        ResourceTypeRegistry += template
         repo =  YamlResourceRepository("test", dbPath)
     }
 

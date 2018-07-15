@@ -59,13 +59,14 @@ class HelpCommandlet(
             }
 
         }
+        Console.newLine().newLine()
 
     }
 
 
     fun displayTask(type:TaskType, doc:TaskDoc) {
         headerAndDescription(type.taskName, doc.description)
-        Console.display(heading("Parameters")).newLine()
+        Console.display(heading("Parameters")).newLine().newLine()
         doc.parameters.forEach {
             displayListLine(it.name, it.description)
             displaySubListLine("Required:  ${it.required}")
@@ -82,12 +83,12 @@ class HelpCommandlet(
 
     fun displayModule(id: ModuleId, doc: ModuleDoc) {
         headerAndDescription(id.toString(), doc.description)
-        Console.display(heading("Tasks")).newLine()
+        Console.display(heading("Tasks")).newLine().newLine()
         doc.tasks.forEach { task ->
             displayListLine(task.name, task.description)
         }
         Console.newLine()
-        Console.display(heading("Functions")).newLine()
+        Console.display(heading("Functions")).newLine().newLine()
         doc.functions.forEach { func ->
             displayListLine(func.name, func.description)
             func.params.forEach {(name, description) ->

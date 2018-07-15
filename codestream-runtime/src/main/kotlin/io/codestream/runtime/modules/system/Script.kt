@@ -4,6 +4,7 @@ import io.codestream.api.FunctionalTask
 import io.codestream.api.RunContext
 import io.codestream.api.annotations.Parameter
 import io.codestream.api.annotations.Task
+import io.codestream.api.services.Language
 import io.codestream.util.Eval
 import javax.script.Bindings
 import java.io.File
@@ -15,12 +16,7 @@ class Script(
         @Parameter(description = "Script string or File path")
         val script:String,
         @Parameter(description = "Language of the script", default = "groovy")
-        val language:Language) : FunctionalTask {
-
-    enum class Language {
-        groovy,
-        javascript
-    }
+        val language: Language) : FunctionalTask {
 
     override fun getResult(ctx: RunContext): Any? {
         val candidateFile = File(script)

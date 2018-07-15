@@ -5,6 +5,7 @@ import io.codestream.api.TaskType
 import io.codestream.runtime.ModuleRegistry
 import io.codestream.runtime.StreamContext
 import io.codestream.runtime.TestModule
+import io.codestream.runtime.services.CodestreamScriptingService
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertTrue
@@ -13,7 +14,7 @@ class YamlTaskFactoryTest {
 
     private val file = File("src/test/resources/samplemodule/sample.yaml")
     val path = File("src/test/resources/samplemodule")
-    val module = DefinedYamlModule(path)
+    val module = DefinedYamlModule(path, CodestreamScriptingService())
 
 
     @Test

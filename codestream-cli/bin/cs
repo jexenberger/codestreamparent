@@ -31,7 +31,6 @@ then
     CS_HOME_DIR="$CS_HOME"
 else
     CS_HOME_DIR="$(cd "$(dirname "$0")"; pwd)"
-    CS_HOME_DIR="${CS_HOME_DIR%/bin}"
 fi
 
 #module paths

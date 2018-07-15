@@ -9,6 +9,6 @@ interface Dependency {
 
     fun supports(type: KMutableProperty<*>): Boolean
 
-    fun <T> resolve(target: DependencyTarget, ctx: Context): T
+    fun <T> resolve(target: DependencyTarget, ctx: Context): T?
 
 }

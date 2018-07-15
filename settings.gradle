@@ -1,8 +1,0 @@
-rootProject.name = 'codestream'
-include ':codestream-util'
-include ':codestream-di'
-include ':codestream-core'
-
-project(':codestream-util').projectDir = "$rootDir/codestream-util" as File
-project(':codestream-di').projectDir = "$rootDir/codestream-di" as File
-project(':codestream-core').projectDir = "$rootDir/codestream-core" as File

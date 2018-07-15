@@ -6,7 +6,7 @@ import io.codestream.api.TaskId
 import io.codestream.di.api.*
 
 class TaskContextDependency : AnnotationDependency<TaskContext>(TaskContext::class)  {
-    override fun <T> resolve(annotation: TaskContext, target: DependencyTarget, ctx: Context): T {
+    override fun <T> resolve(annotation: TaskContext, target: DependencyTarget, ctx: Context): T? {
         val streamCtx = ctx as StreamContext
         val id = io.codestream.runtime.container.TaskScopeId(streamCtx, target.id as TaskId)
         if (!ctx.hasComponent(id)) {

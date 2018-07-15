@@ -7,13 +7,17 @@ import io.codestream.api.TaskType
 import io.codestream.api.annotations.Parameter
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
+import io.codestream.api.services.ScriptService
 import io.codestream.di.api.DependencyTarget
+import io.codestream.di.api.TypeId
 import io.codestream.di.api.addInstance
 import io.codestream.runtime.container.ParameterDependency
+import io.codestream.runtime.services.CodestreamScriptingService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
+import kotlin.test.assertNotNull
 
 class ParameterDependencyTest {
 
@@ -27,6 +31,8 @@ class ParameterDependencyTest {
 
     @Test
     internal fun testResolve() {
+
+        addInstance(CodestreamScriptingService()) withId TypeId(ScriptService::class) into ctx
 
         ctx.bindings["hello"] = "world"
         ctx.bindings["anArray"] = arrayOf("1", "2")
@@ -53,6 +59,7 @@ class ParameterDependencyTest {
 
         parameter.forEach { (k, v) ->
             val result = ParameterDependency().resolve<Any>(annotation, DependencyTarget(idOne, SimpleTask::class, v), ctx)
+            assertNotNull(result)
         }
     }
 }

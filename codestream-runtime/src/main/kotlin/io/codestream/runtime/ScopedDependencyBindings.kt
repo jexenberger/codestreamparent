@@ -1,6 +1,8 @@
 package io.codestream.runtime
 
 import io.codestream.api.RunContext
+import io.codestream.api.resources.WritableResourceRepository
+import io.codestream.api.services.ScriptService
 import io.codestream.di.api.Context
 import io.codestream.di.api.DependencyInjectionBindings
 
@@ -8,6 +10,11 @@ class ScopedDependencyBindings(
         ctx: Context,
         m: MutableMap<String, Any?> = mutableMapOf(),
         val parent: ScopedDependencyBindings? = null) : DependencyInjectionBindings(ctx, m), RunContext {
+
+
+    init {
+        put("_resources", ctx.get(WritableResourceRepository::class))
+    }
 
     override fun put(key: String, value: Any?) = m.put(key, value)
 

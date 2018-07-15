@@ -16,9 +16,9 @@ class ApplicationContextTest {
 
     @Test
     fun testRegisterBean() {
-        val sampleObject = SampleObject(AnotherObject())
+        val sampleObject = SampleObject(AnotherObject(), nullable = "test")
 
-        bind { id, ctx -> AnotherObject() } withId id(AnotherObject::class) into ctx
+        bind { _, _ -> AnotherObject() } withId id(AnotherObject::class) into ctx
         bind(theInstance(sampleObject)) into ctx
 
         val instance = ctx.get<SampleObject>(SampleObject::class)
@@ -33,14 +33,14 @@ class ApplicationContextTest {
 
     @Test
     fun testRegisterByName() {
-        bind { a,b -> AnotherObject() } withId id("qwerty") into ctx
+        bind { _,_ -> AnotherObject() } withId id("qwerty") into ctx
         val result = ctx.get<AnotherObject>("qwerty")
         assertNotNull(result)
     }
 
     @Test
     fun testRegisterAsPrototype() {
-        bind { a,b -> AnotherObject() } withId id("prototype") toScope ScopeType.prototype.name into ctx
+        bind { _,_ -> AnotherObject() } withId id("prototype") toScope ScopeType.prototype.name into ctx
         val a = ctx.get<AnotherObject>("prototype")
         val b = ctx.get<AnotherObject>("prototype")
         assertFalse { a == b }
@@ -48,7 +48,7 @@ class ApplicationContextTest {
 
     @Test
     fun testRunComplexType() {
-        val ctx = DefaultApplicationContext();
+        val ctx = DefaultApplicationContext()
         ctx.setValue("other.value", "look another value")
 
         bind(theType<SampleObject>(SampleObject::class)) into ctx

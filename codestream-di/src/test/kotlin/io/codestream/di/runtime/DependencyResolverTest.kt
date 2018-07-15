@@ -15,7 +15,7 @@ class DependencyResolverTest {
 
     @Test
     fun testResolve() {
-        val sampleObject = SampleObject(AnotherObject())
+        val sampleObject = SampleObject(AnotherObject(), nullable = null)
 
         bind(theType<SampleObject>(SampleObject::class)) into ctx
         bind(theType<AnotherObject>(AnotherObject::class)) into ctx

@@ -1,5 +1,6 @@
 open module io.codestream.cli {
 
+    requires jdk.unsupported;
     requires io.codestream.di;
 
     requires transitive io.codestream.util;

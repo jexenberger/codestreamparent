@@ -8,7 +8,7 @@ import kotlin.reflect.full.findAnnotation
 
 class InjectionDependency : AnnotationDependency<Inject>(Inject::class, true, true) {
 
-    override fun <T> resolve(annotation: Inject, target: DependencyTarget, ctx: Context): T {
+    override fun <T> resolve(annotation: Inject, target: DependencyTarget, ctx: Context): T? {
         val id = target.annotatedElement.findAnnotation<Qualified>()?.let {
             StringId(if (it.value.isNotEmpty()) it.value.trim() else target.name)
         } ?: TypeId(target.targetType)

@@ -40,7 +40,7 @@ class ScopedDependencyBindingsTest {
         bindings["test2"] = "test2"
         val entries = bindings.entries
         //includes implict bindings
-        assertEquals(4, entries.size)
+        assertEquals(5, entries.size)
         assertNotNull( entries.find { it.key.equals("test1") } )
         assertNotNull( entries.find { it.key.equals("test2") } )
     }
@@ -51,7 +51,7 @@ class ScopedDependencyBindingsTest {
         bindings["test2"] = "test2"
         val keys = bindings.keys
         //includes implict bindings
-        assertEquals(4, keys.size)
+        assertEquals(5, keys.size)
         assertTrue { keys.contains("test1") }
         assertTrue { keys.contains("test2") }
     }
@@ -62,7 +62,7 @@ class ScopedDependencyBindingsTest {
         bindings["test2"] = "test2"
         val values = bindings.values
         //includes implict bindings
-        assertEquals(4, values.size)
+        assertEquals(5, values.size)
         assertTrue { values.contains("test1") }
         assertTrue { values.contains("test2") }
     }

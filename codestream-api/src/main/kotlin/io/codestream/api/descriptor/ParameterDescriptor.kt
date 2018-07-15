@@ -20,7 +20,7 @@ data class ParameterDescriptor(
     private val regexPattern: Pattern? by lazy { if (regex.isNotEmpty()) Pattern.compile(regex) else null }
 
     fun isValid(candidate: Any?): ValidationErrors? {
-        if (required && candidate == null) {
+        if (required && candidate == null || (candidate is String && candidate.isEmpty())) {
             return ValidationErrors().required(name)
         }
         if (candidate == null) {

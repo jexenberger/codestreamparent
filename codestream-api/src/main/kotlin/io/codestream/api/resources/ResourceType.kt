@@ -8,7 +8,6 @@ data class ResourceType(val category: String, val name: String) {
 
     val pathSnippet: File = File(category, name)
     val qualifiedName = "$category::$name"
-    val template: ResourceTemplate get() = ResourceTypeRegistry[this] ?: throw ResourceException(qualifiedName, "No template has been registered for this resource type")
 
     override fun toString(): String {
         return qualifiedName

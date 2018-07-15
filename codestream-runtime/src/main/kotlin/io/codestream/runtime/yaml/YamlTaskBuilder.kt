@@ -22,6 +22,7 @@ import org.yaml.snakeyaml.nodes.SequenceNode
 import java.io.File
 import java.io.StringReader
 
+@Suppress("UNCHECKED_CAST")
 class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: String) {
 
 
@@ -38,7 +39,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
     }
 
 
-    fun processNode(depth: Int, node: Node): Any {
+    private fun processNode(depth: Int, node: Node): Any {
         return when (node) {
             is ScalarNode -> processScalarNode(depth, node)
             is MappingNode -> processMappingNode(depth, node)
@@ -93,6 +94,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
         val nodes = taskMap.map {
             val key = it.keys.iterator().next()
             val type = TaskType.fromString(key)
+            @Suppress("UNCHECKED_CAST")
             val subTaskMap = it[key] as ParsedMap<String, Any?>
             val taskDef = defineTask(type, subTaskMap)
             val handler = when (taskDef) {

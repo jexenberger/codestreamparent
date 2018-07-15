@@ -1,9 +1,7 @@
 package io.codestream.util
 
-import javax.script.ScriptContext
-import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
-import javax.script.SimpleScriptContext
+import java.io.Reader
+import javax.script.*
 
 
 object Eval {
@@ -22,11 +20,25 @@ object Eval {
 
 
     fun <K> eval(script: String, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
-        val newContext = SimpleScriptContext()
-        val engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE)
-        variables.forEach({ key: String, value: Any? -> engineScope.put(key, value) })
+        val ctx = createBindings(variables)
         @Suppress("UNCHECKED_CAST")
-        return scriptEngine.eval(script, newContext) as K
+        return scriptEngine.eval(script, ctx) as K
+    }
+
+    fun <K> eval(script: Reader, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
+        val ctx = createBindings(variables)
+        @Suppress("UNCHECKED_CAST")
+        return scriptEngine.eval(script, ctx) as K
+    }
+
+    private fun createBindings(variables: Map<String, Any?>): Bindings {
+        val ctx = if (variables is Bindings) variables else {
+            val newContext = SimpleScriptContext()
+            val engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE)
+            variables.forEach({ key: String, value: Any? -> engineScope.put(key, value) })
+            engineScope
+        }
+        return ctx
     }
 
     fun <K> evalIfScript(candidate:Any?, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {

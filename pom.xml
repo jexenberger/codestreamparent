@@ -131,6 +131,11 @@
                 <version>2.0.7</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.kevoree.kcl</groupId>
+                <artifactId>org.kevoree.kcl</artifactId>
+                <version>24</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.validation</groupId>

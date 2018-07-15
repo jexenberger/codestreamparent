@@ -42,10 +42,7 @@ class YamlResourceRepository(val databaseName: String, val basePath: File) : Wri
 
     private fun loadResource(idPath: File, type: ResourceType, id: String): Resource {
         val resourceData = Yaml().load(FileReader(idPath)) as Map<String, Any?>
-        val properties = type.template.parameters.entries.map { (k, v) ->
-            k to resourceData[k]?.let { v.type.convert<Any?>(it) }
-        }.toMap()
-        return Resource(type, id, properties)
+        return Resource(type, id, resourceData)
     }
 
     override fun find(type: ResourceType): Collection<Resource> {

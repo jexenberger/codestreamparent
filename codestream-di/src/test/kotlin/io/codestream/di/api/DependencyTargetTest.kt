@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
+import kotlin.test.*
 
 class DependencyTargetTest {
 
     private val property: KMutableProperty<*> = SampleObject::class.mutableProperties.first { it.name == "injected" }
+    private val nullable: KMutableProperty<*> = SampleObject::class.mutableProperties.first { it.name == "evaled" }
+    private val optional: KMutableProperty<*> = SampleObject::class.mutableProperties.first { it.name == "optionalProperty" }
 
     private val constructor: KFunction<SampleObject> = SampleObject::class.constructors.iterator().next()
     private val id: TypeId = TypeId(SampleObject::class)
@@ -68,4 +68,49 @@ class DependencyTargetTest {
         val constructorDependencyTarget = DependencyTarget(id, type, parameter)
         assertEquals("anotherObject", constructorDependencyTarget.name)
     }
+
+    @Test
+    fun testOptional() {
+        val parameter = constructor.parameters[1]
+        val dependencyTarget = DependencyTarget(id, type, parameter)
+        assertEquals("test", dependencyTarget.name)
+        assertTrue { dependencyTarget.isOptional }
+
+    }
+
+    @Test
+    fun testOptionalProperty() {
+        val dependencyTarget = DependencyTarget(id, type, optional)
+        assertEquals("optionalProperty", dependencyTarget.name)
+        assertFalse { dependencyTarget.isOptional }
+
+    }
+
+    @Test
+    fun testNotOptional() {
+        val parameter = constructor.parameters[0]
+        val dependencyTarget = DependencyTarget(id, type, parameter)
+        assertEquals("anotherObject", dependencyTarget.name)
+        assertFalse { dependencyTarget.isOptional }
+    }
+
+
+    @Test
+    fun testNullable() {
+        val parameter = constructor.parameters[2]
+        val dependencyTarget = DependencyTarget(id, type, parameter)
+        assertEquals("aVar", dependencyTarget.name)
+        assertTrue { dependencyTarget.isNullable }
+
+    }
+
+    @Test
+    fun testNullableProperty() {
+        val dependencyTarget = DependencyTarget(id, type, nullable)
+        assertEquals("evaled", dependencyTarget.name)
+        assertTrue { dependencyTarget.isNullable }
+
+    }
+
+
 }

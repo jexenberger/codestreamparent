@@ -9,7 +9,6 @@ abstract class Codestream {
 
     abstract val modules:Set<ModuleId>
 
-
     abstract fun runTask(module: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback) : Map<String, Any?>
     abstract fun runTask(module: ModuleId, task: String, parameters: Map<String, Any?>) : Map<String, Any?>
     abstract fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?>
@@ -25,5 +24,7 @@ abstract class Codestream {
     operator fun plusAssign(handler:EventHandler<*>) {
         eventHandlers += handler
     }
+
+
 
 }

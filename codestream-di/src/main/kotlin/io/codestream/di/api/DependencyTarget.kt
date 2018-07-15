@@ -4,6 +4,7 @@ import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KParameter
+import kotlin.reflect.jvm.javaSetter
 import kotlin.reflect.jvm.jvmErasure
 
 data class DependencyTarget(val id:ComponentId,
@@ -27,11 +28,24 @@ data class DependencyTarget(val id:ComponentId,
 
     val name: String get() = perform({ it.name }, { it.name!! })
 
+    val path:String get() = "${owner.simpleName}.$name"
+
     val annotatedElement: KAnnotatedElement get() = perform({ it }, { it })
+
+    val isNullable:Boolean get() {
+        if (this.property != null) {
+            return this.property.returnType.isMarkedNullable
+        }
+        if (this.parameter != null) {
+            return this.parameter.type.isMarkedNullable
+        }
+        //should never get here
+        throw IllegalStateException("an either be property or parameter but not both")
+    }
 
     val isOptional:Boolean get() {
         if (this.property != null) {
-            return this.property.returnType.isMarkedNullable
+            return false
         }
         if (this.parameter != null) {
             return this.parameter.isOptional

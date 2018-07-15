@@ -31,10 +31,10 @@ abstract class AnnotationDependency<A : Annotation>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    final override fun <T> resolve(target: DependencyTarget, ctx: Context): T {
+    final override fun <T> resolve(target: DependencyTarget, ctx: Context): T? {
         val targetAnnotation = findAnnotation(target.annotatedElement)!! as A
         return resolve(targetAnnotation, target, ctx)
     }
 
-    abstract fun <T> resolve(annotation: A, target: DependencyTarget, ctx: Context): T
+    abstract fun <T> resolve(annotation: A, target: DependencyTarget, ctx: Context): T?
 }

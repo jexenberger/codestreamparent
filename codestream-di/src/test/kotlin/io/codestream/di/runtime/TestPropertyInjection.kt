@@ -27,7 +27,7 @@ class TestPropertyInjection {
         addInstance(injected) into ctx
 
         val property:KMutableProperty<*> = SampleObject::class.mutablePropertyByName("injected")
-        val sampleObject = SampleObject(AnotherObject())
+        val sampleObject = SampleObject(AnotherObject(), nullable = null)
         val propertyInjection = PropertyInjection(id("test"),  property, sampleObject)
         propertyInjection.run(ctx)
         assertEquals(injected, sampleObject.injected)

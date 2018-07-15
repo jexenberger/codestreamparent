@@ -16,7 +16,7 @@ data class ValidationError(val type: ErrorType, val reference:String, val descri
     }
 }
 
-class ValidationErrors(val validationErrors:MutableSet<ValidationError> = linkedSetOf()) {
+class ValidationErrors(val validationErrors:MutableSet<ValidationError> = linkedSetOf()) : Exception("Validation Error") {
 
 
     fun required(name: String): ValidationErrors {

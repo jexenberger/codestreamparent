@@ -2,16 +2,19 @@ package io.codestream.runtime
 
 import io.codestream.api.*
 import io.codestream.api.metamodel.TaskDef
+import io.codestream.api.services.ScriptService
 import io.codestream.runtime.container.ParameterDependency
 import io.codestream.runtime.container.TaskContextDependency
 import io.codestream.runtime.yaml.BaseYamlModule
 import io.codestream.di.api.*
+import io.codestream.runtime.services.CodestreamScriptingService
 import java.util.*
 
 class StreamContext(
         val parent:StreamContext? = null,
         val id:String = UUID.randomUUID().toString(),
-        val originatingContextId:String? = parent?.originatingContextId) : ApplicationContext(mutableMapOf(), mutableMapOf()){
+        val originatingContextId:String? = parent?.originatingContextId,
+        val scriptingService: ScriptService = CodestreamScriptingService()) : ApplicationContext(mutableMapOf(), mutableMapOf()){
 
     private var _bindings: io.codestream.runtime.ScopedDependencyBindings = io.codestream.runtime.ScopedDependencyBindings(this)
 
@@ -20,6 +23,7 @@ class StreamContext(
 
     init {
         StreamContext += this
+        addInstance(scriptingService) withId TypeId(ScriptService::class) into this
     }
 
     constructor(theBindings: io.codestream.runtime.ScopedDependencyBindings, parent:StreamContext? = null) : this(parent) {

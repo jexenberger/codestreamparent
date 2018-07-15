@@ -35,11 +35,25 @@ class ConstructorInjection<T>(val type: KClass<*>, val postBinding: Boolean = tr
     fun run(id: ComponentId, ctx: Context): Any {
         val constructor = resolveConstructor()
         val parameters: Map<KParameter, Any?> = constructor.parameters.map {
-            val target = DependencyTarget(id, type, it)
+            it to DependencyTarget(id, type, it)
+        }.toMap().mapValues { (it, target) ->
             val dependency = DependencyResolver.getDependency(target, ctx)
                     ?: throw ConstructorInjectionException(type, "has more than one constructor or no no-args constructor")
-            it to (dependency.resolve<Any>(target, ctx) as Any?)
-        }.toMap()
+            val resolve = dependency.resolve<Any>(target, ctx)
+            it to (target to resolve)
+        }.filterValues { (param, dep) ->
+            val (target, value) = dep
+            if (value != null) {
+                return@filterValues true
+            }
+            if (!target.isOptional && !target.isNullable) {
+                throw ConstructorInjectionException(target.targetType, "${target.name} resolve to no value but is not nullable or optional")
+            }
+            if (target.isOptional) {
+                return@filterValues false
+            }
+            true
+        }.map { it.key to it.value.second.second }.toMap()
         return constructor.callBy(parameters)!!
     }
 }

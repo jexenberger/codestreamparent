@@ -1,3 +1,5 @@
+import io.codestream.util.crypto.SimpleSecretStore;
+
 open module io.codestream.api {
 
     requires io.codestream.di;
@@ -8,9 +10,6 @@ open module io.codestream.api {
     requires kotlin.reflect;
 
     requires java.scripting;
-    requires org.codehaus.groovy;
-    requires org.codehaus.groovy.jsr223;
-
     requires semantic.version;
 
 
@@ -32,7 +31,7 @@ open module io.codestream.api {
 
     uses io.codestream.api.CodestreamModule;
     uses io.codestream.api.CodestreamFactory;
-
+    uses SimpleSecretStore;
 
 
 }
