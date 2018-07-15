@@ -79,7 +79,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
                 commandlet.get().run()
             }
         } finally {
-            //OS.os().optimizedExecutor.shutdownNow()
+            OS.os().optimizedExecutor.shutdownNow()
         }
 
     }
