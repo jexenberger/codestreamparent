@@ -14,6 +14,7 @@ class ScopedDependencyBindings(
 
     init {
         put("_resources", ctx.get(WritableResourceRepository::class))
+        put("_proxy", ctx.get(WritableResourceRepository::class))
     }
 
     override fun put(key: String, value: Any?) = m.put(key, value)

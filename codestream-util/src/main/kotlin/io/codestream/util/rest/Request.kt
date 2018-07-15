@@ -2,9 +2,7 @@ package io.codestream.util.rest
 
 import java.io.File
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.Proxy
-import java.net.URL
+import java.net.*
 import java.nio.charset.Charset
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -35,12 +33,19 @@ class Request(val uri: String,
     private val attachments: MutableList<Multipart> = mutableListOf()
 
     init {
-        proxy = HttpProxy.globalProxy?.toProxy()
+        proxy = ConfiguredHttpProxy.globalProxyConfigured?.toProxy()
+        if (proxy == null) {
+            System.setProperty("java.net.useSystemProxies", "true")
+            val iterator = ProxySelector.getDefault().select(URI("http://www.test.com/")).iterator()
+            if (iterator.hasNext()) {
+                proxy = iterator.next()
+            }
+        }
     }
 
 
     fun proxy(server: String, port: Int = 8080, user: String? = null, password: String? = null): Request {
-        proxy = HttpProxy(server, port, user, password).toProxy()
+        proxy = ConfiguredHttpProxy(server, port, user, password).toProxy()
         return this
     }
 
@@ -49,8 +54,8 @@ class Request(val uri: String,
         return this
     }
 
-    fun proxy(proxy: HttpProxy): Request {
-        this.proxy = proxy.toProxy()
+    fun proxy(proxyConfigured: ConfiguredHttpProxy): Request {
+        this.proxy = proxyConfigured.toProxy()
         return this
     }
 

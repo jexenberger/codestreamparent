@@ -62,6 +62,7 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
         return if (absolute) "$rootDir$path" else path
     }
 
+
     val fileSeperator: String
         get() = System.getProperty("file.separator")
 
