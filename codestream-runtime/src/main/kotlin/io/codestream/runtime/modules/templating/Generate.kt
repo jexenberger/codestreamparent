@@ -30,7 +30,7 @@ class Generate(
         } else {
             StringReader(template)
         }
-        templateService.write(reader, buffer, ctx as Map<String, Any>)
+        templateService.write(reader, buffer, parameters)
         return buffer.toString()
     }
 

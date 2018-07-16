@@ -18,6 +18,8 @@ data class ParameterDescriptor(
 
     val id: String get() = if (this.alias.isNotEmpty()) alias.trim() else name
     private val regexPattern: Pattern? by lazy { if (regex.isNotEmpty()) Pattern.compile(regex) else null }
+    val defaultValue: Any? get() = if (default.isNullOrBlank()) null else default
+
 
     fun isValid(candidate: Any?): ValidationErrors? {
         if (required && candidate == null || (candidate is String && candidate.isEmpty())) {

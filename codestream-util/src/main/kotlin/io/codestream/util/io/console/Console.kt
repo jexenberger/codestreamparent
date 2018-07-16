@@ -42,10 +42,18 @@ object Console {
 
     fun get(): String = stdin.readLine()!!
 
+    fun getNullForBlank(): String? {
+        val res = stdin.readLine()!!
+        if (res.trim().equals("")) {
+            return null
+        }
+        return res
+    }
+
     fun getChar(): Char = stdin.read().toChar()
 
     fun display(value: Any?): Console {
-        value?.let {  out.print(it) }
+        value?.let { out.print(it) }
         out.flush()
         return this
     }

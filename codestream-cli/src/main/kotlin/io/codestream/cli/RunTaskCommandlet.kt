@@ -3,6 +3,7 @@ package io.codestream.cli
 import io.codestream.api.Codestream
 import io.codestream.api.ParameterCallback
 import io.codestream.api.TaskType
+import io.codestream.api.Type
 import io.codestream.api.descriptor.ParameterDescriptor
 import io.codestream.di.annotation.Inject
 import io.codestream.di.annotation.Value
@@ -54,7 +55,7 @@ class RunTaskCommandlet(
         if (debug) {
             result.entries.forEach { (k, v)  ->
                 Console.display(bold(k
-                ).padEnd(15)).display(":").display(v.toString()).newLine()
+                ).padEnd(20)).display(":").display(v.toString()).newLine()
             }
         }
     }
@@ -80,7 +81,7 @@ class RunTaskCommandlet(
 
 
     override fun capture(descriptor: ParameterDescriptor): Any? {
-        val prompt = if (descriptor.required) "Required: #" else "#"
+        val prompt = if (descriptor.required) "Required: :" else ":"
         val default = if (descriptor.default != null) "default value: '${descriptor.default}'" else ""
         Console.display("Enter")
                 .space()
@@ -95,12 +96,45 @@ class RunTaskCommandlet(
                 .display(bold(prompt))
                 .space()
 
-        val readVal = Console.get()
-        val ret = readVal.isBlank().ifTrue { descriptor.default } ?: readVal
-        return if (descriptor.required && ret.isBlank()) {
+        val readVal = captureValue(descriptor) ?: descriptor.defaultValue
+        return if (descriptor.required && readVal == null) {
             capture(descriptor)
         } else {
-            ret
+            readVal
         }
     }
+
+    fun captureValue(type:ParameterDescriptor) : Any? {
+        val typeMapping = mapOf<Type, ()-> Any?>(
+                Type.keyValue to { captureMap() }
+        )
+        return typeMapping[type.type]?.let { it() } ?: Console.getNullForBlank()
+    }
+
+    fun captureMap(): Map<String, Any?>? {
+        val keyValues = mutableListOf<Pair<String, Any?>>()
+        var keyValue:Pair<String, Any?>? = null
+        do {
+            keyValue = captureKey()
+            keyValue?.let { keyValues.add(it) }
+        } while (keyValue == null)
+        return keyValues.toMap().takeUnless { it.isEmpty() }
+    }
+
+    fun captureKey(): Pair<String, Any?>? {
+        Console.newLine().display(bold("key")).space().display("(type !!! to quit) : ")
+        val key = Console.get()
+        if (key.equals("!!!")) {
+            return null
+        }
+        Console.display(bold("Value")).display("(type !!! to quit) : ")
+        val value = Console.get()
+        if (value.equals("!!!")) {
+            return null
+        }
+        return key to value
+
+    }
+
+
 }
