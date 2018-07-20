@@ -14,12 +14,10 @@ class GetResource(
         @Parameter(description = "id to the resource to define")
         val id: String,
         @Parameter(description = "Name of resource type to define")
-        val type: String,
-        @Parameter(description = "Name of the output variable")
-        override val outputVariable: String = "__output"
-) : FunctionalTask {
+        val type: String
+) : FunctionalTask<Resource> {
 
-    override fun getResult(ctx: RunContext): Any? {
+    override fun evaluate(ctx: RunContext): Resource? {
         val registry = ctx["_resources"] as WritableResourceRepository? ?: throw ComponentFailedException("get-resource","no resource registry defined")
         val resourceType = ResourceType.fromString(type)
         return registry.get(resourceType, id)

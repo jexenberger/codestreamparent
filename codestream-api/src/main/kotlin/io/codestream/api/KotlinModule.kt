@@ -8,10 +8,7 @@ import io.codestream.di.api.theType
 import io.codestream.doc.FunctionDoc
 import io.codestream.util.mutableProperties
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSuperclassOf
+import kotlin.reflect.full.*
 
 
 open class KotlinModule(
@@ -82,6 +79,7 @@ open class KotlinModule(
             val taskAnnotation = type.findAnnotation<io.codestream.api.annotations.Task>()
                     ?: throw ComponentDefinitionException(type.qualifiedName!!, "No @Task annotation present")
             val group = GroupTask::class.isSuperclassOf(type)
+            val functionalTask = FunctionalTask::class.isSuperclassOf(type)
             val properties = mutableMapOf<String, ParameterDescriptor>()
             val constructor = io.codestream.di.api.resolveConstructor(type)
             constructor?.let { structor ->
@@ -89,7 +87,7 @@ open class KotlinModule(
                         .forEach {
                             it.findAnnotation<Parameter>()?.let { param ->
                                 val name = it.name!!
-                                checkOptionalRequiredDeclaration(it.type.isMarkedNullable, param, name)
+                                checkOptionalRequiredDeclaration(type, it.type.isMarkedNullable, param, name)
                                 properties[name] = createProperty(name, it.type.classifier!! as KClass<*>, param)
                             }
                         }
@@ -103,12 +101,19 @@ open class KotlinModule(
                             properties[name] = property
                         }
                     }
-            return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type), group)
+            val returnDescriptor = if (functionalTask) {
+                val returnType = type.functions.find { it.name.equals("evaluate") }
+                        ?: throw ComponentDefinitionException(type.qualifiedName!!, "Functional task but does not implement evaluate??!!")
+                val typeToUse = Type.typeForClass(returnType.returnType.javaClass.kotlin) ?: Type.any
+                val description = taskAnnotation.returnDescription
+                typeToUse to description
+            } else null
+            return TaskDescriptor(module, taskAnnotation.name, taskAnnotation.description, properties.toMap(), theType(type), group, returnDescriptor)
         }
 
-        internal fun checkOptionalRequiredDeclaration(optional: Boolean, param: Parameter, name: String) {
+        internal fun checkOptionalRequiredDeclaration(type:KClass<*>, optional: Boolean, param: Parameter, name: String) {
             if (!optional && !param.required && param.default.isEmpty()) {
-                throw throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required")
+                throw ComponentDefinitionException(name, "Is Non-nullable value but @Parameter is defined as not required on '${type.qualifiedName}'")
             }
         }
 

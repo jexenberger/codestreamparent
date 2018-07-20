@@ -18,6 +18,7 @@ open module io.codestream.runtime {
     requires java.scripting;
     requires org.codehaus.groovy;
     requires org.codehaus.groovy.jsr223;
+    requires org.codehaus.groovy.json;
 
     requires semantic.version;
 

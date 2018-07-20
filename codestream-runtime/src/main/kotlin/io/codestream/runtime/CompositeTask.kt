@@ -2,13 +2,14 @@ package io.codestream.runtime
 
 import io.codestream.api.*
 import io.codestream.api.descriptor.TaskDescriptor
+import io.codestream.api.metamodel.TaskDef
 import io.codestream.api.resources.ResourceRepository
 import io.codestream.api.services.ScriptService
 import io.codestream.api.services.TemplateService
 import io.codestream.di.api.TypeId
 import io.codestream.di.api.addInstance
 import io.codestream.runtime.task.GroupTaskHandler
-import io.codestream.runtime.task.SimpleTaskHandler
+import io.codestream.runtime.task.NonGroupTaskHandler
 import io.codestream.runtime.task.TaskDefContext
 import io.codestream.runtime.tree.Branch
 import io.codestream.runtime.tree.Node
@@ -16,12 +17,24 @@ import io.codestream.util.Eval
 import io.codestream.util.crypto.SimpleSecretStore
 import io.codestream.util.transformation.TransformerService
 
-class CompositeTask(
+open class CompositeTask(
         val taskId: TaskId,
         val descriptor: TaskDescriptor,
         val nestedContext: io.codestream.runtime.StreamContext,
-        var errorTask: SimpleTaskHandler? = null,
-        var finallyTask: SimpleTaskHandler? = null) : Branch<io.codestream.runtime.StreamContext>(taskId.toString(), false), SimpleTask {
+        var errorTask: NonGroupTaskHandler? = null,
+        var finallyTask: NonGroupTaskHandler? = null,
+        var returnVal: Pair<Type, String>? = null
+) : Branch<io.codestream.runtime.StreamContext>(taskId.toString(), false), FunctionalTask<Any> {
+
+
+    override fun evaluate(ctx: RunContext): Any? {
+        val taskDef = TaskDefContext.defn
+        this.executeCompositeTask(ctx, taskDef)
+        if (returnVal != null) {
+            return nestedContext.bindings.get(returnVal!!.second)
+        }
+        return Unit
+    }
 
 
     override fun preTraversal(ctx: io.codestream.runtime.StreamContext) = Directive.continueExecution
@@ -58,22 +71,23 @@ class CompositeTask(
                 nestedContext.registerTask(value.taskDef, module)
                 value.children.forEach { registerTask(module, it) }
             }
-            is SimpleTaskHandler -> {
+            is NonGroupTaskHandler -> {
                 nestedContext.registerTask(value.taskDef, module)
             }
             else -> throw IllegalStateException("can handle ${value::class.simpleName}")
         }
     }
 
-    override fun run(ctx: RunContext) {
-        val context = ctx["_ctx"] as io.codestream.runtime.StreamContext?
+
+    protected fun executeCompositeTask(ctx: RunContext, taskDef: TaskDef) {
+        val context = ctx["_ctx"] as StreamContext?
                 ?: throw ComponentFailedException(taskId.id, "context not loaded in Task Context")
-        val defn = TaskDefContext.defn
+        val defn = taskDef
         populateNewContext(context, nestedContext)
         descriptor.parameters.forEach { k, v ->
             val paramDefn = defn.parameters[k]
             if (v.required && paramDefn == null) {
-                throw ComponentDefinitionException(taskId.stringId, "Required parameter is missing")
+                throw ComponentDefinitionException(taskId.stringId, "Required parameter '$k' is missing")
             }
             val evaledResult = Eval.evalIfScript<Any?>(paramDefn?.valueDefn, context.bindings)?.let {
                 TransformerService.convert<Any?>(it, v.type.typeMapping)
@@ -93,7 +107,7 @@ class CompositeTask(
         oldCtx.get<TemplateService>(TemplateService::class)?.let { addInstance(it) withId TypeId(TemplateService::class) into newCtx }
     }
 
-    private fun runTask(ctx: io.codestream.runtime.StreamContext, targetTask: SimpleTaskHandler?) {
+    private fun runTask(ctx: io.codestream.runtime.StreamContext, targetTask: NonGroupTaskHandler?) {
         targetTask?.execute(ctx)
     }
 

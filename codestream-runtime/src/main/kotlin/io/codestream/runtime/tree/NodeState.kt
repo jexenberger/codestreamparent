@@ -5,6 +5,7 @@ enum class NodeState {
     unrun,
     running,
     failed,
-    completed
+    completed,
+    skipped
 
 }

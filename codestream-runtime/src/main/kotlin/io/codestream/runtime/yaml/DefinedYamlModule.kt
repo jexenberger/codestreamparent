@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
-class DefinedYamlModule(val path: File, val scriptingService:ScriptService) : BaseYamlModule {
+class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : BaseYamlModule {
     private val _tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
 
     val descriptor: YamlModuleDescriptor
@@ -29,11 +29,12 @@ class DefinedYamlModule(val path: File, val scriptingService:ScriptService) : Ba
 
     override val description: String get() = descriptor.description
     override val name: String get() = descriptor.name ?: path.name
-    override val version: Version get() = Version.parseVersion(descriptor.version)
+    override val version: Version get() = descriptor.version?.let { Version.parseVersion(it) } ?: defaultVersion
     override val scriptObject by lazy { loadScriptObject() }
     override val modulePath: String get() = path.absolutePath
 
-    override val scriptObjectDocumentation: Collection<FunctionDoc> get() = scriptClass?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
+    override val scriptObjectDocumentation: Collection<FunctionDoc>
+        get() = scriptClass?.let { CodestreamModule.functionsDocumentationFromType(it, this) } ?: emptyList()
 
     private val scriptClass: KClass<*>?
 
@@ -101,8 +102,9 @@ class DefinedYamlModule(val path: File, val scriptingService:ScriptService) : Ba
     override fun createScriptObjects(): MutableMap<String, Any> {
         val scriptObjects = dependencies
                 .map { ModuleRegistry[it] ?: throw ModuleException(this, "has dependency on ${it} but does not exist") }
-                .map { mod -> mod.scriptObject?.let { "__${mod.name}" to it }
-        }.filterNotNull().toMap()
+                .map { mod ->
+                    mod.scriptObject?.let { "__${mod.name}" to it }
+                }.filterNotNull().toMap()
         val withThis = mutableMapOf<String, Any>()
         withThis.putAll(scriptObjects)
         this.scriptObject?.let { withThis["__${this.name}"] = it }

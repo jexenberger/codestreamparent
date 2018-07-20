@@ -11,8 +11,8 @@ class GetTest {
         val get = Get()
         get.uri = "http://www.google.com"
         val bindings = StreamContext().bindings
-        get.run(bindings)
-        assertEquals(200, bindings[get.httpStatusVar])
+        val result = get.evaluate(bindings)!!
+        assertEquals(200, result["status"]!!)
 
     }
 }

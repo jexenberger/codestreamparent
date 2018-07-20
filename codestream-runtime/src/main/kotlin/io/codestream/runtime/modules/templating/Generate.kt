@@ -17,12 +17,10 @@ class Generate(
         @Parameter(description = "Parameters to generate the template with")
         val parameters: Map<String, Any?>,
         @Inject
-        val templateService: TemplateService,
-        @Parameter(description = "Name of output variable to store template result")
-        override val outputVariable: String = "__output"
-) : FunctionalTask {
+        val templateService: TemplateService
+) : FunctionalTask<String> {
 
-    override fun getResult(ctx: RunContext): Any? {
+    override fun evaluate(ctx: RunContext): String? {
         val file = File(template)
         val buffer = StringWriter()
         val reader = if (file.isFile) {

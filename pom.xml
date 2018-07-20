@@ -106,6 +106,14 @@
                 <version>${groovy.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-json</artifactId>
+                <version>3.0.0-alpha-3</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>

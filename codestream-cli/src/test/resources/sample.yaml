@@ -19,3 +19,7 @@ tasks:
 
   - echo:
       value: DONE!!!!!
+
+  - script:
+      script: 1 + 1
+      assign: qwerty

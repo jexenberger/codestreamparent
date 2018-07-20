@@ -42,8 +42,7 @@ class GetResourceTest {
         val theResource = Resource(type, "test", mapOf("test" to "test"))
         repo.save(theResource)
         val resource = GetResource("test","test::test")
-        resource.run(bindings)
-        val result = bindings[resource.outputVariable]
+        val result = resource.evaluate(bindings)
         assertNotNull(result)
     }
 }

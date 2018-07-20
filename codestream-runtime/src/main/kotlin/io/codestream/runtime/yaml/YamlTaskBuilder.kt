@@ -3,15 +3,13 @@ package io.codestream.runtime.yaml
 import io.codestream.api.*
 import io.codestream.api.descriptor.ParameterDescriptor
 import io.codestream.api.descriptor.TaskDescriptor
+import io.codestream.api.metamodel.FunctionalTaskDef
 import io.codestream.runtime.CompositeTask
 import io.codestream.runtime.StreamContext
 import io.codestream.api.metamodel.GroupTaskDef
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
-import io.codestream.runtime.task.GroupTaskHandler
-import io.codestream.runtime.task.SimpleTaskHandler
-import io.codestream.runtime.task.defaultCondition
-import io.codestream.runtime.task.scriptCondition
+import io.codestream.runtime.task.*
 import io.codestream.runtime.tree.Branch
 import io.codestream.util.system
 import io.codestream.util.transformation.TransformerService
@@ -23,7 +21,6 @@ import org.yaml.snakeyaml.nodes.SequenceNode
 import java.io.File
 import java.io.StringReader
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 @Suppress("UNCHECKED_CAST")
 class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: String, val executorService: ExecutorService = system.optimizedExecutor) {
@@ -80,13 +77,20 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
         val tasks = taskDefMap["tasks"] as List<Map<String, Any?>>?
                 ?: throw ComponentDefinitionException(source, "Group tasks but required zero or more sub-tasks")
         defineTaskTree(tasks, parent)
+        (taskDefMap["return"] as Map<String, Any?>?)?.let {
+            val variableName = (it["variable"] as Value?)?.toString()
+                    ?: throw ComponentDefinitionException(source, "Return type defined but no return variable name defined")
+            val type = (it["type"] as Value?)?.let { Type.valueOf(it.toString()) } ?: Type.string
+            parent.returnVal = type to variableName
+        }
+
         taskDefMap["onError"]?.let {
             val taskDef = extractSingleTask(it, source)
-            parent.errorTask = SimpleTaskHandler(taskDef.id, taskDef)
+            parent.errorTask = NonGroupTaskHandler(taskDef.id, taskDef)
         }
         taskDefMap["finally"]?.let {
             val taskDef = extractSingleTask(it, source)
-            parent.finallyTask = SimpleTaskHandler(taskDef.id, taskDef)
+            parent.finallyTask = NonGroupTaskHandler(taskDef.id, taskDef)
         }
     }
 
@@ -102,7 +106,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
             val taskDef = defineTask(type, subTaskMap)
             val handler = when (taskDef) {
                 is GroupTaskDef -> GroupTaskHandler(taskDef.id, taskDef.paralell, taskDef)
-                else -> SimpleTaskHandler(taskDef.id, taskDef)
+                else -> NonGroupTaskHandler(taskDef.id, taskDef)
             }
             if (handler is GroupTaskHandler) {
                 val nestedTasks = subTaskMap["tasks"] as List<Map<String, Any?>>?
@@ -126,10 +130,11 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
                 .map { it.name to it }
                 .toMap()
         val condition = taskMap["condition"]?.let { scriptCondition(it.toString().trim()) } ?: defaultCondition
+        val assign = taskMap["assign"]?.toString()
         val id = "${this.module.name}::${source.substringAfterLast("/")}.yaml@${taskMap.lineNo}"
         val taskId = TaskId(taskTaskType, id)
         if (simple) {
-            return TaskDef(taskId, params, condition)
+            return if (assign != null) FunctionalTaskDef(taskId, params, condition, assign) else TaskDef(taskId, params, condition)
         }
         val parallel = taskMap["parallel"] as Boolean? ?: false
         return GroupTaskDef(taskId, params, parallel, condition)
@@ -153,7 +158,13 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
         val paramDefs = parameters?.map { (key, value) ->
             key to createParameterDescriptor(value, key, name)
         }?.toMap() ?: emptyMap()
-        return TaskDescriptor(module, name, descriptionVal.value.toString(), paramDefs, YamlTaskFactory(module), false)
+        val returnDef = (taskDefMap["return"] as Map<String, Any?>?)?.let {
+            val description = it["description"]?.toString()
+                    ?: throw ComponentDefinitionException(source, "Return type defined but no return variable description defined")
+            val type = it["type"]?.let { value -> Type.typeForString(value.toString()) } ?: Type.string
+            type to description
+        }
+        return TaskDescriptor(module, name, descriptionVal.value.toString(), paramDefs, YamlTaskFactory(module), false, returnDef)
     }
 
     fun createParameterDescriptor(value: Any?, key: String, name: String): ParameterDescriptor {
@@ -164,7 +175,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
                 ?: throw ComponentDefinitionException(module.name, "parameter '$key' in '$source' must contain a description")
         val type = typeStr?.let {
             Type.typeForString(it.value.toString())
-                    ?: throw ComponentDefinitionException(module.name, "'$typeStr' is an allowed parameter type for parameter '$key' in '$source'")
+                    ?: throw ComponentDefinitionException(module.name, "'$typeStr' is not an allowed parameter type for parameter '$key' in '$source'")
         } ?: Type.string
 
         val requiredVal = valMap["required"] as Value? ?: Value(0, "true")
@@ -177,7 +188,8 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
             }
         } ?: emptyArray()
         val regex = valMap["regex"]?.toString() ?: ""
-        return ParameterDescriptor(name, description.value.toString(), type, required, "", allowedValues, regex)
+        val default = valMap["default"]?.toString()
+        return ParameterDescriptor(name, description.value.toString(), type, required, "", allowedValues, regex, default)
     }
 
 

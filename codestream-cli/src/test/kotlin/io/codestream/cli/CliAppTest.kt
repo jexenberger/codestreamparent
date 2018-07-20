@@ -6,6 +6,6 @@ import org.junit.jupiter.api.Test
 class CliAppTest {
     @Test
     internal fun testRun() {
-        CliApp(ArgParser(arrayOf("run", "sys::echo","-Ivalue=hello world"))).run()
+        CliApp(ArgParser(arrayOf("evaluate", "sys::echo","-Ivalue=hello world"))).run()
     }
 }

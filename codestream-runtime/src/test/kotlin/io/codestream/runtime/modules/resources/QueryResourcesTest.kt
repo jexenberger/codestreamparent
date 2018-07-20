@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class QueryResourcesTest {
 
@@ -47,10 +46,9 @@ class QueryResourcesTest {
             repo.save(theResource)
         }
         val resource = QueryResources("test::test",parameters = mapOf("oddOrEven" to "odd"))
-        resource.run(bindings)
-        val result = bindings[resource.outputVariable] as Collection<Resource>
-        assertEquals(3, result.size)
-        result.forEach {
+        val result = resource.evaluate(bindings)
+        assertEquals(3, result?.size)
+        result?.forEach {
             assertEquals("odd", it["oddOrEven"])
         }
         println(result)

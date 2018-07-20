@@ -11,14 +11,12 @@ import java.io.File
 
 @Task(name = "script", description = "Run a script either directly as text of from a file")
 class Script(
-        @Parameter(description = "Value to set from the result of the script", default = "__scriptOutput")
-        override val outputVariable: String,
         @Parameter(description = "Script string or File path")
         val script:String,
         @Parameter(description = "Language of the script", default = "groovy")
-        val language: Language) : FunctionalTask {
+        val language: Language = Language.groovy) : FunctionalTask<Any?> {
 
-    override fun getResult(ctx: RunContext): Any? {
+    override fun evaluate(ctx: RunContext): Any? {
         val candidateFile = File(script)
         val executableScript = if (candidateFile.isFile) candidateFile.readText() else script
         val bindings = ctx as Bindings

@@ -5,15 +5,13 @@ import io.codestream.api.TaskId
 import io.codestream.api.TaskType
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
-import io.codestream.api.services.ScriptService
-import io.codestream.di.api.TypeId
-import io.codestream.di.api.addInstance
 import io.codestream.runtime.services.CodestreamScriptingService
 import io.codestream.runtime.task.TaskDefContext
 import io.codestream.runtime.yaml.DefinedYamlModule
 import io.codestream.runtime.yaml.YamlTaskFactory
 import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.test.assertEquals
 
 class CompositeTaskTest {
 
@@ -36,6 +34,24 @@ class CompositeTaskTest {
         context.bindings["value1"] = 1
         context.bindings["value2"] = "Hello"
         context.bindings["value4"] = "Hello"
-        task.run(context.bindings)
+        task.evaluate(context.bindings)
+    }
+
+    @Test
+    internal fun testFunctionalCompositeTask() {
+        ModuleRegistry += TestModule()
+        val scriptingService = CodestreamScriptingService()
+        val module = DefinedYamlModule(File("src/test/resources/samplemodule"), scriptingService)
+        ModuleRegistry += module
+        val type = TaskType(ModuleId.fromString("samplemodule::1.2.3"), "samplefunctional")
+        val context = StreamContext(scriptingService = scriptingService)
+        val task = YamlTaskFactory(module).get(TaskId(type), context)
+        val def = TaskDef(TaskId(type), mapOf(
+                "value" to ParameterDef("value", "hello")
+        ))
+        TaskDefContext.defn = def
+        context.bindings["value"] = "hello"
+        val result = task.evaluate(context.bindings)
+        assertEquals("HELLO", result)
     }
 }

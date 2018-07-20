@@ -8,10 +8,8 @@ import io.codestream.api.annotations.Task
 
 @Task(name = "to-json", description = "Turns a Map of Maps into a JSON string")
 class ToJson(@Parameter(description = "set of parameters to dump")
-             val input: Map<String, Any?>,
-             @Parameter(description = "name of output variable to store the resulting JSON string")
-             override val outputVariable: String = "__output") : FunctionalTask {
-    override fun getResult(ctx: RunContext): Any? {
+             val input: Map<String, Any?>) : FunctionalTask<String> {
+    override fun evaluate(ctx: RunContext): String? {
         return ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(input)
     }
 }

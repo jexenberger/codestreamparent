@@ -10,7 +10,8 @@ data class TaskDescriptor(
         val description: String,
         val parameters: Map<String, ParameterDescriptor>,
         val factory: Factory<Task>,
-        val groupTask:Boolean = false
+        val groupTask:Boolean = false,
+        val returnDescriptor: Pair<Type, String>? = null
 ) {
 
     val type: TaskType = TaskType(module.id, name)

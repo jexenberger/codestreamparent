@@ -1,0 +1,15 @@
+description: this is the uber cool task
+return:
+  variable: outputString
+  type: string
+  description: value parameter as an uppercased string
+parameters:
+  value:
+    type: string
+    description: A string to uppercase
+
+tasks:
+
+  - script:
+      assign: outputString
+      script: value.toUpperCase()

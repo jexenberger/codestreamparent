@@ -9,11 +9,11 @@ class ShellTest {
 
     @Test
     internal fun testRun() {
-        val shell = Shell("ls -lh|xargs echo" , outputVariable = "_out", resultCodeVariable = "_ret")
+        val shell = Shell("ls -lh|xargs echo" )
         val bindings = StreamContext().bindings
-        shell.run(bindings)
-        val ret = bindings["_ret"]
-        val buffer = bindings["_out"]
+        val result = shell.evaluate(bindings)
+        val ret = result?.get("result")
+        val buffer = result?.get("output")
         assertEquals(0, ret)
         assertTrue { buffer != null && buffer.toString().length > 0 }
         println(ret)

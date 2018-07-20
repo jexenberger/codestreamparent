@@ -15,7 +15,7 @@ class GenerateTest {
         ctx.bindings["test1"] = "hello"
         ctx.bindings["test2"] = "world"
         val generate = Generate("{{test1}} {{test2}}", ctx.bindings, templatingService)
-        generate.run(ctx.bindings)
-        assertEquals("hello world", ctx.bindings[generate.outputVariable])
+        val result = generate.evaluate(ctx.bindings)
+        assertEquals("hello world", result)
     }
 }

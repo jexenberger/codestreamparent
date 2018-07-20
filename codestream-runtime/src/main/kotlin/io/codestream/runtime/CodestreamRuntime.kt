@@ -17,7 +17,7 @@ import io.codestream.runtime.resources.yaml.YamlResourceRepository
 import io.codestream.runtime.services.CodestreamScriptingService
 import io.codestream.runtime.services.JMustacheTemplatingService
 import io.codestream.runtime.task.GroupTaskHandler
-import io.codestream.runtime.task.SimpleTaskHandler
+import io.codestream.runtime.task.NonGroupTaskHandler
 import io.codestream.runtime.tree.Node
 import io.codestream.runtime.yaml.SingleFileModule
 import io.codestream.runtime.yaml.YamlSecretStore
@@ -27,7 +27,6 @@ import io.codestream.util.crypto.SimpleSecretStore
 import io.codestream.util.crypto.SystemKey
 import io.codestream.util.system
 import java.io.File
-import java.util.concurrent.ExecutorService
 
 class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
     override fun taskDoc(name: TaskType): TaskType? {
@@ -79,7 +78,7 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         } else {
             val defn = TaskDef(id, taskParams)
             streamContext.registerTask(defn)
-            SimpleTaskHandler(id, defn)
+            NonGroupTaskHandler(id, defn)
         }
         node.execute(streamContext)
         return streamContext.bindings
@@ -91,6 +90,9 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         addInstance(scriptService) withId TypeId(ScriptService::class) into streamContext
         addInstance(resources) withId TypeId(ResourceRepository::class) into streamContext
         addInstance(templateService) withId TypeId(TemplateService::class) into streamContext
+        ModuleRegistry.systemModuleFunctionObjects.forEach {(k, v) ->
+            streamContext.bindings[k] = v
+        }
         eventHandlers.forEach {
             streamContext.events.register(it)
         }

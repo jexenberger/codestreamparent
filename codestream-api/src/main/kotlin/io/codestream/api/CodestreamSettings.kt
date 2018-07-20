@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 
 data class CodestreamSettings(
         @Value("yaml.module.path")
-        val yamlModulePath: String = system.pathString(".","modules", ".${system.homeDir}/.cs/_modules"),
+        val yamlModulePath: String = system.pathString("modules", "${system.homeDir}/.cs/_modules", "."),
         @Inject
         val executor: ExecutorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()),
         @Value("enable.debug")

@@ -14,6 +14,7 @@ class SystemModule : KotlinModule(SystemModule.name,"Core system module", script
             add(Set::class)
             add(Script::class)
             add(Shell::class)
+            add(Fail::class)
         }
     }
 

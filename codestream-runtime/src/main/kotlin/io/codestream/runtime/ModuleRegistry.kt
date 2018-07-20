@@ -21,9 +21,19 @@ object ModuleRegistry {
     internal val _modules: MutableMap<ModuleId, CodestreamModule> = mutableMapOf()
     internal val systemModule = SystemModule()
 
+    val systemModules = setOf(systemModule, ResourcesModule(), HttpModule(), TemplateModule())
+
     val systemModuleId: ModuleId = systemModule.id
 
     val modules: Set<ModuleId> get() = _modules.keys.toSet()
+
+    val systemModuleFunctionObjects: Map<String, Any?> get() {
+        return systemModules
+                .filter { it.scriptObjectType != null }
+                .map {
+            "__${it.name}" to it.scriptObject!!
+        }.toMap()
+    }
 
 
     init {
@@ -32,11 +42,9 @@ object ModuleRegistry {
     }
 
     private fun loadSystemModules() {
-        this += systemModule
-        this += ResourcesModule()
-        this += HttpModule()
-        this += JsonModule()
-        this += TemplateModule()
+        systemModules.forEach {
+            this += it
+        }
     }
 
     private fun load() {
@@ -51,10 +59,10 @@ object ModuleRegistry {
         val paths = system.parsePathPath(modulePaths).map { File(it) }
 
         paths.filter { it.isDirectory }.forEach {
-            Files.newDirectoryStream(it.toPath())
-                    .filter { it.toFile().isDirectory }
-                    .filter { it.toFile().list().contains("module.conf") }
-                    .forEach { ModuleRegistry += DefinedYamlModule(it.toFile(), scriptService ) }
+            it.listFiles()
+                    .filter { it.isDirectory }
+                    .filter { it.list().contains("module.conf") }
+                    .forEach {ModuleRegistry += DefinedYamlModule(it, scriptService) }
         }
     }
 

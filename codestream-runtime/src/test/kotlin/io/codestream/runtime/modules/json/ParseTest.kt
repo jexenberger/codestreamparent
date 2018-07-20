@@ -10,8 +10,7 @@ class ParseTest {
     internal fun testRun() {
         val bindings = StreamContext().bindings
         val parse = Parse("{ \"hello\": true }")
-        parse.run(bindings)
-        val result = bindings[parse.outputVariable] as Map<String, Any?>
-        assertEquals(true, result["hello"])
+        val result = parse.evaluate(bindings)!!
+        assertEquals(true, result["hello"]!!)
     }
 }

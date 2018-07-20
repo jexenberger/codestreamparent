@@ -14,6 +14,7 @@ import io.codestream.util.io.console.decorate
 import io.codestream.util.io.console.warn
 import io.codestream.util.stackDump
 import java.io.File
+import java.util.*
 
 class RunTaskCommandlet(
         @Inject
@@ -54,8 +55,11 @@ class RunTaskCommandlet(
     private fun displayOutput(result: Map<String, Any?>) {
         if (debug) {
             result.entries.forEach { (k, v)  ->
-                Console.display(bold(k
-                ).padEnd(20)).display(":").display(v.toString()).newLine()
+                Console.display(bold(k)
+                        .padEnd(20))
+                        .display(":")
+                        .display(v.toString())
+                        .newLine()
             }
         }
     }
@@ -104,9 +108,25 @@ class RunTaskCommandlet(
         }
     }
 
+    fun captureSecret() : Any? {
+        do {
+            val a = Console.getSecret()
+            if (a == null) {
+                return null
+            }
+            Console.display("Re-enter :").newLine()
+            val b = Console.getSecret()
+            if (Objects.equals(a, b)) {
+                return a
+            }
+        } while (0==0)
+
+    }
+
     fun captureValue(type:ParameterDescriptor) : Any? {
         val typeMapping = mapOf<Type, ()-> Any?>(
-                Type.keyValue to { captureMap() }
+                Type.keyValue to { captureMap() },
+                Type.secret to { captureSecret() }
         )
         return typeMapping[type.type]?.let { it() } ?: Console.getNullForBlank()
     }

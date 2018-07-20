@@ -86,7 +86,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
 
     companion object {
         val commands = mapOf(
-                "run" to RunTaskCommandlet::class,
+                "evaluate" to RunTaskCommandlet::class,
                 "help" to HelpCommandlet::class
         )
     }

@@ -42,7 +42,7 @@ class DefinedYamlModuleTest {
     @Test
     internal fun testTaskDocumentation() {
         val taskDocumentation = module.taskDocumentation
-        assertEquals(1, taskDocumentation.size)
+        assertEquals(2, taskDocumentation.size)
         println(taskDocumentation)
     }
 }

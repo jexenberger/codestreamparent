@@ -5,6 +5,7 @@ import io.codestream.api.FunctionalTask
 import io.codestream.api.RunContext
 import io.codestream.api.annotations.Parameter
 import io.codestream.api.annotations.Task
+import io.codestream.api.resources.Resource
 import io.codestream.api.resources.ResourceType
 import io.codestream.api.resources.WritableResourceRepository
 
@@ -12,13 +13,11 @@ import io.codestream.api.resources.WritableResourceRepository
 class QueryResources(
         @Parameter(description = "Name of resource type to define")
         val type: String,
-        @Parameter(description = "Name of the output variable")
-        override val outputVariable: String = "__output",
         @Parameter(description = "Parameters against which to query")
         val parameters: Map<String, Any?>
-) : FunctionalTask {
+) : FunctionalTask<Collection<Resource>> {
 
-    override fun getResult(ctx: RunContext): Any? {
+    override fun evaluate(ctx: RunContext): Collection<Resource>? {
         val registry = ctx["_resources"] as WritableResourceRepository?
                 ?: throw ComponentFailedException("get-resource", "no resource registry defined")
         val resourceType = ResourceType.fromString(type)

@@ -19,11 +19,13 @@ class DefaultBranchTest {
         var visited2After = false
         var called3 = false
         var called4 = false
+        var skipped = false
         val root = DefaultBranch<String>(
                 id = "1",
                 parallel = false)
         root += DefaultLeaf<String>("2",
-                beforeLeafVisitor = { n, c -> visited2 = true },
+                beforeLeafVisitor = { n, c -> visited2 = true ;true},
+                skippedVisitor = { n, c -> skipped = true},
                 afterLeafVisitor = { n, c, s -> visited2After = true },
                 handler = { called2 = true }
         )
@@ -32,6 +34,7 @@ class DefaultBranchTest {
         val result = root.execute("hello")
         assertEquals(NodeState.completed, result)
         assertTrue { called2 }
+        assertFalse { skipped }
         assertTrue { called3 }
         assertTrue { called4 }
         assertTrue { visited2 }

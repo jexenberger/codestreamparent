@@ -9,7 +9,7 @@ class RunTaskCommandletTest {
     @Test
     internal fun testRunTaskBaseTask() {
         val tsk = RunTaskCommandlet(Codestream.get(), "sys::echo", mapOf("value" to 1), true)
-        tsk.run()
+        tsk.evaluate()
     }*/
 
     @Test
