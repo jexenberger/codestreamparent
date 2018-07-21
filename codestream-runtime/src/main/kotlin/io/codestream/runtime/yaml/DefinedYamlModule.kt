@@ -89,9 +89,9 @@ class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : B
         val file = File(resolveTaskPath(name))
         val newContext = StreamContext(originatingContextId = ctx.originatingContextId)
         newContext.bindings["__modulePath"] = path.absolutePath
-        withThis.forEach { (k, v) ->
-            newContext.bindings[k] = v
-        }
+        val functionObjects = (ctx.bindings["_fn"] as MutableMap<String, Any>?)?.let { it } ?: mutableMapOf()
+        functionObjects.putAll(createScriptObjects())
+        newContext.bindings["_fn"] = functionObjects
         val task = CompositeTask(id, taskDescriptor, newContext)
         YamlTaskBuilder(name, this, file.readText()).defineTaskTree(task)
         return task
@@ -107,7 +107,7 @@ class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : B
                 }.filterNotNull().toMap()
         val withThis = mutableMapOf<String, Any>()
         withThis.putAll(scriptObjects)
-        this.scriptObject?.let { withThis["__${this.name}"] = it }
+        this.scriptObject?.let { withThis[this.name] = it }
         return withThis
     }
 

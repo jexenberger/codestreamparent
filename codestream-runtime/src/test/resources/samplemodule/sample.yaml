@@ -56,7 +56,7 @@ tasks:
       value: ${value5}
 
   - sys::echo:
-      value: ${__samplemodule.helloWorld()}
+      value: ${_fn.samplemodule.helloWorld()}
 
   - test::group:
       id: groupid

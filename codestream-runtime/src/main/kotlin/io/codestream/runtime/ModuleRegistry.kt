@@ -27,7 +27,7 @@ object ModuleRegistry {
 
     val modules: Set<ModuleId> get() = _modules.keys.toSet()
 
-    val systemModuleFunctionObjects: Map<String, Any?> get() {
+    val systemModuleFunctionObjects: Map<String, Any> get() {
         return systemModules
                 .filter { it.scriptObjectType != null }
                 .map {

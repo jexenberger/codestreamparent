@@ -90,9 +90,9 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         addInstance(scriptService) withId TypeId(ScriptService::class) into streamContext
         addInstance(resources) withId TypeId(ResourceRepository::class) into streamContext
         addInstance(templateService) withId TypeId(TemplateService::class) into streamContext
-        ModuleRegistry.systemModuleFunctionObjects.forEach {(k, v) ->
-            streamContext.bindings[k] = v
-        }
+        val functionObjects = mutableMapOf<String, Any>()
+        functionObjects.putAll(ModuleRegistry.systemModuleFunctionObjects)
+        streamContext.bindings["_fn"] = functionObjects
         eventHandlers.forEach {
             streamContext.events.register(it)
         }
