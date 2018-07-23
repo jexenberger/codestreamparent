@@ -54,6 +54,10 @@ class ConstructorInjection<T>(val type: KClass<*>, val postBinding: Boolean = tr
             }
             true
         }.map { it.key to it.value.second.second }.toMap()
-        return constructor.callBy(parameters)!!
+        return try {
+            constructor.callBy(parameters)!!
+        } catch (e:IllegalArgumentException) {
+            throw ConstructorInjectionException(type, "Unable to create instance of ${type.qualifiedName} with parameters $parameters")
+        }
     }
 }

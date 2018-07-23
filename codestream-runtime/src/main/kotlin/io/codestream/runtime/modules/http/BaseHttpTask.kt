@@ -41,7 +41,8 @@ abstract class BaseHttpTask : FunctionalTask<Map<String, Any?>> {
         val httpReponse = mapOf(
                 "status" to status,
                 "message" to responseMessage,
-                "headers" to responseHeaders
+                "headers" to responseHeaders,
+                "body" to body
         )
         return httpReponse
     }

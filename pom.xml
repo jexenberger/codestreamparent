@@ -15,17 +15,18 @@
         <module>codestream-di-test</module>
         <module>codestream-cli</module>
         <module>codestream-sample-versioned-module</module>
+        <module>codestream-ssh</module>
     </modules>
     <packaging>pom</packaging>
 
     <properties>
-        <kotlin.version>1.2.50</kotlin.version>
+        <kotlin.version>1.2.51</kotlin.version>
         <groovy.version>3.0.0-alpha-3</groovy.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jdk.version>9</jdk.version>
+        <jdk.version>10</jdk.version>
         <junit.version>4.12</junit.version>
-        <java.version>9</java.version>
+        <java.version>10</java.version>
         <java.vendor>oracle</java.vendor>
         <jdk.home>/usr/lib/jvm/java-${java.version}-${java.vendor}</jdk.home>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
@@ -74,6 +75,13 @@
                 <artifactId>codestream-sample-versioned-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>codestream</groupId>
+                <artifactId>codestream-ssh</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
 
 
             <dependency>
@@ -131,6 +139,12 @@
                 <groupId>com.samskivert</groupId>
                 <artifactId>jmustache</artifactId>
                 <version>1.14</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jcraft</groupId>
+                <artifactId>jsch</artifactId>
+                <version>0.1.54</version>
             </dependency>
 
             <dependency>
@@ -221,6 +235,16 @@
                 <artifactId>mockwebserver</artifactId>
                 <version>0.1.0</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-core</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-scp</artifactId>
+                <version>2.0.0</version>
             </dependency>
         </dependencies>
 

@@ -13,7 +13,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 
 class Request(val uri: String,
-              var contentType: String = "application/json",
+              val contentType: String = "application/json",
               val validateSSL: Boolean = true,
               val validateHostName: Boolean = true,
               val encoding: String = "UTF-8") {

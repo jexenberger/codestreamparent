@@ -1,6 +1,5 @@
 package io.codestream.cli
 
-import io.codestream.api.CodestreamFactory
 import io.codestream.api.CodestreamSettings
 import io.codestream.runtime.CodestreamRuntime
 import org.junit.jupiter.api.Test
@@ -28,6 +27,12 @@ class HelpCommandletTest {
     @Test
     internal fun testTaskHelp() {
         val tsk = HelpCommandlet(CodestreamRuntime(CodestreamSettings()), "sys@LATEST::echo")
+        tsk.run()
+    }
+
+    @Test
+    internal fun testTaskWithReturnTypeHelp() {
+        val tsk = HelpCommandlet(CodestreamRuntime(CodestreamSettings()), "sys@LATEST::script")
         tsk.run()
     }
 }

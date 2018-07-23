@@ -27,7 +27,7 @@ abstract class BaseLeafTaskHandler(
     }
 
     override fun visitWhenError(error: Exception, leaf: Node<StreamContext>, ctx: StreamContext) {
-        ctx.events.publish(TaskErrorEvent(taskId, TaskError(error, ctx.bindings)))
+        ctx.events.publish(TaskErrorEvent(taskId, TaskError(taskId, error, ctx.bindings)))
     }
 
     override fun visitAfterLeaf(state: NodeState, leaf: Node<StreamContext>, ctx: StreamContext, timeTaken: Pair<Long, Unit>) {

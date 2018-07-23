@@ -2,6 +2,7 @@ package io.codestream.runtime.modules.http
 
 import io.codestream.api.annotations.ModuleFunction
 import io.codestream.api.annotations.ModuleFunctionParameter
+import io.codestream.util.crypto.Secret
 import java.util.*
 
 class HttpFunctions {
@@ -11,7 +12,11 @@ class HttpFunctions {
             @ModuleFunctionParameter(value = "user", description = "User")
             user: String,
             @ModuleFunctionParameter(value = "password", description = "Password")
-            password: String
-    ) = Base64.getEncoder().encodeToString("$user:$password".toByteArray())
+            password: Any): String {
+
+        val pass = if (password is Secret) password.value else password.toString()
+        val encoded =  Base64.getEncoder().encodeToString("$user:$pass".toByteArray())
+        return "Basic $encoded"
+    }
 
 }

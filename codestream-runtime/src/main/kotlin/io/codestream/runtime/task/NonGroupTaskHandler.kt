@@ -1,9 +1,6 @@
 package io.codestream.runtime.task
 
-import io.codestream.api.FunctionalTask
-import io.codestream.api.SimpleTask
-import io.codestream.api.Task
-import io.codestream.api.TaskId
+import io.codestream.api.*
 import io.codestream.api.metamodel.FunctionalTaskDef
 import io.codestream.api.metamodel.TaskDef
 import io.codestream.runtime.StreamContext
@@ -11,7 +8,12 @@ import io.codestream.runtime.StreamContext
 
 class NonGroupTaskHandler(taskId: TaskId, taskDef: TaskDef) : BaseLeafTaskHandler(taskId, taskDef) {
     override fun run(ctx: StreamContext) {
-        val task = ctx.get<Task>(taskId) ?: throw IllegalStateException("$taskId not resolved??!!")
+        val task = try {
+             ctx.get<Task>(taskId) ?: throw IllegalStateException("$taskId not resolved??!!")
+        } catch (e:IllegalArgumentException) {
+            e.printStackTrace()
+            throw ComponentFailedException(taskId.id, "Unable to create instance -> '${e}'")
+        }
         when (task) {
             is FunctionalTask<*> -> {
                 val result = task.evaluate(ctx.bindings)

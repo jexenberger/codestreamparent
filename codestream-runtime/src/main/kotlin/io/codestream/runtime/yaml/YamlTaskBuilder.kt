@@ -126,7 +126,14 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
         val simple = !taskMap.containsKey("tasks")
         val params = taskMap.entries
                 .filter { !reserved.contains(it.key) }
-                .map { ParameterDef(it.key, if (it.value is Value) (it.value as Value).value else it.value) }
+                .map {(key, value) ->
+                    val valueToUse = when(value) {
+                        is Value -> value.value
+                        is Map<*,*> -> value.mapValues { if (it.value is Value) it.value.toString() else it }
+                        else -> value
+                    }
+                    ParameterDef(key, valueToUse)
+                }
                 .map { it.name to it }
                 .toMap()
         val condition = taskMap["condition"]?.let { scriptCondition(it.toString().trim()) } ?: defaultCondition
@@ -164,7 +171,13 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
             val type = it["type"]?.let { value -> Type.typeForString(value.toString()) } ?: Type.string
             type to description
         }
-        return TaskDescriptor(module, name, descriptionVal.value.toString(), paramDefs, YamlTaskFactory(module), false, returnDef)
+        return TaskDescriptor(module = module,
+                name = name,
+                description = descriptionVal.value.toString(),
+                parameters = paramDefs,
+                factory = YamlTaskFactory(module),
+                groupTask = false,
+                returnDescriptor = returnDef)
     }
 
     fun createParameterDescriptor(value: Any?, key: String, name: String): ParameterDescriptor {
@@ -189,7 +202,7 @@ class YamlTaskBuilder(val source: String, val module: BaseYamlModule, yaml: Stri
         } ?: emptyArray()
         val regex = valMap["regex"]?.toString() ?: ""
         val default = valMap["default"]?.toString()
-        return ParameterDescriptor(name, description.value.toString(), type, required, "", allowedValues, regex, default)
+        return ParameterDescriptor(key, description.value.toString(), type, required, "", allowedValues, regex, default)
     }
 
 

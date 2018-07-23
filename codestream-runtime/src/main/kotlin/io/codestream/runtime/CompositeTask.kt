@@ -42,7 +42,7 @@ open class CompositeTask(
     override fun postTraversal(ctx: io.codestream.runtime.StreamContext) = Directive.done
 
     override fun onError(error: Exception, ctx: io.codestream.runtime.StreamContext) {
-        val taskError = TaskError(error, ctx.bindings)
+        val taskError = TaskError(taskId, error, ctx.bindings)
         ctx.bindings["_error_"] = taskError
         errorTask?.let { runTask(ctx, it) } ?: throw taskError
     }

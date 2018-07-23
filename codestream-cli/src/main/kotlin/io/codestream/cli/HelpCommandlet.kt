@@ -79,6 +79,11 @@ class HelpCommandlet(
             }
             Console.newLine()
         }
+        doc.returnType?.let {
+            Console.display(heading("Return type")).newLine().newLine()
+            displayListLine("Type", it.first)
+            displayListLine("Description", it.second)
+        }
     }
 
     fun displayModule(id: ModuleId, doc: ModuleDoc) {

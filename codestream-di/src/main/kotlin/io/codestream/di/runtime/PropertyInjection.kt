@@ -17,7 +17,11 @@ class PropertyInjection(val id: ComponentId, val property: KMutableProperty<*>, 
             if (value == null && !callSite.isNullable) {
                 throw PropertyInjectionException(type,callSite.name,"property is not nullable, but nullable value resolved")
             }
-            property.setter.call(instance, value)
+            try {
+                property.setter.call(instance, value)
+            } catch (e:IllegalArgumentException) {
+                throw PropertyInjectionException(type, callSite.name, "Unable to set property -> '${property.name}' -> ${e.message}")
+            }
         }
     }
 

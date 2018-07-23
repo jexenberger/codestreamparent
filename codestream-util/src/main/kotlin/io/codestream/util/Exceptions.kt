@@ -17,8 +17,10 @@ fun getRootException(ex: Throwable): Throwable {
 
 fun toStackTrace(ex: Throwable) : String {
     val writer = StringWriter()
+
     ex.stackTrace.forEach {
         writer.appendln(it.toString())
     }
     return writer.toString()
 }
+

@@ -21,7 +21,7 @@ object ModuleRegistry {
     internal val _modules: MutableMap<ModuleId, CodestreamModule> = mutableMapOf()
     internal val systemModule = SystemModule()
 
-    val systemModules = setOf(systemModule, ResourcesModule(), HttpModule(), TemplateModule())
+    val systemModules = setOf(systemModule, ResourcesModule(), HttpModule(), TemplateModule(), JsonModule())
 
     val systemModuleId: ModuleId = systemModule.id
 
@@ -31,7 +31,7 @@ object ModuleRegistry {
         return systemModules
                 .filter { it.scriptObjectType != null }
                 .map {
-            "__${it.name}" to it.scriptObject!!
+            it.name to it.scriptObject!!
         }.toMap()
     }
 

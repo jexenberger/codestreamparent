@@ -19,4 +19,5 @@ module io.codestream.util {
     requires static org.junit.jupiter.engine;
     requires static org.junit.jupiter.api;
     requires static kotlin.test.junit;
+
 }

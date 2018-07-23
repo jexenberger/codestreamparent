@@ -26,38 +26,35 @@ interface CodestreamModule {
     val id: ModuleId
         get() = ModuleId(name, version)
 
-    val scriptObjectDocumentation:Collection<FunctionDoc>
+    val scriptObjectDocumentation: Collection<FunctionDoc>
 
-    val taskDocumentation:Collection<TaskDoc> get() {
-        return this.tasks.map {
+    val taskDocumentation: Collection<TaskDoc>
+        get() {
             return tasks.map { (k, v) ->
                 val paramDocs = v.parameters
                         .map { (name, parm) -> ParameterDoc(name, parm.description, parm.type.name, parm.required, parm.default, parm.regex) }
                         .toSet()
                         .sortedBy { it.name }
-                TaskDoc(k.name, v.description, paramDocs)
+                TaskDoc(k.name, v.description, paramDocs, v.returnDescriptor?.let { (a, b) -> a.toString() to b })
             }.toSet().sortedBy { it.name }
         }
-    }
 
     val documentation: ModuleDoc get() = ModuleDoc(id, description, taskDocumentation, scriptObjectDocumentation)
 
-    val scriptObject:Any?
+    val scriptObject: Any?
 
     val tasks: Map<TaskType, TaskDescriptor>
 
     operator fun get(name: TaskType): TaskDescriptor?
 
 
-    fun getByName(name:String) = tasks[TaskType(id, name)]
+    fun getByName(name: String) = tasks[TaskType(id, name)]
 
     val dependencies: Set<ModuleId> get() = emptySet()
 
     fun getDependencyVersion(moduleName: String): Version {
         return dependencies.find { it.name.equals(moduleName) }?.version ?: defaultVersion
     }
-
-
 
 
     companion object {

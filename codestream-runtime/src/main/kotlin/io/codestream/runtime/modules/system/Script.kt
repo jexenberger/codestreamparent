@@ -9,7 +9,7 @@ import io.codestream.util.Eval
 import javax.script.Bindings
 import java.io.File
 
-@Task(name = "script", description = "Run a script either directly as text of from a file")
+@Task(name = "script", description = "Run a script either directly as text of from a file", returnDescription = "Result of the script")
 class Script(
         @Parameter(description = "Script string or File path")
         val script:String,

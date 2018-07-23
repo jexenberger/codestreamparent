@@ -7,7 +7,7 @@ import io.codestream.api.annotations.Task
 import io.codestream.util.io.console.Console
 import io.codestream.util.system
 
-@Task(name = "shell", description = "Runs a command against the system shell, 'bin/sh' in *nix and cmd.exe on windows")
+@Task(name = "shell", description = "Runs a command against the system shell, 'bin/sh' in *nix and cmd.exe on windows", returnDescription = "returns a keyValue with return code mapped to 'result' and the script output mapped to 'output'")
 class Shell(
         @Parameter(description = "command to evaluate")
         val cmd:String,

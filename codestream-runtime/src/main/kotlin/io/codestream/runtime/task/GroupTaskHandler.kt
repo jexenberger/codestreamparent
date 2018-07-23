@@ -49,7 +49,7 @@ class GroupTaskHandler(private val taskId: TaskId,
 
 
     override fun onError(error: Exception, ctx: StreamContext) {
-        val taskError = TaskError(error, ctx.bindings)
+        val taskError = TaskError(taskId, error, ctx.bindings)
         ctx.bindings["_error_"] = taskError
         getTask(ctx).onError(taskError,  ctx.bindings)
         fireEvent(ctx, TaskErrorEvent(taskId, taskError), Directive.done)

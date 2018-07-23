@@ -15,7 +15,7 @@ object TransformerService {
 
 
     init {
-        addConverter(String::class, Secret::class, LambdaTransformer<String, Secret> { Secret(it.toByteArray()) })
+        addConverter(String::class, Secret::class, LambdaTransformer<String, Secret> { Secret(it) })
         addConverter(Secret::class, String::class, LambdaTransformer<Secret, String> { it.value })
         addConverter(String::class, File::class, LambdaTransformer<String, File> { File(it) })
         addConverter(List::class, Array<Int>::class, LambdaTransformer<List<Any>, Array<Int>> {

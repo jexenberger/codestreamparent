@@ -33,7 +33,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
     val debug by args.flagging("-D", "--debug", help = "Run with debug output").default(false)
 
     init {
-        disableIllegalAccessWarnings()
+
     }
 
 
@@ -86,25 +86,8 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
 
     companion object {
         val commands = mapOf(
-                "evaluate" to RunTaskCommandlet::class,
+                "run" to RunTaskCommandlet::class,
                 "help" to HelpCommandlet::class
         )
     }
-
-
-    fun disableIllegalAccessWarnings() {
-        try {
-            val theUnsafe = Unsafe::class.java!!.getDeclaredField("theUnsafe")
-            theUnsafe.setAccessible(true)
-            val u = theUnsafe.get(null) as Unsafe
-
-            val cls = Class.forName("jdk.internal.module.IllegalAccessLogger")
-            val logger = cls.getDeclaredField("logger")
-            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null)
-        } catch (e: Exception) {
-            // ignore
-        }
-
-    }
-
 }
