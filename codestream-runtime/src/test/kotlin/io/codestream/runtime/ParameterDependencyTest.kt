@@ -7,7 +7,7 @@ import io.codestream.api.TaskType
 import io.codestream.api.annotations.Parameter
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
-import io.codestream.api.services.ScriptService
+import io.codestream.util.script.ScriptService
 import io.codestream.di.api.DependencyTarget
 import io.codestream.di.api.TypeId
 import io.codestream.di.api.addInstance

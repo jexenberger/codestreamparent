@@ -8,7 +8,7 @@ import io.codestream.api.metamodel.TaskDef
 import io.codestream.runtime.TaskDefId
 import io.codestream.api.TaskId
 import io.codestream.api.services.Language
-import io.codestream.api.services.ScriptService
+import io.codestream.util.script.ScriptService
 import io.codestream.di.api.AnnotationDependency
 import io.codestream.di.api.Context
 import io.codestream.di.api.DependencyTarget
@@ -40,7 +40,7 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
         }
         val valueDefn = property ?: annotation.default
 
-        val result = scriptService.eval(property.toString(), ctx.bindings, true, Language.groovy) {
+        val result = scriptService.eval(property.toString(), ctx.bindings, true, "mvel") {
             if (target.targetType.isSubclassOf(Enum::class)) {
                 TransformerService.convertWithNull<Any>(valueDefn, target.targetType)
             } else {
@@ -60,7 +60,7 @@ class ParameterDependency : AnnotationDependency<Parameter>(Parameter::class) {
     fun postProcessMap(value: Map<String, Any?>, scriptService: ScriptService, ctx: Context): Map<String, Any?> {
         return value.mapValues { (_, theValue) ->
             if (theValue is String) {
-                scriptService.eval(theValue, ctx.bindings, true, Language.groovy) {
+                scriptService.eval(theValue, ctx.bindings, true, "mvel") {
                     theValue
                 }
             } else {

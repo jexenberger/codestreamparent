@@ -1,6 +1,9 @@
+import javax.script.ScriptEngineFactory;
+
 module io.codestream.util {
     exports io.codestream.util;
     exports io.codestream.util.io;
+    exports io.codestream.util.script;
     exports io.codestream.util.crypto;
     exports io.codestream.util.rest;
     exports io.codestream.util.transformation;
@@ -8,8 +11,10 @@ module io.codestream.util {
 
     requires java.base;
     requires java.scripting;
+
     requires org.bouncycastle.provider;
     requires org.bouncycastle.pkix;
+    requires mvel2;
 
     requires kotlin.stdlib;
     requires kotlin.reflect;
@@ -19,5 +24,7 @@ module io.codestream.util {
     requires static org.junit.jupiter.engine;
     requires static org.junit.jupiter.api;
     requires static kotlin.test.junit;
+
+
 
 }

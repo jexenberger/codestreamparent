@@ -4,7 +4,7 @@ package io.codestream.cli
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.ShowHelpException
-import io.codestream.util.Eval
+import io.codestream.util.script.Eval
 import io.codestream.util.system
 import sun.misc.Unsafe
 
@@ -24,8 +24,6 @@ fun disableIllegalAccessWarnings() {
 }
 
 fun main(args: Array<String>) {
-    disableIllegalAccessWarnings()
-    system.optimizedExecutor.submit { Eval.eval("1==1", scriptEngine = Eval.engineByName("groovy")) }
     val app = CliApp(ArgParser(args))
     try {
         app.run()

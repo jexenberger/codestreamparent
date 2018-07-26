@@ -5,12 +5,14 @@ import io.codestream.api.ModuleId
 import io.codestream.api.defaultVersion
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import kotlin.test.assertTrue
 
 class CodestreamRuntimeTest {
 
     @Test
     internal fun testRunTask() {
-        CodestreamRuntime(CodestreamSettings()).runTask(ModuleId("sys", defaultVersion), "echo", mapOf("value" to "hello world"), DefaultParameterCallback())
+        val (result, context) = CodestreamRuntime(CodestreamSettings()).runTask(ModuleId("sys", defaultVersion), "echo", mapOf("value" to "hello world"), DefaultParameterCallback())
+        assertTrue { result is Unit }
     }
 
     @Test

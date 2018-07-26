@@ -22,9 +22,11 @@ class ConsoleHandler(val enableDebug: Boolean) : EventHandler<TaskEvent> {
 
             }
             is TaskErrorEvent -> {
-                Console.display(decorate(event.taskId.taskType.taskName, Console.REVERSED, Console.ANSI_RED))
+                Console.display(decorate(event.taskId, Console.REVERSED, Console.ANSI_RED))
                         .space()
                         .display(decorate(event.error.message, Console.BOLD))
+                        .space()
+                        .display(decorate(event.taskId, Console.BOLD))
                         .space()
                         .newLine()
                 if (enableDebug) {

@@ -6,9 +6,7 @@ import io.codestream.api.annotations.Parameter
 import io.codestream.api.annotations.Task
 import io.codestream.api.services.TemplateService
 import io.codestream.di.annotation.Inject
-import java.io.File
-import java.io.StringReader
-import java.io.StringWriter
+import java.io.*
 
 @Task(name = "generate", description = "Generates output from a Mustache template from a file or string template")
 class Generate(
@@ -22,14 +20,14 @@ class Generate(
 
     override fun evaluate(ctx: RunContext): String? {
         val file = File(template)
-        val buffer = StringWriter()
+        val buffer = ByteArrayOutputStream()
         val reader = if (file.isFile) {
-            file.reader()
+            file.inputStream()
         } else {
-            StringReader(template)
+            ByteArrayInputStream(template.toByteArray())
         }
         templateService.write(reader, buffer, parameters)
-        return buffer.toString()
+        return String(buffer.toByteArray())
     }
 
 }

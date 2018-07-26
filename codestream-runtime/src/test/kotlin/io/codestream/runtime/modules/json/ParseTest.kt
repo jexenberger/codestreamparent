@@ -13,4 +13,6 @@ class ParseTest {
         val result = parse.evaluate(bindings)!!
         assertEquals(true, result["hello"]!!)
     }
+
+
 }

@@ -44,7 +44,7 @@ tasks:
 
   - sys::echo:
       value: >-
-             ${value2 ?: 'not present'}
+             ${if (value2 != null) { return value2; } else { return 'empty'; }}
 
   - sys::echo:
       value: ${value3[0]}
@@ -55,8 +55,6 @@ tasks:
   - sys::echo:
       value: ${value5}
 
-  - sys::echo:
-      value: ${_fn.samplemodule.helloWorld()}
 
   - test::group:
       id: groupid

@@ -4,7 +4,7 @@ import io.codestream.api.*
 import io.codestream.api.descriptor.TaskDescriptor
 import io.codestream.api.metamodel.TaskDef
 import io.codestream.api.resources.ResourceRepository
-import io.codestream.api.services.ScriptService
+import io.codestream.util.script.ScriptService
 import io.codestream.api.services.TemplateService
 import io.codestream.di.api.TypeId
 import io.codestream.di.api.addInstance
@@ -13,7 +13,7 @@ import io.codestream.runtime.task.NonGroupTaskHandler
 import io.codestream.runtime.task.TaskDefContext
 import io.codestream.runtime.tree.Branch
 import io.codestream.runtime.tree.Node
-import io.codestream.util.Eval
+import io.codestream.util.script.Eval
 import io.codestream.util.crypto.SimpleSecretStore
 import io.codestream.util.transformation.TransformerService
 
@@ -42,7 +42,7 @@ open class CompositeTask(
     override fun postTraversal(ctx: io.codestream.runtime.StreamContext) = Directive.done
 
     override fun onError(error: Exception, ctx: io.codestream.runtime.StreamContext) {
-        val taskError = TaskError(taskId, error, ctx.bindings)
+        val taskError = if (error is TaskError) error else TaskError(taskId, error, ctx.bindings)
         ctx.bindings["_error_"] = taskError
         errorTask?.let { runTask(ctx, it) } ?: throw taskError
     }

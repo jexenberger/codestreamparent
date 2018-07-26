@@ -1,5 +1,7 @@
-package io.codestream.util
+package io.codestream.util.script
 
+import io.codestream.util.stringify
+import org.mvel2.jsr223.MvelScriptEngineFactory
 import java.io.Reader
 import javax.script.*
 
@@ -7,8 +9,13 @@ import javax.script.*
 object Eval {
 
     private val factory = ScriptEngineManager()
-    private val defaultScriptEngine = "js"
+    private val defaultScriptEngine = "mvel"
     private val engines = mutableMapOf<String, ScriptEngine>()
+
+    init {
+        //thanks java 9
+        engines["mvel"] = MvelScriptEngineFactory().scriptEngine!!
+    }
 
 
     val defaultEngine get() = engineByName(defaultScriptEngine)
@@ -18,11 +25,34 @@ object Eval {
         return engines.getOrPut(name) { factory.getEngineByName(name) }
     }
 
+    fun engineByExtension(name: String): ScriptEngine {
+        return engines.getOrPut(name) { factory.getEngineByExtension(name) }
+    }
+
+    fun compile(script:Reader, scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)) = (scriptEngine as Compilable).compile(script)
+
+    fun compile(script:String, scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)) = (scriptEngine as Compilable).compile(script)
+
+
+    fun <T> compiledScript(script:String, scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): Jsr223Compilable<T> {
+        return Jsr223Compilable(compile(script, scriptEngine))
+    }
+
+    fun <T> compiledScript(script:Reader, scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): Jsr223Compilable<T> {
+        return Jsr223Compilable(compile(script, scriptEngine))
+    }
+
 
     fun <K> eval(script: String, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
         val ctx = createBindings(variables)
         @Suppress("UNCHECKED_CAST")
         return scriptEngine.eval(script, ctx) as K
+    }
+
+    fun <K> eval(script: CompiledScript, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
+        val ctx = createBindings(variables)
+        @Suppress("UNCHECKED_CAST")
+        return script.eval(ctx) as K
     }
 
     fun <K> eval(script: Reader, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
@@ -35,13 +65,13 @@ object Eval {
         val ctx = if (variables is Bindings) variables else {
             val newContext = SimpleScriptContext()
             val engineScope = newContext.getBindings(ScriptContext.ENGINE_SCOPE)
-            variables.forEach({ key: String, value: Any? -> engineScope.put(key, value) })
+            variables.forEach { key: String, value: Any? -> engineScope.put(key, value) }
             engineScope
         }
         return ctx
     }
 
-    fun <K> evalIfScript(candidate:Any?, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
+    fun <K> evalIfScript(candidate: Any?, variables: Map<String, Any?> = mapOf(), scriptEngine: ScriptEngine = engineByName(defaultScriptEngine)): K {
         if (candidate == null) {
             return candidate as K
         }
@@ -52,7 +82,6 @@ object Eval {
             candidate as K
         }
     }
-
 
 
     fun isScriptString(expr: String): Boolean {

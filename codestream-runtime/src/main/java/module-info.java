@@ -16,15 +16,12 @@ open module io.codestream.runtime {
     requires kotlinx.coroutines.core;
 
     requires java.scripting;
-    requires org.codehaus.groovy;
-    requires org.codehaus.groovy.jsr223;
-    requires org.codehaus.groovy.json;
 
     requires semantic.version;
 
     requires snakeyaml;
 
-    requires jmustache;
+    requires mvel2;
 
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;

@@ -20,14 +20,15 @@ abstract class BaseLeafTaskHandler(
         ctx.events.publish(TaskSkippedEvent(taskId, "Task condition evaluated to false"))
     }
 
-    override fun visitBeforeLeaf(leaf: Node<StreamContext>, ctx: StreamContext)  : Boolean {
+    override fun visitBeforeLeaf(leaf: Node<StreamContext>, ctx: StreamContext): Boolean {
         ctx.events.publish(BeforeTaskEvent(taskId, "running", TaskState.running))
         val condition = taskDef.condition(ctx.bindings)
         return condition
     }
 
-    override fun visitWhenError(error: Exception, leaf: Node<StreamContext>, ctx: StreamContext) {
+    override fun visitWhenError(error: Exception, leaf: Node<StreamContext>, ctx: StreamContext): Exception {
         ctx.events.publish(TaskErrorEvent(taskId, TaskError(taskId, error, ctx.bindings)))
+        return error
     }
 
     override fun visitAfterLeaf(state: NodeState, leaf: Node<StreamContext>, ctx: StreamContext, timeTaken: Pair<Long, Unit>) {
@@ -38,13 +39,15 @@ abstract class BaseLeafTaskHandler(
         try {
             TaskDefContext.defn = taskDef
             run(ctx)
+        } catch (e: Exception) {
+            throw e
         } finally {
             TaskDefContext.clear()
             TaskScope.release(TaskScopeId(ctx, taskId))
         }
     }
 
-    abstract fun run(ctx:StreamContext)
+    abstract fun run(ctx: StreamContext)
 
 
 }

@@ -30,14 +30,6 @@ class DefinedYamlModuleTest {
         assertEquals(type, task.descriptor.type)
     }
 
-    @Test
-    internal fun testScriptObjectDocumentation() {
-        val scriptDocumentation = module.scriptObjectDocumentation
-        assertEquals(2, scriptDocumentation.size)
-        scriptDocumentation.forEach {
-            println(it)
-        }
-    }
 
     @Test
     internal fun testTaskDocumentation() {

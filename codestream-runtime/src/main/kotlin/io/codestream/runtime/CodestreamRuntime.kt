@@ -2,20 +2,21 @@ package io.codestream.runtime
 
 import io.codestream.api.*
 import io.codestream.api.descriptor.ParameterDescriptor
+import io.codestream.api.metamodel.FunctionalTaskDef
 import io.codestream.api.metamodel.GroupTaskDef
 import io.codestream.api.metamodel.ParameterDef
 import io.codestream.api.metamodel.TaskDef
 import io.codestream.api.resources.ResolvingResourceRegistry
 import io.codestream.api.resources.ResourceRepository
 import io.codestream.api.resources.WritableResourceRepository
-import io.codestream.api.services.ScriptService
+import io.codestream.util.script.ScriptService
 import io.codestream.api.services.TemplateService
 import io.codestream.di.api.TypeId
 import io.codestream.di.api.addInstance
 import io.codestream.doc.ModuleDoc
 import io.codestream.runtime.resources.yaml.YamlResourceRepository
 import io.codestream.runtime.services.CodestreamScriptingService
-import io.codestream.runtime.services.JMustacheTemplatingService
+import io.codestream.runtime.services.MvelTemplateService
 import io.codestream.runtime.task.GroupTaskHandler
 import io.codestream.runtime.task.NonGroupTaskHandler
 import io.codestream.runtime.tree.Node
@@ -45,7 +46,7 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         resources = ResolvingResourceRegistry(YamlResourceRepository("resources", settings.resourceRepositoryPath))
         secretStore = ResolvingSecretStore(YamlSecretStore(settings.secretStorePath))
         SystemKey.systemKeyPath = settings.globalKeyPath
-        templateService = JMustacheTemplatingService()
+        templateService = MvelTemplateService()
     }
 
     override fun shutdown() {
@@ -57,7 +58,7 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         return existing?.let { it } ?: if (type.default?.isNotBlank() ?: false) type.default else callback.capture(type)
     }
 
-    override fun runTask(moduleId: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
+    override fun runTask(moduleId: ModuleId, task: String, parameters: Map<String, Any?>, callback: ParameterCallback): Pair<Any, Map<String, Any?>> {
         val module = ModuleRegistry[moduleId]
                 ?: throw IllegalArgumentException("${moduleId} is not defined")
         val taskDescriptor = module[TaskType(module.id, task)]
@@ -76,12 +77,16 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
             streamContext.registerTask(defn)
             GroupTaskHandler(id, false, defn)
         } else {
-            val defn = TaskDef(id, taskParams)
+            val defn = if (taskDescriptor.returnDescriptor != null)
+                FunctionalTaskDef(id, taskParams, {true}, "__result__")
+            else
+                TaskDef(id, taskParams)
             streamContext.registerTask(defn)
             NonGroupTaskHandler(id, defn)
         }
         node.execute(streamContext)
-        return streamContext.bindings
+        val returnVal = streamContext.bindings["__result__"] ?: Unit
+        return returnVal to streamContext.bindings
     }
 
     private fun createContext(): StreamContext {
@@ -99,11 +104,11 @@ class CodestreamRuntime(settings: CodestreamSettings) : Codestream() {
         return streamContext
     }
 
-    override fun runTask(module: ModuleId, task: String, parameters: Map<String, Any?>): Map<String, Any?> {
+    override fun runTask(module: ModuleId, task: String, parameters: Map<String, Any?>): Pair<Any, Map<String, Any?>> {
         return runTask(module, task, parameters, io.codestream.runtime.DefaultParameterCallback())
     }
 
-    override fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback): Map<String, Any?> {
+    override fun runTask(file: File, parameters: Map<String, Any?>, callback: ParameterCallback): Pair<Any, Map<String, Any?>> {
         val module = SingleFileModule(file)
         io.codestream.runtime.ModuleRegistry += module
         val descriptor = module.taskDescriptor

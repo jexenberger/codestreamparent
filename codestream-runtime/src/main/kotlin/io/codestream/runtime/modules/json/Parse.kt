@@ -12,7 +12,7 @@ class Parse(
         val json:String) : FunctionalTask<Map<String, Any?>> {
 
     override fun evaluate(ctx: RunContext): Map<String, Any?>? {
-        return ObjectMapper().readValue(json, java.util.Map::class.java) as Map<String, Any?>
+        return JsonModule.mapper.readValue(json, java.util.Map::class.java) as Map<String, Any?>
     }
 
 }

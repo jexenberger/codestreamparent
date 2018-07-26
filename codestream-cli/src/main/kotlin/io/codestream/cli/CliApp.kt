@@ -6,16 +6,11 @@ import com.xenomachina.argparser.mainBody
 import io.codestream.api.Codestream
 import io.codestream.api.CodestreamSettings
 import io.codestream.di.api.*
-import io.codestream.util.Eval
+import io.codestream.util.script.Eval
 import io.codestream.util.OS
 import io.codestream.util.io.console.Console
 import io.codestream.util.io.console.decorate
-import io.codestream.util.system
-import sun.misc.Unsafe
-import java.io.File
 import java.util.concurrent.Callable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 
 class CliApp(val args: ArgParser) : ApplicationContext() {
@@ -58,9 +53,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
     fun run() = mainBody("cs") {
         task
         inputParms
-        OS.os().optimizedExecutor.submit(Callable<Commandlet> { run { Eval.eval("1==1") } })
         val commandlet = OS.os().optimizedExecutor.submit(Callable<Commandlet> { run { startContainer(inputParms) } })
-
         try {
             if (!CliApp.commands.containsKey(command)) {
                 Console.display(

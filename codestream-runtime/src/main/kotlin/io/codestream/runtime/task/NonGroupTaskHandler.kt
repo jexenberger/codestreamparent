@@ -1,9 +1,11 @@
 package io.codestream.runtime.task
 
 import io.codestream.api.*
+import io.codestream.api.events.TaskErrorEvent
 import io.codestream.api.metamodel.FunctionalTaskDef
 import io.codestream.api.metamodel.TaskDef
 import io.codestream.runtime.StreamContext
+import io.codestream.runtime.tree.Node
 
 
 class NonGroupTaskHandler(taskId: TaskId, taskDef: TaskDef) : BaseLeafTaskHandler(taskId, taskDef) {
@@ -11,7 +13,6 @@ class NonGroupTaskHandler(taskId: TaskId, taskDef: TaskDef) : BaseLeafTaskHandle
         val task = try {
              ctx.get<Task>(taskId) ?: throw IllegalStateException("$taskId not resolved??!!")
         } catch (e:IllegalArgumentException) {
-            e.printStackTrace()
             throw ComponentFailedException(taskId.id, "Unable to create instance -> '${e}'")
         }
         when (task) {
@@ -30,6 +31,11 @@ class NonGroupTaskHandler(taskId: TaskId, taskDef: TaskDef) : BaseLeafTaskHandle
         }
     }
 
+    override fun visitWhenError(error: Exception, leaf: Node<StreamContext>, ctx: StreamContext): Exception {
+        val taskError = TaskError.bubble(taskId, error, ctx.bindings)
+        ctx.events.publish(TaskErrorEvent(taskId, taskError))
+        return taskError
+    }
 
     override fun toString(): String {
         return "SimpleTask -> $taskId)"

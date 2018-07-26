@@ -10,7 +10,6 @@ module codestream.di.test {
     requires kotlin.reflect;
 
     requires java.scripting;
-    requires org.codehaus.groovy.jsr223;
 
     //until intelliJ figures this out
     requires static org.junit.jupiter.engine;

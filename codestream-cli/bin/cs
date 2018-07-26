@@ -37,7 +37,7 @@ fi
 MOD_PATHS="$CS_HOME_DIR"
 
 # startup time tuning parameters
-STARTUP_TUNING="-client -Xshare:auto -XX:TieredStopAtLevel=1 -XX:CICompilerCount=1 -XX:+UseSerialGC"
+STARTUP_TUNING="-client -Xshare:auto  -XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+TieredCompilation"
 
 # Memory settings
 MEM_OPTS="-Xms64M -Xmx512m"

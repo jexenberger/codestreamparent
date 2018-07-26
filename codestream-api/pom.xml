@@ -23,22 +23,12 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
-        </dependency>
-        <dependency>
             <groupId>de.skuzzle</groupId>
             <artifactId>semantic-version</artifactId>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.samskivert/jmustache -->
-        <dependency>
-            <groupId>com.samskivert</groupId>
-            <artifactId>jmustache</artifactId>
         </dependency>
 
 

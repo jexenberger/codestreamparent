@@ -21,15 +21,15 @@ abstract class Leaf<T>(override val id: String) : Node<T> {
                 visitSkipped(internalState, this, ctx)
             }
         } catch (e: Exception) {
-            visitWhenError(e, this, ctx);
+            val errorToThrow = visitWhenError(e, this, ctx)
             internalState = NodeState.failed
-            throw e
+            throw errorToThrow
         }
         return internalState
     }
 
     abstract fun visitBeforeLeaf(leaf: Node<T>, ctx: T) : Boolean
-    abstract fun visitWhenError(error: Exception, leaf: Node<T>, ctx: T)
+    abstract fun visitWhenError(error: Exception, leaf: Node<T>, ctx: T) : Exception
     abstract fun visitAfterLeaf(state: NodeState, leaf: Node<T>, ctx: T, timeTaken: Pair<Long, Unit>)
     abstract fun visitSkipped(state: NodeState, leaf: Node<T>, ctx: T)
     abstract fun handle(ctx:T)

@@ -15,8 +15,9 @@ open class DefaultLeaf<T>(id: String,
     }
 
 
-    override fun visitWhenError(error: Exception, leaf: Node<T>, ctx: T) {
+    override fun visitWhenError(error: Exception, leaf: Node<T>, ctx: T): Exception {
         this.leafErrorVisitor?.let { it(error, leaf, ctx) }
+        return error
     }
 
 

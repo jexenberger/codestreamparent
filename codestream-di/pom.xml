@@ -25,12 +25,7 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
         </dependency>
-        <!-- groovy JSR233 -->
-        <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223 -->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
-        </dependency>
+
 
 
         <!-- Test dependencies -->

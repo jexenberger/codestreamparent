@@ -27,14 +27,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-jsr223</artifactId>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-json</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>de.skuzzle</groupId>
@@ -45,11 +41,6 @@
             <artifactId>snakeyaml</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.samskivert/jmustache -->
-        <dependency>
-            <groupId>com.samskivert</groupId>
-            <artifactId>jmustache</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

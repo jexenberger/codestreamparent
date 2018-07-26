@@ -43,13 +43,16 @@ class RunTaskCommandlet(
 
     private fun runTask() {
         val taskType = TaskType.fromString(task)
-        val result = codestream.runTask(
+        val (result, ctx) = codestream.runTask(
                 module = taskType.module,
                 task = taskType.name,
                 parameters = inputParameters,
                 callback = this
         )
-        displayOutput(result)
+        if (result !is Unit) {
+            Console.display(bold(result))
+        }
+        displayOutput(ctx)
     }
 
     private fun displayOutput(result: Map<String, Any?>) {

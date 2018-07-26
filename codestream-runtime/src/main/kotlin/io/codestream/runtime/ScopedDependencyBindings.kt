@@ -2,7 +2,6 @@ package io.codestream.runtime
 
 import io.codestream.api.RunContext
 import io.codestream.api.resources.WritableResourceRepository
-import io.codestream.api.services.ScriptService
 import io.codestream.di.api.Context
 import io.codestream.di.api.DependencyInjectionBindings
 

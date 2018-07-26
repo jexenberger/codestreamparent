@@ -95,38 +95,26 @@
                 <version>${kotlin.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-script-runtime</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-script-util</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>compiler-embeddable</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.jetbrains.kotlinx</groupId>
                 <artifactId>kotlinx-coroutines-core</artifactId>
                 <version>0.22.5</version>
             </dependency>
 
-            <!-- groovy JSR233 -->
-            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-jsr223 -->
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-jsr223</artifactId>
-                <version>${groovy.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-templates</artifactId>
-                <version>${groovy.version}</version>
-            </dependency>
-
-            <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json -->
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-json</artifactId>
-                <version>3.0.0-alpha-3</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.codehaus.groovy</groupId>
-                <artifactId>groovy-xml</artifactId>
-                <version>${groovy.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.yaml</groupId>
@@ -134,12 +122,7 @@
                 <version>1.18</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/com.samskivert/jmustache -->
-            <dependency>
-                <groupId>com.samskivert</groupId>
-                <artifactId>jmustache</artifactId>
-                <version>1.14</version>
-            </dependency>
+
 
             <dependency>
                 <groupId>com.jcraft</groupId>
@@ -212,6 +195,11 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk15on</artifactId>
                 <version>1.60</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mvel</groupId>
+                <artifactId>mvel2</artifactId>
+                <version>2.4.0.Final</version>
             </dependency>
 
 

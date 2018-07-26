@@ -154,6 +154,7 @@ enum class OS(val unixVariant: Boolean, val rootDir: String, vararg val keys: St
 
 
     companion object {
+        @JvmStatic
         fun os(): OS {
             val osKey = System.getProperty("os.name").toLowerCase()
             OS.values()
