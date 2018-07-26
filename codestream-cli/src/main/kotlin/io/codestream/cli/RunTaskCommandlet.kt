@@ -27,7 +27,6 @@ class RunTaskCommandlet(
         val debug: Boolean
 ) : Commandlet, ParameterCallback {
     override fun run() {
-
         try {
 
             if (task.endsWith(".yaml")) {

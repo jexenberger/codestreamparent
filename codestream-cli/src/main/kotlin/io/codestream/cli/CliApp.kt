@@ -27,10 +27,6 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
     }
     val debug by args.flagging("-D", "--debug", help = "Run with debug output").default(false)
 
-    init {
-
-    }
-
 
     private fun startContainer(parmeters: MutableList<Pair<String, String?>>): Commandlet {
         val parms = parmeters.toTypedArray().toMap()
@@ -53,7 +49,7 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
     fun run() = mainBody("cs") {
         task
         inputParms
-        val commandlet = OS.os().optimizedExecutor.submit(Callable<Commandlet> { run { startContainer(inputParms) } })
+        val commandlet = startContainer(inputParms)
         try {
             if (!CliApp.commands.containsKey(command)) {
                 Console.display(
@@ -66,10 +62,9 @@ class CliApp(val args: ArgParser) : ApplicationContext() {
                             .display(decorate("- $it", Console.BOLD, Console.ANSI_RED))
                             .newLine()
                 }
-                commandlet.cancel(true)
 
             } else {
-                commandlet.get().run()
+                commandlet.run()
             }
         } finally {
             OS.os().optimizedExecutor.shutdownNow()

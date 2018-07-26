@@ -4,6 +4,8 @@ package io.codestream.cli
 
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.ShowHelpException
+import io.codestream.util.io.console.Console
+import io.codestream.util.io.console.bold
 import io.codestream.util.script.Eval
 import io.codestream.util.system
 import sun.misc.Unsafe
@@ -24,6 +26,7 @@ fun disableIllegalAccessWarnings() {
 }
 
 fun main(args: Array<String>) {
+    Console.display(bold("Running...")).newLine()
     val app = CliApp(ArgParser(args))
     try {
         app.run()

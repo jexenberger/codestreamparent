@@ -16,11 +16,10 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : BaseYamlModule {
-    private val _tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
 
     val descriptor: YamlModuleDescriptor
 
-    override val tasks: Map<TaskType, TaskDescriptor> = _tasks
+    override val tasks: Map<TaskType, TaskDescriptor> by lazy { loadTasks() }
 
     override val description: String get() = descriptor.description
     override val name: String get() = descriptor.name ?: path.name
@@ -33,7 +32,7 @@ class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : B
 
     private val scriptClass: KClass<*>?
 
-    override fun get(name: TaskType) = _tasks[name]
+    override fun get(name: TaskType) = tasks[name]
 
     init {
         if (!path.isDirectory) {
@@ -41,7 +40,6 @@ class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : B
         }
         scriptClass = parseScriptClass()
         descriptor = load()
-        loadTasks()
     }
 
 
@@ -63,13 +61,15 @@ class DefinedYamlModule(val path: File, val scriptingService: ScriptService) : B
         )
     }
 
-    private fun loadTasks() {
+    private fun loadTasks(): MutableMap<TaskType, TaskDescriptor> {
+        val tasks: MutableMap<TaskType, TaskDescriptor> = mutableMapOf()
         this.path.listFiles().forEach {
             if (it.isFile && it.name.endsWith("yaml")) {
                 val descriptor = YamlTaskBuilder(it.nameWithoutExtension, this, it.readText()).taskDescriptor
-                _tasks[descriptor.type] = descriptor
+                tasks[descriptor.type] = descriptor
             }
         }
+        return tasks
     }
 
     override fun getCompositeTask(id: TaskId, ctx: StreamContext): CompositeTask {
