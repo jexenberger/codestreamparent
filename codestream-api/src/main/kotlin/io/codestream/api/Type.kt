@@ -1,9 +1,27 @@
+/*
+ *  Copyright 2018 Julian Exenberger
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *    `*   `[`http://www.apache.org/licenses/LICENSE-2.0`](http://www.apache.org/licenses/LICENSE-2.0)
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package io.codestream.api
 
 import io.codestream.api.resources.Resource
 import io.codestream.util.crypto.Secret
 import io.codestream.util.transformation.TransformerService
 import java.io.File
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -25,7 +43,7 @@ enum class Type(
     boolean("boolean", Boolean::class, "true,false, yes, no"),
     float("float", Float::class, "32 bit signed floating point value"),
     double("double", Double::class, "64 bit signed integer value"),
-    file("path", File::class, "Reference to a file on the file system"),
+    path("path", File::class, "Reference to a file on the file system"),
     enumeration("enum", Enum::class, "Fixed enumerated value"),
     anyArray("any[]", Array<Any>::class, "Array of any types", true),
     fileArray("path[]", Array<File>::class, "Array of file types", true),
@@ -37,7 +55,10 @@ enum class Type(
     iterator("iterator", Iterator::class,"Enumeration type", true),
     keyValue("keyValue", Map::class, "Set of key=value mappings"),
     resource("resource", Resource::class, "Resource stored in the resource registry"),
-    secret("secret", Secret::class, "A value which needs to be securely stored");
+    secret("secret", Secret::class, "A value which needs to be securely stored"),
+    date("date", LocalDate::class, "A date value"),
+    time("time", LocalTime::class, "A time value"),
+    datetime("datetime", LocalDateTime::class, "A timestamp value");
 
 
     fun <T> fromString(value: String?): T {
